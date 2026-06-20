@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=1080" />
+  <title>FF Instagram Strip — Export</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #1A2B40; }
+
+    .strip {
+      width: 1080px;
+      height: 420px;
+      background: #1A2B40;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .strip__mark svg { display: block; }
+
+    .strip__wordmark {
+      font-family: 'Barlow Condensed', sans-serif;
+      text-transform: uppercase;
+      text-align: center;
+      line-height: 0.88;
+      letter-spacing: 0.04em;
+    }
+
+    .strip__family {
+      font-size: 64px;
+      font-weight: 600;
+      color: #FAF0E0;
+      display: block;
+    }
+
+    .strip__frequencies {
+      font-size: 64px;
+      font-weight: 800;
+      color: #F0B840;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="strip">
+    <div class="strip__mark">
+      <svg width="120" height="72" viewBox="0 0 80 48" fill="none">
+        <path d="M4 42 Q20 12 40 30 Q60 48 76 22"
+              stroke="#F0B840" stroke-width="4" stroke-linecap="round" fill="none"/>
+        <path d="M4 30 Q20 0 40 18 Q60 36 76 10"
+              stroke="#E88070" stroke-width="3.5" stroke-linecap="round" fill="none" opacity="0.70"/>
+        <path d="M4 18 Q20 -12 40 6 Q60 24 76 -2"
+              stroke="#FAF0E0" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.30"/>
+      </svg>
+    </div>
+    <div class="strip__wordmark">
+      <span class="strip__family">Family</span>
+      <span class="strip__frequencies">Frequencies</span>
+    </div>
+  </div>
+</body>
+</html>
