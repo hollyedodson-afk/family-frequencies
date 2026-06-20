@@ -9,10 +9,10 @@
   --ff-gold:  #F0B840;
   --ff-rose:  #E88070;
 
-  /* ── Wave arc opacities (navy background context) ── */
-  --ff-wave-gold:  #F0B840;
+  /* ── Wave arc opacities for SVG strokes on navy background ── */
   --ff-wave-rose:  rgba(232, 128, 112, 0.70);
   --ff-wave-cream: rgba(250, 240, 224, 0.30);
+  /* front arc uses --ff-gold at full opacity */
 
   /* ── Typography ── */
   --ff-font: 'Barlow Condensed', sans-serif;
