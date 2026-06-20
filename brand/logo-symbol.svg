@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 48" fill="none" role="img" aria-label="Family Frequencies wave mark">
+  <!-- Front arc — Gold -->
+  <path d="M4 42 Q20 12 40 30 Q60 48 76 22"
+        stroke="#F0B840" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <!-- Mid arc — Rose at 70% -->
+  <path d="M4 30 Q20 0 40 18 Q60 36 76 10"
+        stroke="#E88070" stroke-width="3.5" stroke-linecap="round" fill="none" opacity="0.70"/>
+  <!-- Back arc — Cream at 30% -->
+  <path d="M4 18 Q20 -12 40 6 Q60 24 76 -2"
+        stroke="#FAF0E0" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.30"/>
+</svg>
