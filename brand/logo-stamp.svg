@@ -1,0 +1,30 @@
+<!-- brand/logo-stamp.svg
+     For event posters — bottom right or bottom centre.
+     Should not exceed ~10% of poster's shorter dimension at print size.
+     Embed inline in HTML. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 28" fill="none" role="img" aria-label="A Family Frequencies Event">
+  <defs>
+    <style>
+      .ff-stamp { font-family: 'Barlow Condensed', sans-serif; text-transform: uppercase; }
+    </style>
+  </defs>
+
+  <!-- Mini wave mark -->
+  <g transform="scale(0.42) translate(0, -10)">
+    <path d="M4 42 Q20 12 40 30 Q60 48 76 22"
+          stroke="#FAF0E0" stroke-width="5" stroke-linecap="round" fill="none"/>
+    <path d="M4 30 Q20 0 40 18 Q60 36 76 10"
+          stroke="#FAF0E0" stroke-width="5" stroke-linecap="round" fill="none" opacity="0.55"/>
+    <path d="M4 18 Q20 -12 40 6 Q60 24 76 -2"
+          stroke="#FAF0E0" stroke-width="5" stroke-linecap="round" fill="none" opacity="0.30"/>
+  </g>
+
+  <!-- Divider line -->
+  <line x1="38" y1="6" x2="38" y2="22" stroke="#FAF0E0" stroke-width="1" opacity="0.3"/>
+
+  <!-- Stamp text -->
+  <text x="46" y="18"
+        class="ff-stamp"
+        font-size="12" font-weight="700" fill="#FAF0E0"
+        letter-spacing="1.8" opacity="0.85">A Family Frequencies Event</text>
+</svg>

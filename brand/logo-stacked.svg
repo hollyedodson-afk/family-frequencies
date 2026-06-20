@@ -1,0 +1,32 @@
+<!-- brand/logo-stacked.svg
+     For IG post header strip, signage, square crops.
+     Embed inline in HTML — do not use as <img src> (font won't load). -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100" fill="none" role="img" aria-label="Family Frequencies">
+  <defs>
+    <style>
+      .ff-wordmark { font-family: 'Barlow Condensed', sans-serif; text-transform: uppercase; }
+    </style>
+  </defs>
+
+  <!-- Wave mark, centred at top -->
+  <g transform="translate(20, 4)">
+    <path d="M4 42 Q20 12 40 30 Q60 48 76 22"
+          stroke="#F0B840" stroke-width="4" stroke-linecap="round" fill="none"/>
+    <path d="M4 30 Q20 0 40 18 Q60 36 76 10"
+          stroke="#E88070" stroke-width="3.5" stroke-linecap="round" fill="none" opacity="0.70"/>
+    <path d="M4 18 Q20 -12 40 6 Q60 24 76 -2"
+          stroke="#FAF0E0" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.30"/>
+  </g>
+
+  <!-- FAMILY — lighter weight -->
+  <text x="60" y="66"
+        class="ff-wordmark"
+        font-size="22" font-weight="600" fill="#FAF0E0"
+        text-anchor="middle" letter-spacing="1.5">FAMILY</text>
+
+  <!-- FREQUENCIES — heavier weight, gold -->
+  <text x="60" y="88"
+        class="ff-wordmark"
+        font-size="22" font-weight="800" fill="#F0B840"
+        text-anchor="middle" letter-spacing="1.5">FREQUENCIES</text>
+</svg>
