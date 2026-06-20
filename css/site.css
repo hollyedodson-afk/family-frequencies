@@ -150,6 +150,12 @@
   line-height: 1.2;
 }
 
+.ff-no-booking {
+  font-size: var(--ff-text-sm);
+  font-weight: 600;
+  opacity: 0.5;
+}
+
 /* ── Footer ── */
 .site-footer {
   background: var(--ff-navy);
