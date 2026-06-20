@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Daylight Disco — Family Frequencies</title>
+  <meta name="description" content="A free family-friendly daytime disco at Hide, Mt Maunganui. 4 July 2026, 12pm–6pm." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/site.css" />
+</head>
+<body>
+
+  <!-- ── Site Header ── -->
+  <header class="site-header">
+    <a href="/" class="site-header__logo" aria-label="Family Frequencies home">
+      <!-- Horizontal logo — inline SVG so font applies -->
+      <svg width="180" height="40" viewBox="0 0 200 48" fill="none" role="img" aria-label="Family Frequencies">
+        <path d="M4 42 Q20 12 40 30 Q60 48 76 22"
+              stroke="#F0B840" stroke-width="4" stroke-linecap="round" fill="none"/>
+        <path d="M4 30 Q20 0 40 18 Q60 36 76 10"
+              stroke="#E88070" stroke-width="3.5" stroke-linecap="round" fill="none" opacity="0.70"/>
+        <path d="M4 18 Q20 -12 40 6 Q60 24 76 -2"
+              stroke="#FAF0E0" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.30"/>
+        <text x="88" y="22"
+              font-family="'Barlow Condensed', sans-serif"
+              font-size="18" font-weight="600" fill="#FAF0E0"
+              letter-spacing="1.5" text-transform="uppercase">FAMILY</text>
+        <text x="88" y="40"
+              font-family="'Barlow Condensed', sans-serif"
+              font-size="18" font-weight="800" fill="#F0B840"
+              letter-spacing="1.5" text-transform="uppercase">FREQUENCIES</text>
+      </svg>
+    </a>
+    <nav aria-label="Site navigation">
+      <ul class="site-nav">
+        <li><a href="#event">This Event</a></li>
+        <li><a href="#details">Details</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- ── Hero ── -->
+  <section class="hero" id="event">
+    <div class="hero__content">
+      <p class="ff-eyebrow hero__eyebrow">Family Frequencies presents</p>
+      <h1 class="ff-hero hero__title">Daylight<br>Disco</h1>
+      <div class="hero__meta">
+        <div class="hero__meta-item ff-label">
+          <span>4 July 2026</span>
+        </div>
+        <div class="hero__meta-item ff-label">
+          <span>12pm – 6pm</span>
+        </div>
+        <div class="hero__meta-item ff-label">
+          <span>Hide, Mt Maunganui</span>
+        </div>
+      </div>
+      <span class="hero__free-tag">Free Entry</span>
+    </div>
+
+    <div class="hero__artwork">
+      <img src="assets/daylight-disco-reference.png"
+           alt="Daylight Disco illustrated poster — parents and babies DJing, with yellow, blue and black linework"
+           width="600" />
+    </div>
+  </section>
+
+  <!-- ── Event Details ── -->
+  <section class="event-details" id="details">
+    <h2 class="event-details__heading">Event Details</h2>
+    <div class="event-details__grid">
+      <div class="detail-item">
+        <div class="detail-item__label">Date</div>
+        <div class="detail-item__value">Friday 4 July 2026</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-item__label">Time</div>
+        <div class="detail-item__value">12pm – 6pm</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-item__label">Venue</div>
+        <div class="detail-item__value">Hide<br>Mt Maunganui</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-item__label">Entry</div>
+        <div class="detail-item__value">Free<br><small style="font-size:14px;font-weight:600;opacity:0.5;">No booking required</small></div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-item__label">Music</div>
+        <div class="detail-item__value">Jazz, House &amp;<br>Kids Boogie Songs</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-item__label">Activities</div>
+        <div class="detail-item__value">Face Painting<br>Toys &amp; Good Times</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Footer ── -->
+  <footer class="site-footer">
+    <div class="site-footer__stamp">
+      <!-- Event stamp — inline SVG -->
+      <svg width="200" height="24" viewBox="0 0 220 28" fill="none" role="img" aria-label="A Family Frequencies Event">
+        <g transform="scale(0.42) translate(0, -10)">
+          <path d="M4 42 Q20 12 40 30 Q60 48 76 22"
+                stroke="#FAF0E0" stroke-width="5" stroke-linecap="round" fill="none"/>
+          <path d="M4 30 Q20 0 40 18 Q60 36 76 10"
+                stroke="#FAF0E0" stroke-width="5" stroke-linecap="round" fill="none" opacity="0.55"/>
+          <path d="M4 18 Q20 -12 40 6 Q60 24 76 -2"
+                stroke="#FAF0E0" stroke-width="5" stroke-linecap="round" fill="none" opacity="0.30"/>
+        </g>
+        <line x1="38" y1="6" x2="38" y2="22" stroke="#FAF0E0" stroke-width="1" opacity="0.3"/>
+        <text x="46" y="18"
+              font-family="'Barlow Condensed', sans-serif"
+              font-size="12" font-weight="700" fill="#FAF0E0"
+              letter-spacing="1.8" opacity="0.85">A FAMILY FREQUENCIES EVENT</text>
+      </svg>
+    </div>
+    <p class="site-footer__credit">Mt Maunganui, NZ</p>
+  </footer>
+
+</body>
+</html>
