@@ -8,7 +8,7 @@
 .site-header {
   background: var(--ff-navy);
   padding: 0 var(--ff-space-lg);
-  height: 64px;
+  height: var(--ff-header-height);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -91,8 +91,8 @@
   gap: var(--ff-space-xs);
   background: var(--ff-gold);
   color: var(--ff-navy);
-  padding: 6px 16px;
-  border-radius: 100px;
+  padding: 6px var(--ff-space-md);
+  border-radius: var(--ff-radius-pill);
   font-size: var(--ff-text-sm);
   font-weight: 800;
   letter-spacing: 0.1em;
@@ -105,7 +105,7 @@
 
 .hero__artwork img {
   width: 100%;
-  border-radius: 16px;
+  border-radius: var(--ff-radius-card);
   display: block;
 }
 
@@ -140,7 +140,7 @@
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ff-rose);
-  margin-bottom: 4px;
+  margin-bottom: var(--ff-space-xs);
 }
 
 .detail-item__value {

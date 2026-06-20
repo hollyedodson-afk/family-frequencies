@@ -34,4 +34,9 @@
   --ff-text-2xl:  40px;
   --ff-text-3xl:  64px;
   --ff-text-hero: clamp(56px, 10vw, 100px);
+
+  /* ── Layout constants ── */
+  --ff-header-height: 64px;
+  --ff-radius-card:   16px;
+  --ff-radius-pill:   9999px;
 }

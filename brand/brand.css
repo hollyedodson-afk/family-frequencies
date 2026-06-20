@@ -2,8 +2,8 @@
    Import after tokens.css. Defines typography utilities and logo component styles.
    Does not define layout — that's in css/site.css. */
 
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;800&display=swap');
 @import url('./tokens.css');
+/* Google Fonts loaded via <link> in HTML head for performance */
 
 /* ── Reset ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
