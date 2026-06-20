@@ -1,0 +1,67 @@
+/* brand/brand.css
+   Import after tokens.css. Defines typography utilities and logo component styles.
+   Does not define layout — that's in css/site.css. */
+
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;800&display=swap');
+@import url('./tokens.css');
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Base ── */
+body {
+  font-family: var(--ff-font);
+  background: var(--ff-cream);
+  color: var(--ff-navy);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Typography utilities ── */
+.ff-eyebrow {
+  font-size: var(--ff-text-xs);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.ff-label {
+  font-size: var(--ff-text-sm);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ff-title {
+  font-size: var(--ff-text-3xl);
+  font-weight: 800;
+  line-height: 0.88;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.ff-hero {
+  font-size: var(--ff-text-hero);
+  font-weight: 800;
+  line-height: 0.85;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+
+/* ── Colour utilities ── */
+.bg-navy  { background: var(--ff-navy); }
+.bg-cream { background: var(--ff-cream); }
+.text-cream { color: var(--ff-cream); }
+.text-gold  { color: var(--ff-gold); }
+.text-rose  { color: var(--ff-rose); }
+.text-navy  { color: var(--ff-navy); }
+
+/* ── Wave mark inline SVG sizing ── */
+.ff-mark-sm  { width: 32px; height: 20px; }
+.ff-mark-md  { width: 56px; height: 34px; }
+.ff-mark-lg  { width: 80px; height: 48px; }
+.ff-mark-xl  { width: 120px; height: 72px; }
+
+/* ── Logo lockup classes (used on inline SVGs) ── */
+.ff-logo-horizontal { display: block; height: 40px; width: auto; }
+.ff-logo-stacked    { display: block; height: 80px; width: auto; }
+.ff-logo-stamp      { display: block; height: 20px; width: auto; }
