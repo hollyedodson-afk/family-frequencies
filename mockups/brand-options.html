@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Family Frequencies — Brand Options</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Oswald:wght@500;700&family=Antonio:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #F0EBE0;
+      font-family: 'Barlow Condensed', sans-serif;
+      color: #1A1A18;
+      padding: 40px 24px 80px;
+    }
+
+    .page-header {
+      max-width: 1340px;
+      margin: 0 auto 48px;
+    }
+
+    .page-header h1 {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
+    .page-header p {
+      font-size: 17px;
+      font-weight: 400;
+      opacity: 0.65;
+      max-width: 560px;
+      line-height: 1.4;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      max-width: 1340px;
+      margin: 0 auto;
+    }
+
+    .option {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .option-label {
+      padding: 14px 20px 0;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.45;
+    }
+
+    .option-name {
+      padding: 4px 20px 16px;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+
+    /* ── HERO: logo lockup ── */
+    .logo-hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 44px 24px;
+      min-height: 260px;
+    }
+
+    .lockup {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .lockup-h {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    /* ── OPTION A: Coastal Editorial ── */
+    .a .logo-hero { background: #F8F3EA; }
+
+    .a-mark {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .a-wordmark {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      text-transform: uppercase;
+      line-height: 0.9;
+      letter-spacing: 0.04em;
+    }
+
+    .a-wordmark .w1 {
+      display: block;
+      font-size: 28px;
+      font-weight: 600;
+      color: #1C1C1A;
+    }
+
+    .a-wordmark .w2 {
+      display: block;
+      font-size: 28px;
+      font-weight: 800;
+      color: #1C1C1A;
+    }
+
+    .a-stamp {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #1C1C1A;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      opacity: 0.55;
+    }
+
+    /* ── OPTION B: Sun & Swell ── */
+    .b .logo-hero { background: #1B3B4B; }
+
+    .b-wordmark {
+      font-family: 'Oswald', sans-serif;
+      font-weight: 700;
+      text-transform: uppercase;
+      line-height: 0.88;
+      letter-spacing: 0.06em;
+    }
+
+    .b-wordmark .w1 {
+      display: block;
+      font-size: 24px;
+      font-weight: 500;
+      color: #FAF0D7;
+    }
+
+    .b-wordmark .w2 {
+      display: block;
+      font-size: 24px;
+      font-weight: 700;
+      color: #FAF0D7;
+    }
+
+    .b-stamp {
+      font-family: 'Oswald', sans-serif;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #FAF0D7;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      opacity: 0.65;
+    }
+
+    /* ── OPTION C: Bold Signal ── */
+    .c .logo-hero { background: #F5EDD8; }
+
+    .c-wordmark {
+      font-family: 'Antonio', sans-serif;
+      font-weight: 700;
+      text-transform: uppercase;
+      line-height: 0.88;
+      letter-spacing: 0.02em;
+    }
+
+    .c-wordmark .w1 {
+      display: block;
+      font-size: 32px;
+      font-weight: 400;
+      color: #0E1F20;
+    }
+
+    .c-wordmark .w2 {
+      display: block;
+      font-size: 32px;
+      font-weight: 700;
+      color: #0E1F20;
+    }
+
+    .c-stamp {
+      font-family: 'Antonio', sans-serif;
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #0E1F20;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      opacity: 0.5;
+    }
+
+    /* ── Palette ── */
+    .palette-row {
+      display: flex;
+      height: 52px;
+    }
+
+    .swatch {
+      flex: 1;
+    }
+
+    /* ── Section label ── */
+    .section-label {
+      padding: 16px 20px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.4;
+    }
+
+    /* ── Stamp preview ── */
+    .stamp-preview {
+      padding: 0 20px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .stamp-box {
+      border: 1px solid rgba(0,0,0,0.12);
+      border-radius: 8px;
+      padding: 10px 14px;
+      background: #FAF7F2;
+      flex: 1;
+    }
+
+    /* ── Instagram preview ── */
+    .ig-preview {
+      margin: 0 20px 20px;
+      border-radius: 10px;
+      overflow: hidden;
+      aspect-ratio: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ig-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      flex-shrink: 0;
+    }
+
+    .ig-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .ig-name {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .ig-body {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 8px;
+      padding: 16px;
+    }
+
+    .ig-event-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.6;
+    }
+
+    .ig-event-name {
+      font-size: clamp(26px, 5vw, 36px);
+      font-weight: 800;
+      line-height: 0.9;
+      letter-spacing: -0.02em;
+      text-align: center;
+    }
+
+    .ig-event-detail {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.65;
+      text-align: center;
+    }
+
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page-header">
+    <h1>Family Frequencies — Brand Options</h1>
+    <p>Three executions of the same concept: ocean wave mark + condensed wordmark. Same idea, different character. Pick one or flag what to blend.</p>
+  </div>
+
+  <div class="grid">
+
+    <!-- ═══ OPTION A: Coastal Editorial ═══ -->
+    <div class="option a">
+      <div class="option-label">Option A</div>
+      <div class="option-name">Coastal Editorial</div>
+
+      <div class="logo-hero">
+        <div class="lockup">
+          <!-- Wave mark: thin, clean, geometric arcs -->
+          <svg width="72" height="44" viewBox="0 0 72 44" fill="none">
+            <path d="M4 38 Q18 10 36 38 Q54 66 68 38" stroke="#2A6B6B" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <path d="M4 28 Q18 0 36 28 Q54 56 68 28" stroke="#2A6B6B" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.65"/>
+            <path d="M4 18 Q18 -10 36 18 Q54 46 68 18" stroke="#2A6B6B" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.35"/>
+          </svg>
+          <div class="a-wordmark">
+            <span class="w1">Family</span>
+            <span class="w2">Frequencies</span>
+          </div>
+        </div>
+        <div class="a-stamp">
+          <svg width="16" height="10" viewBox="0 0 72 44" fill="none">
+            <path d="M4 38 Q18 10 36 38 Q54 66 68 38" stroke="#1C1C1A" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <path d="M4 28 Q18 0 36 28 Q54 56 68 28" stroke="#1C1C1A" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.6"/>
+            <path d="M4 18 Q18 -10 36 18 Q54 46 68 18" stroke="#1C1C1A" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.3"/>
+          </svg>
+          A Family Frequencies Event
+        </div>
+      </div>
+
+      <div class="palette-row">
+        <div class="swatch" style="background:#1C1C1A;" title="Ink"></div>
+        <div class="swatch" style="background:#F8F3EA;" title="Sand"></div>
+        <div class="swatch" style="background:#2A6B6B;" title="Ocean Teal"></div>
+        <div class="swatch" style="background:#E8EDE8;" title="Sea Mist"></div>
+      </div>
+
+      <div class="section-label">Instagram preview</div>
+      <div class="ig-preview" style="border: 1px solid rgba(0,0,0,0.08); margin: 0 20px 20px;">
+        <div class="ig-header" style="background:#F8F3EA; border-bottom: 1px solid rgba(0,0,0,0.08);">
+          <div class="ig-avatar" style="background:#2A6B6B;">
+            <svg width="18" height="11" viewBox="0 0 72 44" fill="none">
+              <path d="M4 38 Q18 10 36 38 Q54 66 68 38" stroke="white" stroke-width="5" fill="none" stroke-linecap="round"/>
+              <path d="M4 28 Q18 0 36 28 Q54 56 68 28" stroke="white" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.65"/>
+              <path d="M4 18 Q18 -10 36 18 Q54 46 68 18" stroke="white" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.35"/>
+            </svg>
+          </div>
+          <span class="ig-name" style="font-family:'Barlow Condensed',sans-serif; color:#1C1C1A;">Family Frequencies</span>
+        </div>
+        <div class="ig-body" style="background:#1C1C1A;">
+          <div class="ig-event-label" style="color:#F8F3EA; font-family:'Barlow Condensed',sans-serif;">Next event</div>
+          <div class="ig-event-name" style="color:#FAF3EA; font-family:'Barlow Condensed',sans-serif;">Daylight<br>Disco</div>
+          <div class="ig-event-detail" style="color:#F8F3EA; font-family:'Barlow Condensed',sans-serif;">4 July · Hide, Mt Maunganui · Free</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ OPTION B: Sun & Swell ═══ -->
+    <div class="option b">
+      <div class="option-label">Option B</div>
+      <div class="option-name">Sun & Swell</div>
+
+      <div class="logo-hero">
+        <div class="lockup-h">
+          <!-- Wave mark: bold, organic, slightly irregular -->
+          <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+            <path d="M6 42 Q14 20 26 34 Q38 48 46 30" stroke="#F4C842" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+            <path d="M6 30 Q14 8 26 22 Q38 36 46 18" stroke="#F4C842" stroke-width="4.5" fill="none" stroke-linecap="round" opacity="0.6"/>
+            <path d="M6 18 Q14 -4 26 10 Q38 24 46 6" stroke="#F4C842" stroke-width="4.5" fill="none" stroke-linecap="round" opacity="0.3"/>
+          </svg>
+          <div class="b-wordmark">
+            <span class="w1">Family</span>
+            <span class="w2">Frequencies</span>
+          </div>
+        </div>
+        <div class="b-stamp">
+          <svg width="16" height="16" viewBox="0 0 52 52" fill="none">
+            <path d="M6 42 Q14 20 26 34 Q38 48 46 30" stroke="#FAF0D7" stroke-width="6" fill="none" stroke-linecap="round"/>
+            <path d="M6 30 Q14 8 26 22 Q38 36 46 18" stroke="#FAF0D7" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.6"/>
+            <path d="M6 18 Q14 -4 26 10 Q38 24 46 6" stroke="#FAF0D7" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.3"/>
+          </svg>
+          A Family Frequencies Event
+        </div>
+      </div>
+
+      <div class="palette-row">
+        <div class="swatch" style="background:#1B3B4B;"></div>
+        <div class="swatch" style="background:#FAF0D7;"></div>
+        <div class="swatch" style="background:#F4C842;"></div>
+        <div class="swatch" style="background:#3A7D8C;"></div>
+      </div>
+
+      <div class="section-label">Instagram preview</div>
+      <div class="ig-preview" style="margin: 0 20px 20px;">
+        <div class="ig-header" style="background:#1B3B4B;">
+          <div class="ig-avatar" style="background:#F4C842;">
+            <svg width="18" height="18" viewBox="0 0 52 52" fill="none">
+              <path d="M6 42 Q14 20 26 34 Q38 48 46 30" stroke="#1B3B4B" stroke-width="7" fill="none" stroke-linecap="round"/>
+              <path d="M6 30 Q14 8 26 22 Q38 36 46 18" stroke="#1B3B4B" stroke-width="7" fill="none" stroke-linecap="round" opacity="0.6"/>
+              <path d="M6 18 Q14 -4 26 10 Q38 24 46 6" stroke="#1B3B4B" stroke-width="7" fill="none" stroke-linecap="round" opacity="0.3"/>
+            </svg>
+          </div>
+          <span class="ig-name" style="font-family:'Oswald',sans-serif; color:#FAF0D7;">Family Frequencies</span>
+        </div>
+        <div class="ig-body" style="background:#FAF0D7;">
+          <div class="ig-event-label" style="color:#1B3B4B; font-family:'Oswald',sans-serif;">Next event</div>
+          <div class="ig-event-name" style="color:#1B3B4B; font-family:'Oswald',sans-serif;">Daylight<br>Disco</div>
+          <div class="ig-event-detail" style="color:#1B3B4B; font-family:'Oswald',sans-serif;">4 July · Hide, Mt Maunganui · Free</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ OPTION C: Bold Signal ═══ -->
+    <div class="option c">
+      <div class="option-label">Option C</div>
+      <div class="option-name">Bold Signal</div>
+
+      <div class="logo-hero">
+        <div class="lockup">
+          <!-- Wave mark: concentric ripple rings, bold -->
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+            <path d="M8 56 Q20 32 32 44 Q44 56 56 32 Q62 20 56 8" stroke="#0E1F20" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <path d="M16 52 Q24 34 32 42 Q40 50 48 32 Q54 20 48 10" stroke="#4A9B8E" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <path d="M24 48 Q28 36 32 40 Q36 44 40 32 Q44 22 40 14" stroke="#4A9B8E" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.5"/>
+          </svg>
+          <div class="c-wordmark">
+            <span class="w1">Family</span>
+            <span class="w2">Frequencies</span>
+          </div>
+        </div>
+        <div class="c-stamp">
+          <svg width="14" height="14" viewBox="0 0 64 64" fill="none">
+            <path d="M8 56 Q20 32 32 44 Q44 56 56 32 Q62 20 56 8" stroke="#0E1F20" stroke-width="6" fill="none" stroke-linecap="round"/>
+            <path d="M16 52 Q24 34 32 42 Q40 50 48 32 Q54 20 48 10" stroke="#0E1F20" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.6"/>
+            <path d="M24 48 Q28 36 32 40 Q36 44 40 32 Q44 22 40 14" stroke="#0E1F20" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.3"/>
+          </svg>
+          A Family Frequencies Event
+        </div>
+      </div>
+
+      <div class="palette-row">
+        <div class="swatch" style="background:#0E1F20;"></div>
+        <div class="swatch" style="background:#F5EDD8;"></div>
+        <div class="swatch" style="background:#4A9B8E;"></div>
+        <div class="swatch" style="background:#E8A44A;"></div>
+      </div>
+
+      <div class="section-label">Instagram preview</div>
+      <div class="ig-preview" style="margin: 0 20px 20px;">
+        <div class="ig-header" style="background:#F5EDD8; border-bottom: 2px solid #0E1F20;">
+          <div class="ig-avatar" style="background:#0E1F20;">
+            <svg width="18" height="18" viewBox="0 0 64 64" fill="none">
+              <path d="M8 56 Q20 32 32 44 Q44 56 56 32 Q62 20 56 8" stroke="#4A9B8E" stroke-width="6" fill="none" stroke-linecap="round"/>
+              <path d="M16 52 Q24 34 32 42 Q40 50 48 32 Q54 20 48 10" stroke="#F5EDD8" stroke-width="6" fill="none" stroke-linecap="round"/>
+              <path d="M24 48 Q28 36 32 40 Q36 44 40 32 Q44 22 40 14" stroke="#F5EDD8" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.5"/>
+            </svg>
+          </div>
+          <span class="ig-name" style="font-family:'Antonio',sans-serif; color:#0E1F20; font-size:13px;">Family Frequencies</span>
+        </div>
+        <div class="ig-body" style="background:#4A9B8E;">
+          <div class="ig-event-label" style="color:#F5EDD8; font-family:'Antonio',sans-serif;">Next event</div>
+          <div class="ig-event-name" style="color:#F5EDD8; font-family:'Antonio',sans-serif;">Daylight<br>Disco</div>
+          <div class="ig-event-detail" style="color:#F5EDD8; font-family:'Antonio',sans-serif;">4 July · Hide, Mt Maunganui · Free</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="max-width:1340px; margin: 32px auto 0; padding: 20px; background: white; border-radius: 12px; font-size:15px; line-height:1.5; opacity:0.7;">
+    <strong>Notes:</strong> These use Google Fonts as stand-ins — final type will be properly selected during implementation. The wave mark shapes are exploratory; the chosen direction gets refined. Mix and match: e.g. Option A mark + Option B palette is totally fine to call out.
+  </div>
+
+</body>
+</html>

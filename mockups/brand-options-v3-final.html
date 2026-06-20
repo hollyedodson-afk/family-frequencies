@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Family Frequencies — A vs D</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Oswald:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #111;
+      font-family: 'Barlow Condensed', sans-serif;
+      color: #fff;
+      padding: 40px 24px 80px;
+    }
+
+    .page-header {
+      max-width: 1300px;
+      margin: 0 auto 36px;
+    }
+    .page-header h1 {
+      font-size: 36px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+    .page-header p { font-size: 15px; opacity: 0.4; }
+
+    .cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+
+    .col-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.35;
+      margin-bottom: 6px;
+    }
+
+    .col-name {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    /* ── surface card ── */
+    .surface {
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .surface-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 0 0 8px;
+      opacity: 0.35;
+    }
+
+    /* ── WEBSITE HEADER ── */
+    .site-header {
+      display: flex;
+      align-items: center;
+      padding: 14px 24px;
+      gap: 12px;
+    }
+    .site-lockup {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .site-wordmark {
+      text-transform: uppercase;
+      line-height: 0.88;
+      letter-spacing: 0.03em;
+    }
+    .site-nav {
+      margin-left: auto;
+      display: flex;
+      gap: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      opacity: 0.55;
+    }
+
+    /* ── INSTAGRAM POST ── */
+    .ig-post {
+      aspect-ratio: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .ig-top-strip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 18px;
+      flex-shrink: 0;
+    }
+    .ig-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .ig-handle {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .ig-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      gap: 6px;
+    }
+    .ig-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      opacity: 0.5;
+    }
+    .ig-event-name {
+      font-size: clamp(44px, 7vw, 62px);
+      font-weight: 800;
+      line-height: 0.88;
+      letter-spacing: -0.02em;
+      text-align: center;
+    }
+    .ig-date {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.6;
+    }
+
+    /* ── POSTER STAMP ── */
+    .poster-mock {
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 180px;
+    }
+    .poster-artwork-hint {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.18;
+      padding: 20px;
+      border: 1px dashed rgba(255,255,255,0.12);
+      border-radius: 8px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .stamp-lockup {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .stamp-text {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    /* palette */
+    .palette-row {
+      display: flex;
+      height: 44px;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .swatch { flex: 1; }
+    .swatch-label {
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      opacity: 0.35;
+      margin-bottom: 6px;
+    }
+
+    @media (max-width: 760px) {
+      .cols { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>A vs D — Final Call</h1>
+  <p>Same wave mark. Same condensed type. Different warmth.</p>
+</div>
+
+<div class="cols">
+
+  <!-- ═══════════════════════════════════
+       OPTION A — GOLDEN HOUR
+  ═══════════════════════════════════ -->
+  <div>
+    <div class="col-label">Option A</div>
+    <div class="col-name">Golden Hour</div>
+
+    <!-- palette -->
+    <div class="swatch-label">Palette</div>
+    <div class="palette-row">
+      <div class="swatch" style="background:#1C1A16;" title="Ink"></div>
+      <div class="swatch" style="background:#FAF3E0;" title="Cream"></div>
+      <div class="swatch" style="background:#E8A850;" title="Honey"></div>
+      <div class="swatch" style="background:#C47820;" title="Amber"></div>
+    </div>
+
+    <!-- website header -->
+    <div class="surface-label">Website header</div>
+    <div class="surface">
+      <div class="site-header" style="background:#FAF3E0;">
+        <div class="site-lockup">
+          <svg width="36" height="22" viewBox="0 0 80 48" fill="none">
+            <path d="M4 42 Q20 12 40 30 Q60 48 76 22" stroke="#C47820" stroke-width="5.5" fill="none" stroke-linecap="round"/>
+            <path d="M4 30 Q20 0 40 18 Q60 36 76 10" stroke="#C47820" stroke-width="4.5" fill="none" stroke-linecap="round" opacity="0.55"/>
+            <path d="M4 18 Q20 -12 40 6 Q60 24 76 -2" stroke="#E8A850" stroke-width="3.5" fill="none" stroke-linecap="round" opacity="0.35"/>
+          </svg>
+          <div class="site-wordmark" style="font-family:'Barlow Condensed',sans-serif; color:#1C1A16;">
+            <div style="font-size:15px; font-weight:600;">Family</div>
+            <div style="font-size:15px; font-weight:800;">Frequencies</div>
+          </div>
+        </div>
+        <div class="site-nav" style="color:#1C1A16;">
+          <span>Events</span>
+          <span>About</span>
+          <span>Contact</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- instagram post -->
+    <div class="surface-label">Instagram post</div>
+    <div class="surface">
+      <div class="ig-post">
+        <div class="ig-top-strip" style="background:#1C1A16;">
+          <div class="ig-avatar" style="background:#E8A850;">
+            <svg width="16" height="10" viewBox="0 0 80 48" fill="none">
+              <path d="M4 42 Q20 12 40 30 Q60 48 76 22" stroke="#1C1A16" stroke-width="9" fill="none" stroke-linecap="round"/>
+              <path d="M4 30 Q20 0 40 18 Q60 36 76 10" stroke="#1C1A16" stroke-width="9" fill="none" stroke-linecap="round" opacity="0.55"/>
+              <path d="M4 18 Q20 -12 40 6 Q60 24 76 -2" stroke="#1C1A16" stroke-width="9" fill="none" stroke-linecap="round" opacity="0.3"/>
+            </svg>
+          </div>
+          <span class="ig-handle" style="color:#FAF3E0; font-family:'Barlow Condensed',sans-serif;">Family Frequencies</span>
+        </div>
+        <div class="ig-body" style="background:#E8A850;">
+          <div class="ig-eyebrow" style="color:#1C1A16; font-family:'Barlow Condensed',sans-serif;">Next event</div>
+          <div class="ig-event-name" style="color:#1C1A16; font-family:'Barlow Condensed',sans-serif;">Daylight<br>Disco</div>
+          <div class="ig-date" style="color:#1C1A16; font-family:'Barlow Condensed',sans-serif;">4 July · Hide, Mt Maunganui · Free</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- poster stamp -->
+    <div class="surface-label">Poster stamp (event poster context)</div>
+    <div class="surface">
+      <div class="poster-mock" style="background:#FAF3E0;">
+        <div class="poster-artwork-hint" style="color:#1C1A16; border-color:rgba(28,26,22,0.15);">Daylight Disco artwork here</div>
+        <div class="stamp-lockup">
+          <svg width="22" height="14" viewBox="0 0 80 48" fill="none">
+            <path d="M4 42 Q20 12 40 30 Q60 48 76 22" stroke="#1C1A16" stroke-width="7" fill="none" stroke-linecap="round"/>
+            <path d="M4 30 Q20 0 40 18 Q60 36 76 10" stroke="#1C1A16" stroke-width="7" fill="none" stroke-linecap="round" opacity="0.55"/>
+            <path d="M4 18 Q20 -12 40 6 Q60 24 76 -2" stroke="#1C1A16" stroke-width="7" fill="none" stroke-linecap="round" opacity="0.3"/>
+          </svg>
+          <span class="stamp-text" style="color:#1C1A16; font-family:'Barlow Condensed',sans-serif;">A Family Frequencies Event</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════
+       OPTION D — PACIFIC DUSK
+  ═══════════════════════════════════ -->
+  <div>
+    <div class="col-label">Option D</div>
+    <div class="col-name">Pacific Dusk</div>
+
+    <!-- palette -->
+    <div class="swatch-label">Palette</div>
+    <div class="palette-row">
+      <div class="swatch" style="background:#1A2B40;" title="Deep Navy"></div>
+      <div class="swatch" style="background:#FAF0E0;" title="Warm Cream"></div>
+      <div class="swatch" style="background:#F0B840;" title="Warm Gold"></div>
+      <div class="swatch" style="background:#E88070;" title="Blush Rose"></div>
+    </div>
+
+    <!-- website header -->
+    <div class="surface-label">Website header</div>
+    <div class="surface">
+      <div class="site-header" style="background:#1A2B40;">
+        <div class="site-lockup">
+          <svg width="36" height="22" viewBox="0 0 80 48" fill="none">
+            <path d="M4 42 Q20 12 40 30 Q60 48 76 22" stroke="#F0B840" stroke-width="5.5" fill="none" stroke-linecap="round"/>
+            <path d="M4 30 Q20 0 40 18 Q60 36 76 10" stroke="#E88070" stroke-width="4.5" fill="none" stroke-linecap="round" opacity="0.7"/>
+            <path d="M4 18 Q20 -12 40 6 Q60 24 76 -2" stroke="#FAF0E0" stroke-width="3.5" fill="none" stroke-linecap="round" opacity="0.3"/>
+          </svg>
+          <div class="site-wordmark" style="font-family:'Barlow Condensed',sans-serif; color:#FAF0E0;">
+            <div style="font-size:15px; font-weight:600;">Family</div>
+            <div style="font-size:15px; font-weight:800; color:#F0B840;">Frequencies</div>
+          </div>
+        </div>
+        <div class="site-nav" style="color:#FAF0E0;">
+          <span>Events</span>
+          <span>About</span>
+          <span>Contact</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- instagram post -->
+    <div class="surface-label">Instagram post</div>
+    <div class="surface">
+      <div class="ig-post">
+        <div class="ig-top-strip" style="background:#1A2B40; border-bottom:1px solid rgba(255,255,255,0.08);">
+          <div class="ig-avatar" style="background:linear-gradient(135deg,#F0B840,#E88070);">
+            <svg width="16" height="10" viewBox="0 0 80 48" fill="none">
+              <path d="M4 42 Q20 12 40 30 Q60 48 76 22" stroke="#1A2B40" stroke-width="9" fill="none" stroke-linecap="round"/>
+              <path d="M4 30 Q20 0 40 18 Q60 36 76 10" stroke="#1A2B40" stroke-width="9" fill="none" stroke-linecap="round" opacity="0.55"/>
+              <path d="M4 18 Q20 -12 40 6 Q60 24 76 -2" stroke="#1A2B40" stroke-width="9" fill="none" stroke-linecap="round" opacity="0.3"/>
+            </svg>
+          </div>
+          <span class="ig-handle" style="color:#FAF0E0; font-family:'Barlow Condensed',sans-serif;">Family Frequencies</span>
+        </div>
+        <div class="ig-body" style="background:linear-gradient(160deg,#1A2B40 0%,#1E3558 55%,#2A1E38 100%);">
+          <div class="ig-eyebrow" style="color:#F0B840; font-family:'Barlow Condensed',sans-serif;">Next event</div>
+          <div class="ig-event-name" style="color:#FAF0E0; font-family:'Barlow Condensed',sans-serif;">Daylight<br>Disco</div>
+          <div class="ig-date" style="color:#E88070; font-family:'Barlow Condensed',sans-serif;">4 July · Hide, Mt Maunganui · Free</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- poster stamp -->
+    <div class="surface-label">Poster stamp (event poster context)</div>
+    <div class="surface">
+      <div class="poster-mock" style="background:#1A2B40;">
+        <div class="poster-artwork-hint">Daylight Disco artwork here</div>
+        <div class="stamp-lockup">
+          <svg width="22" height="14" viewBox="0 0 80 48" fill="none">
+            <path d="M4 42 Q20 12 40 30 Q60 48 76 22" stroke="#F0B840" stroke-width="7" fill="none" stroke-linecap="round"/>
+            <path d="M4 30 Q20 0 40 18 Q60 36 76 10" stroke="#F0B840" stroke-width="7" fill="none" stroke-linecap="round" opacity="0.55"/>
+            <path d="M4 18 Q20 -12 40 6 Q60 24 76 -2" stroke="#FAF0E0" stroke-width="7" fill="none" stroke-linecap="round" opacity="0.3"/>
+          </svg>
+          <span class="stamp-text" style="color:#FAF0E0; font-family:'Barlow Condensed',sans-serif;">A Family Frequencies Event</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div style="max-width:1300px; margin:28px auto 0; display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+  <div style="padding:16px 20px; background:rgba(255,255,255,0.05); border-radius:12px; font-size:14px; line-height:1.6; color:rgba(255,255,255,0.4);">
+    <strong style="color:rgba(255,255,255,0.7);">A — Golden Hour</strong><br>
+    Warm and energetic. Reads well in daylight, prints clean. Amber sits naturally with the Daylight Disco yellow/blue artwork — the warmth harmonises rather than competes.
+  </div>
+  <div style="padding:16px 20px; background:rgba(255,255,255,0.05); border-radius:12px; font-size:14px; line-height:1.6; color:rgba(255,255,255,0.4);">
+    <strong style="color:rgba(255,255,255,0.7);">D — Pacific Dusk</strong><br>
+    Richer and more elevated. The navy header reads more like a brand with depth — slightly grown-up/nighttime even though the event is daytime. The gold + rose combination is distinctive.
+  </div>
+</div>
+
+</body>
+</html>

@@ -48,17 +48,18 @@ A set of **three concentric wave arcs** — organic and slightly irregular in ch
 
 ## Colour Palette
 
-The parent brand palette is intentionally restrained so sub-brands can be expressive.
+**Locked direction: Pacific Dusk** — chosen from visual exploration (v1–v3 comparison). Deep navy base with warm gold and blush rose accents.
 
-| Role | Description | Usage |
-|------|-------------|-------|
-| **Ink** | Near-black, slightly warm (not pure #000) | Primary type, symbol in most contexts |
-| **Sand** | Warm cream / off-white | Backgrounds, reversed-out text base |
-| **Ocean** | Deep coastal teal (not bright, not cyan) | Wave symbol accent, primary brand colour |
+| Role | Hex | Description | Usage |
+|------|-----|-------------|-------|
+| **Navy** | `#1A2B40` | Deep coastal navy — the primary background | Website header, IG header strip, poster stamp on dark contexts |
+| **Cream** | `#FAF0E0` | Warm off-white | Type on navy, light surface backgrounds |
+| **Gold** | `#F0B840` | Warm gold — the primary accent | Wave symbol on navy, "FREQUENCIES" wordmark accent, highlight text |
+| **Rose** | `#E88070` | Blush rose — secondary accent | Secondary detail, date/location text, gradient partner to Gold |
 
 **What sub-brands bring:** Full saturation, illustration, photography, event-specific palettes. Daylight Disco's yellow and blue are brighter and more expressive than the parent palette — that contrast is intentional and correct.
 
-**Collision check:** Ocean teal must be visually distinct from Daylight Disco's blue. Daylight Disco blue is bright/primary; Ocean should sit deeper and more muted so they don't clash when the stamp appears on the poster.
+**Poster stamp collision:** Navy stamp on the Daylight Disco poster (which is light/yellow/blue) reads as a proper frame rather than disappearing into the background. Gold wave arcs on navy are legible at stamp size.
 
 ---
 
