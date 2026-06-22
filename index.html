@@ -1,129 +1,105 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-NZ">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Daylight Disco — Family Frequencies</title>
-  <meta name="description" content="A free family-friendly daytime disco at Hide, Mt Maunganui. 4 July 2026, 12pm–6pm." />
-  <meta property="og:title" content="Daylight Disco — Family Frequencies" />
-  <meta property="og:description" content="A free family-friendly daytime disco at Hide, Mt Maunganui. 4 July 2026, 12pm–6pm." />
-  <meta property="og:image" content="assets/daylight-disco-reference.png" />
-  <meta property="og:type" content="website" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/site.css" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Family Frequencies | Daytime club culture for families</title>
+  <meta name="description" content="Family-friendly daytime parties, workshops and gigs in Mt Maunganui and the Bay of Plenty.">
+  <meta property="og:title" content="Family Frequencies">
+  <meta property="og:description" content="Daytime club culture for families, born and raised in the Bay of Plenty.">
+  <meta property="og:image" content="assets/daylight-disco-reference.png">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <link rel="stylesheet" href="css/site.css">
+  <script src="js/site.js" defer></script>
 </head>
 <body>
-
-  <!-- ── Site Header ── -->
   <header class="site-header">
-    <a href="/" class="site-header__logo" aria-label="Family Frequencies home">
-      <!-- Horizontal logo — inline SVG so font applies -->
-      <svg width="180" height="40" viewBox="0 0 200 48" fill="none" role="img" aria-label="Family Frequencies">
-        <path d="M4 42 Q20 12 40 30 Q60 48 76 22"
-              stroke="#F0B840" stroke-width="4" stroke-linecap="round" fill="none"/>
-        <path d="M4 30 Q20 0 40 18 Q60 36 76 10"
-              stroke="#E88070" stroke-width="3.5" stroke-linecap="round" fill="none" opacity="0.70"/>
-        <path d="M4 18 Q20 -12 40 6 Q60 24 76 -2"
-              stroke="#FAF0E0" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.30"/>
-        <text x="88" y="22"
-              font-family="'Barlow Condensed', sans-serif"
-              font-size="18" font-weight="600" fill="#FAF0E0"
-              letter-spacing="1.5">FAMILY</text>
-        <text x="88" y="40"
-              font-family="'Barlow Condensed', sans-serif"
-              font-size="18" font-weight="800" fill="#F0B840"
-              letter-spacing="1.5">FREQUENCIES</text>
-      </svg>
-    </a>
-    <nav aria-label="Site navigation">
-      <ul class="site-nav">
-        <li><a href="#event">This Event</a></li>
-        <li><a href="#details">Details</a></li>
-      </ul>
-    </nav>
+    <div class="container site-header__inner">
+      <a class="brand-lockup" href="index.html" aria-label="Family Frequencies home">
+        <svg class="brand-lockup__mark" viewBox="0 0 48 48" fill="none" aria-hidden="true"><circle cx="24" cy="13.5" r="6.5" fill="#F0B840"/><path d="M3 33 C7 25 12 25 16 33 C20 41 28 41 32 33 C36 25 41 25 45 33" stroke="#FAF0E0" stroke-width="4" stroke-linecap="round"/></svg>
+        <span class="brand-lockup__words"><span>Family</span><span>Frequencies</span></span>
+      </a>
+      <a class="pill-button" href="#signup">Join the club</a>
+    </div>
   </header>
 
-  <!-- ── Hero ── -->
-  <section class="hero" id="event">
-    <div class="hero__content">
-      <p class="ff-eyebrow hero__eyebrow">Family Frequencies presents</p>
-      <h1 class="ff-hero hero__title">Daylight<br>Disco</h1>
-      <div class="hero__meta">
-        <div class="hero__meta-item ff-label">
-          <span>4 July 2026</span>
-        </div>
-        <div class="hero__meta-item ff-label">
-          <span>12pm – 6pm</span>
-        </div>
-        <div class="hero__meta-item ff-label">
-          <span>Hide, Mt Maunganui</span>
-        </div>
-      </div>
-      <span class="hero__free-tag">Free Entry</span>
+  <div class="ticker" aria-label="Daytime club culture for families in the Bay of Plenty">
+    <div class="ticker__track">
+      <div class="ticker__set"><span>Daytime Club Culture</span><span class="ticker__dot">●</span><span>For Families</span><span class="ticker__dot">●</span><span>Bay of Plenty</span><span class="ticker__dot">●</span></div>
+      <div class="ticker__set" aria-hidden="true"><span>Daytime Club Culture</span><span class="ticker__dot">●</span><span>For Families</span><span class="ticker__dot">●</span><span>Bay of Plenty</span><span class="ticker__dot">●</span></div>
     </div>
+  </div>
 
-    <div class="hero__artwork">
-      <img src="assets/daylight-disco-reference.png"
-           alt="Daylight Disco illustrated poster — parents and babies DJing, with yellow, blue and black linework"
-           width="2048" height="1478" fetchpriority="high" />
-    </div>
-  </section>
+  <main>
+    <section class="brand-hero">
+      <div class="brand-hero__sun" aria-hidden="true"></div>
+      <div class="container brand-hero__inner">
+        <svg class="brand-hero__mark" viewBox="0 0 48 48" fill="none" aria-hidden="true"><circle cx="24" cy="13.5" r="6.5" fill="#F0B840"/><path d="M3 33 C7 25 12 25 16 33 C20 41 28 41 32 33 C36 25 41 25 45 33" stroke="#FAF0E0" stroke-width="4" stroke-linecap="round"/></svg>
+        <h1><span>Family</span><span>Frequencies</span></h1>
+        <p>Daytime club culture for families. We throw parties for people with small humans in tow, born and raised in the Bay of Plenty.</p>
+        <a class="pill-button" href="daylight-disco.html">See what's on →</a>
+      </div>
+    </section>
 
-  <!-- ── Event Details ── -->
-  <section class="event-details" id="details">
-    <h2 class="event-details__heading">Event Details</h2>
-    <div class="event-details__grid">
-      <div class="detail-item">
-        <div class="detail-item__label">Date</div>
-        <div class="detail-item__value">Friday 4 July 2026</div>
-      </div>
-      <div class="detail-item">
-        <div class="detail-item__label">Time</div>
-        <div class="detail-item__value">12pm – 6pm</div>
-      </div>
-      <div class="detail-item">
-        <div class="detail-item__label">Venue</div>
-        <div class="detail-item__value">Hide<br>Mt Maunganui</div>
-      </div>
-      <div class="detail-item">
-        <div class="detail-item__label">Entry</div>
-        <div class="detail-item__value">Free<br><small class="ff-no-booking">No booking required</small></div>
-      </div>
-      <div class="detail-item">
-        <div class="detail-item__label">Music</div>
-        <div class="detail-item__value">Jazz, House &amp;<br>Kids Boogie Songs</div>
-      </div>
-      <div class="detail-item">
-        <div class="detail-item__label">Activities</div>
-        <div class="detail-item__value">Face Painting<br>Toys &amp; Good Times</div>
-      </div>
-    </div>
-  </section>
+    <div class="wave-divider wave-divider--flip" aria-hidden="true"><svg viewBox="0 0 600 40" preserveAspectRatio="none"><path d="M0 40 C50 8 100 8 150 40 C200 8 250 8 300 40 C350 8 400 8 450 40 C500 8 550 8 600 40 L600 40 L0 40 Z" fill="#1A2B40"/></svg></div>
 
-  <!-- ── Footer ── -->
+    <section class="section" id="whats-on">
+      <div class="container section__inner">
+        <p class="eyebrow">What's on</p>
+        <h2 class="section-title">Next up</h2>
+        <a class="featured-card" href="daylight-disco.html">
+          <div class="featured-card__image">
+            <img src="assets/daylight-disco-reference.png" alt="Daylight Disco illustrated poster showing parents and babies DJing" width="2048" height="1478">
+            <span class="status-tag">On now</span>
+          </div>
+          <div class="featured-card__body">
+            <h3>Daylight Disco</h3>
+            <p class="featured-card__meta">Sat 4 July 2026 · 12–6pm · Hide, Mt Maunganui</p>
+            <div class="chip-row"><span class="chip">Free entry</span><span class="chip">All ages</span></div>
+          </div>
+          <div class="featured-card__footer"><span>View event</span><span class="featured-card__arrow">→</span></div>
+        </a>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container section__inner">
+        <p class="eyebrow eyebrow--muted">More on the way</p>
+        <h2 class="section-title">The programme</h2>
+        <p class="section-copy">Family Frequencies is a home for more than discos. Here's what's coming.</p>
+        <div class="programme">
+          <div class="programme-row"><span class="programme-row__title">First Aid Courses</span><span class="programme-row__tag">Soon</span></div>
+          <div class="programme-row"><span class="programme-row__title">Nutritionist Talks</span><span class="programme-row__tag">Soon</span></div>
+          <div class="programme-row"><span class="programme-row__title">Family-Friendly Gigs</span><span class="programme-row__tag">Soon</span></div>
+          <div class="programme-row"><span class="programme-row__title">Workshops</span><span class="programme-row__tag">Soon</span></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="wave-divider" aria-hidden="true"><svg viewBox="0 0 600 40" preserveAspectRatio="none"><path d="M0 40 C50 8 100 8 150 40 C200 8 250 8 300 40 C350 8 400 8 450 40 C500 8 550 8 600 40 L600 40 L0 40 Z" fill="#E88070"/></svg></div>
+
+    <section class="signup" id="signup">
+      <div class="container signup__inner">
+        <h2>Get on<br>the list</h2>
+        <p class="signup__copy">We'll only email when there's something on. No spam, no newsletters about nothing.</p>
+        <form class="signup__form" data-signup-form>
+          <label for="hub-email">Email address</label>
+          <input id="hub-email" type="email" name="email" autocomplete="email" required placeholder="your@email.co.nz">
+          <button type="submit">Keep me posted</button>
+        </form>
+        <p class="signup__note" data-signup-note aria-live="polite"></p>
+      </div>
+    </section>
+  </main>
+
   <footer class="site-footer">
-    <div class="site-footer__stamp">
-      <!-- Event stamp — inline SVG -->
-      <svg width="200" height="24" viewBox="0 0 220 28" fill="none" role="img" aria-label="A Family Frequencies Event">
-        <g transform="scale(0.42) translate(0, -10)">
-          <path d="M4 42 Q20 12 40 30 Q60 48 76 22"
-                stroke="#FAF0E0" stroke-width="5" stroke-linecap="round" fill="none"/>
-          <path d="M4 30 Q20 0 40 18 Q60 36 76 10"
-                stroke="#FAF0E0" stroke-width="5" stroke-linecap="round" fill="none" opacity="0.55"/>
-          <path d="M4 18 Q20 -12 40 6 Q60 24 76 -2"
-                stroke="#FAF0E0" stroke-width="5" stroke-linecap="round" fill="none" opacity="0.30"/>
-        </g>
-        <line x1="38" y1="6" x2="38" y2="22" stroke="#FAF0E0" stroke-width="1" opacity="0.3"/>
-        <text x="46" y="18"
-              font-family="'Barlow Condensed', sans-serif"
-              font-size="12" font-weight="700" fill="#FAF0E0"
-              letter-spacing="1.8" opacity="0.85">A FAMILY FREQUENCIES EVENT</text>
-      </svg>
+    <div class="container site-footer__inner">
+      <svg class="site-footer__mark" viewBox="0 0 48 48" fill="none" aria-hidden="true"><circle cx="24" cy="13.5" r="6.5" fill="#F0B840"/><path d="M3 33 C7 25 12 25 16 33 C20 41 28 41 32 33 C36 25 41 25 45 33" stroke="#FAF0E0" stroke-width="4.5" stroke-linecap="round"/></svg>
+      <div class="site-footer__words"><span>Family</span><span>Frequencies</span></div>
+      <div class="site-footer__location">Mt Maunganui · Aotearoa New Zealand</div>
+      <span class="site-footer__social">@familyfrequencies</span>
     </div>
-    <p class="site-footer__credit">Mt Maunganui, NZ</p>
   </footer>
-
 </body>
 </html>

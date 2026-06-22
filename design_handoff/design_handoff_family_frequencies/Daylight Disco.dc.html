@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Barlow Condensed', sans-serif; background: #FAF0E0; color: #1A2B40; -webkit-font-smoothing: antialiased; }
+  ::selection { background: #F0B840; color: #1A2B40; }
+  input::placeholder { color: #9DA8B5; }
+  @keyframes ff-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @keyframes ff-bob { 0%,100% { transform: rotate(8deg) translateY(0); } 50% { transform: rotate(8deg) translateY(-7px); } }
+  @keyframes ff-spin { to { transform: rotate(360deg); } }
+</style>
+</helmet>
+
+<div style="width:100%; overflow-x:hidden;">
+
+  <!-- ===== HEADER ===== -->
+  <header style="position:sticky; top:0; z-index:30; background:#1A2B40; height:62px; display:flex; align-items:center; justify-content:center;">
+    <div style="width:100%; max-width:600px; padding:0 22px; display:flex; align-items:center; justify-content:space-between;">
+      <a href="Family Frequencies.dc.html" style="text-decoration:none; display:flex; align-items:center; gap:11px;">
+        <svg width="34" height="34" viewBox="0 0 48 48" fill="none" aria-label="Family Frequencies"><circle cx="24" cy="13.5" r="6.5" fill="#F0B840"></circle><path d="M3 33 C7 25 12 25 16 33 C20 41 28 41 32 33 C36 25 41 25 45 33" stroke="#FAF0E0" stroke-width="4" stroke-linecap="round"></path></svg>
+        <div style="line-height:0.78;">
+          <div style="font-size:15px; font-weight:600; letter-spacing:0.05em; color:#FAF0E0;">FAMILY</div>
+          <div style="font-size:15px; font-weight:800; letter-spacing:0.03em; color:#F0B840;">FREQUENCIES</div>
+        </div>
+      </a>
+      <a href="#signup" style="text-decoration:none; background:#F0B840; color:#1A2B40; font-size:12px; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; padding:8px 14px; border-radius:9999px; transition:transform .14s ease, background .14s ease;" style-hover="background:#FFC85A; transform:translateY(-1px);" style-active="transform:scale(0.96);">Join the club</a>
+    </div>
+  </header>
+
+  <!-- ===== TICKER ===== -->
+  <div style="background:#E88070; overflow:hidden; border-bottom:3px solid #1A2B40;">
+    <div style="display:flex; width:max-content; animation:ff-marquee 22s linear infinite;">
+      <div style="display:flex; align-items:center; gap:18px; padding:9px 0; flex:none;">
+        <span style="font-size:15px; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; color:#1A2B40; padding-left:18px;">Daylight Disco</span><span style="color:#FAF0E0; font-size:13px;">●</span>
+        <span style="font-size:15px; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; color:#1A2B40;">Sat 4 July</span><span style="color:#FAF0E0; font-size:13px;">●</span>
+        <span style="font-size:15px; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; color:#1A2B40;">Free Entry</span><span style="color:#FAF0E0; font-size:13px;">●</span>
+        <span style="font-size:15px; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; color:#1A2B40;">Bring The Kids</span><span style="color:#FAF0E0; font-size:13px;">●</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:18px; padding:9px 0; flex:none;" aria-hidden="true">
+        <span style="font-size:15px; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; color:#1A2B40; padding-left:18px;">Daylight Disco</span><span style="color:#FAF0E0; font-size:13px;">●</span>
+        <span style="font-size:15px; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; color:#1A2B40;">Sat 4 July</span><span style="color:#FAF0E0; font-size:13px;">●</span>
+        <span style="font-size:15px; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; color:#1A2B40;">Free Entry</span><span style="color:#FAF0E0; font-size:13px;">●</span>
+        <span style="font-size:15px; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; color:#1A2B40;">Bring The Kids</span><span style="color:#FAF0E0; font-size:13px;">●</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== HERO ===== -->
+  <section style="background:#FAF0E0; position:relative;">
+    <!-- giant translucent sun -->
+    <div style="position:absolute; top:-70px; right:-70px; width:230px; height:230px; border-radius:50%; background:#F0B840; opacity:0.22; pointer-events:none;"></div>
+
+    <div style="max-width:600px; margin:0 auto; padding:38px 22px 10px; position:relative;">
+
+      <sc-if value="{{ isWrapped }}" hint-placeholder-val="{{ true }}">
+        <div style="background:#1A2B40; color:#FAF0E0; border-radius:16px; padding:14px 18px; margin-bottom:26px; display:flex; align-items:center; gap:12px;">
+          <svg width="26" height="26" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="13.5" r="6.5" fill="#F0B840"></circle><path d="M3 33 C7 25 12 25 16 33 C20 41 28 41 32 33 C36 25 41 25 45 33" stroke="#FAF0E0" stroke-width="4.5" stroke-linecap="round"></path></svg>
+          <span style="font-size:16px; font-weight:600; line-height:1.25;">That one's a wrap — thanks for dancing. The next one lands here soon.</span>
+        </div>
+      </sc-if>
+
+      <p style="font-size:13px; font-weight:800; letter-spacing:0.18em; text-transform:uppercase; color:#C99A2E;">Family Frequencies presents</p>
+      <h1 style="font-size:clamp(64px, 19vw, 104px); font-weight:900; line-height:0.8; letter-spacing:-0.025em; text-transform:uppercase; margin-top:10px;">Daylight<br><span style="color:#E88070;">Disco</span></h1>
+      <p style="font-size:20px; font-weight:500; line-height:1.35; color:#3D4A5C; max-width:30ch; margin-top:18px;">A daytime disco for parents who still love a good party — and the kids who'll out-dance them. Free, walk-in, zero soft-play.</p>
+
+      <!-- artwork + stamp -->
+      <div style="margin-top:28px; position:relative;">
+        <div style="background:#FFFFFF; border:3px solid #1A2B40; border-radius:20px; padding:12px; overflow:hidden; box-shadow:8px 8px 0 #F0B840;">
+          <img src="assets/daylight-disco-reference.png" alt="Daylight Disco poster — two parents in caps and sunglasses DJing with babies in front-packs, black linework with yellow and blue halftone" width="2048" height="1478" style="display:block; width:100%; height:auto; border-radius:10px;">
+        </div>
+        <!-- rotating stamp -->
+        <div style="position:absolute; bottom:-22px; right:-6px; width:104px; height:104px; animation:ff-bob 5s ease-in-out infinite;">
+          <svg viewBox="0 0 120 120" width="104" height="104" style="position:absolute; inset:0; animation:ff-spin 18s linear infinite;">
+            <defs><path id="ffcirc" d="M60,60 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0" fill="none"></path></defs>
+            <text font-family="Barlow Condensed" font-size="15.5" font-weight="800" letter-spacing="3.2" fill="#1A2B40" text-transform="uppercase"><textPath href="#ffcirc" startOffset="0">FREE · WALK IN · ALL AGES · GOOD TIMES · </textPath></text>
+          </svg>
+          <div style="position:absolute; inset:26px; background:#F0B840; border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; line-height:0.82; border:2px solid #1A2B40;">
+            <span style="font-size:21px; font-weight:900; color:#1A2B40;">12–6</span>
+            <span style="font-size:10px; font-weight:800; letter-spacing:0.1em; color:#1A2B40;">PM</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- key facts -->
+      <div style="margin-top:42px; display:flex; flex-direction:column; gap:2px;">
+        <div style="display:flex; align-items:center; gap:14px; padding:13px 2px; border-bottom:2px solid #E7D8BC;">
+          <span style="flex:none; width:44px; height:44px; border-radius:50%; background:rgba(240,184,64,0.24); display:flex; align-items:center; justify-content:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1A2B40" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 9h18M8 3v4M16 3v4"></path></svg></span>
+          <div style="line-height:1;">
+            <div style="font-size:11px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:#B89A5E;">When</div>
+            <div style="font-size:21px; font-weight:600; letter-spacing:0.01em; margin-top:3px;">Sat 4 July 2026 · 12–6pm</div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:14px; padding:13px 2px; border-bottom:2px solid #E7D8BC;">
+          <span style="flex:none; width:44px; height:44px; border-radius:50%; background:rgba(232,128,112,0.22); display:flex; align-items:center; justify-content:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1A2B40" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z"></path><circle cx="12" cy="10" r="2.5"></circle></svg></span>
+          <div style="line-height:1;">
+            <div style="font-size:11px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:#B89A5E;">Where</div>
+            <div style="font-size:21px; font-weight:600; letter-spacing:0.01em; margin-top:3px;">Hide, Mt Maunganui</div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:14px; padding:13px 2px;">
+          <span style="flex:none; width:44px; height:44px; border-radius:50%; background:rgba(240,184,64,0.24); display:flex; align-items:center; justify-content:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1A2B40" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2 2 2 0 0 0 0 4 2 2 0 0 1-2 2H5a2 2 0 0 1-2-2 2 2 0 0 0 0-4Z"></path><path d="M13 7v10" stroke-dasharray="2 3"></path></svg></span>
+          <div style="line-height:1;">
+            <div style="font-size:11px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:#B89A5E;">Entry</div>
+            <div style="font-size:21px; font-weight:600; letter-spacing:0.01em; margin-top:3px;">Free · no booking, just turn up</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- wave divider into navy -->
+  <div style="margin-top:34px; line-height:0;">
+    <svg viewBox="0 0 600 40" width="100%" height="40" preserveAspectRatio="none" style="display:block;"><path d="M0 40 C50 8 100 8 150 40 C200 8 250 8 300 40 C350 8 400 8 450 40 C500 8 550 8 600 40 L600 40 L0 40 Z" fill="#1A2B40"></path></svg>
+  </div>
+
+  <!-- ===== WHAT TO EXPECT ===== -->
+  <section style="background:#1A2B40; color:#FAF0E0;">
+    <div style="max-width:600px; margin:0 auto; padding:30px 22px 50px;">
+      <p style="font-size:13px; font-weight:800; letter-spacing:0.18em; text-transform:uppercase; color:#F0B840;">On the day</p>
+      <h2 style="font-size:clamp(34px,9vw,50px); font-weight:800; line-height:0.92; text-transform:uppercase; letter-spacing:-0.015em; margin-top:10px;">Fun for mum &amp; dad —<br>and of course<br>the <span style="color:#E88070;">kids</span></h2>
+      <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:26px;">
+        <span style="font-size:17px; font-weight:700; letter-spacing:0.02em; background:rgba(250,240,224,0.08); border:1.5px solid rgba(250,240,224,0.2); padding:9px 16px; border-radius:9999px;">Jazz house</span>
+        <span style="font-size:17px; font-weight:700; letter-spacing:0.02em; background:rgba(250,240,224,0.08); border:1.5px solid rgba(250,240,224,0.2); padding:9px 16px; border-radius:9999px;">Kids boogie songs</span>
+        <span style="font-size:17px; font-weight:700; letter-spacing:0.02em; background:#F0B840; border:1.5px solid #F0B840; color:#1A2B40; padding:9px 16px; border-radius:9999px;">Face painting</span>
+        <span style="font-size:17px; font-weight:700; letter-spacing:0.02em; background:rgba(250,240,224,0.08); border:1.5px solid rgba(250,240,224,0.2); padding:9px 16px; border-radius:9999px;">Toys</span>
+        <span style="font-size:17px; font-weight:700; letter-spacing:0.02em; background:#E88070; border:1.5px solid #E88070; color:#1A2B40; padding:9px 16px; border-radius:9999px;">Good times</span>
+      </div>
+      <p style="font-size:18px; font-weight:500; line-height:1.45; color:#B9C2CF; margin-top:26px; max-width:42ch;">Front-pack daddies on the decks, babies in shades, a proper boogie before nap time. Bring the whole crew — there's space to dance and space to flop.</p>
+    </div>
+  </section>
+
+  <!-- wave divider back to cream -->
+  <div style="line-height:0; transform:rotate(180deg);">
+    <svg viewBox="0 0 600 40" width="100%" height="40" preserveAspectRatio="none" style="display:block;"><path d="M0 40 C50 8 100 8 150 40 C200 8 250 8 300 40 C350 8 400 8 450 40 C500 8 550 8 600 40 L600 40 L0 40 Z" fill="#1A2B40"></path></svg>
+  </div>
+
+  <!-- ===== ABOUT FF ===== -->
+  <section style="background:#FAF0E0;">
+    <div style="max-width:600px; margin:0 auto; padding:46px 22px;">
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:18px;">
+        <svg width="40" height="40" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="13.5" r="6.5" fill="#F0B840"></circle><path d="M3 33 C7 25 12 25 16 33 C20 41 28 41 32 33 C36 25 41 25 45 33" stroke="#1A2B40" stroke-width="4" stroke-linecap="round"></path></svg>
+        <div style="line-height:0.78;">
+          <div style="font-size:20px; font-weight:600; letter-spacing:0.04em;">FAMILY</div>
+          <div style="font-size:20px; font-weight:800; letter-spacing:0.02em;">FREQUENCIES</div>
+        </div>
+      </div>
+      <p style="font-size:22px; font-weight:500; line-height:1.38; max-width:40ch;">We throw parties for people with small humans in tow. Daytime club energy, made for families — born and raised in the Bay of Plenty. Discos for now; workshops, first-aid courses, talks and gigs to come.</p>
+    </div>
+  </section>
+
+  <!-- ===== SIGNUP ===== -->
+  <sc-if value="{{ showSignup }}" hint-placeholder-val="{{ true }}">
+  <section id="signup" style="background:#E88070;">
+    <div style="max-width:600px; margin:0 auto; padding:50px 22px;">
+      <h2 style="font-size:clamp(34px,8.5vw,48px); font-weight:900; line-height:0.9; text-transform:uppercase; letter-spacing:-0.02em; color:#1A2B40;">Don't miss<br>the next one</h2>
+      <p style="font-size:18px; font-weight:500; line-height:1.4; color:#5A2B25; margin-top:14px; max-width:36ch;">We'll only email when there's something on. No spam, no newsletters about nothing.</p>
+      <form onsubmit="{{ onSubmit }}" style="margin-top:22px; display:flex; flex-wrap:wrap; gap:10px;">
+        <input type="email" required placeholder="your@email.co.nz" style="flex:1 1 200px; min-width:0; font-family:'Barlow Condensed',sans-serif; font-size:18px; font-weight:500; color:#1A2B40; background:#FAF0E0; border:2px solid #1A2B40; border-radius:12px; padding:14px 16px;">
+        <button type="submit" style="flex:none; font-family:'Barlow Condensed',sans-serif; font-size:15px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:#FAF0E0; background:#1A2B40; border:2px solid #1A2B40; border-radius:12px; padding:14px 22px; cursor:pointer; transition:transform .14s ease, background .14s ease;" style-hover="background:#0E1A2A;" style-active="transform:scale(0.96);">Keep me posted</button>
+      </form>
+      <p style="font-size:15px; font-weight:600; color:#6B332B; margin-top:12px; min-height:20px;">{{ signupNote }}</p>
+    </div>
+  </section>
+  </sc-if>
+
+  <!-- ===== FUTURE EVENTS ===== -->
+  <sc-if value="{{ showFutureEvents }}" hint-placeholder-val="{{ true }}">
+  <section style="background:#FAF0E0;">
+    <div style="max-width:600px; margin:0 auto; padding:48px 22px;">
+      <p style="font-size:13px; font-weight:800; letter-spacing:0.18em; text-transform:uppercase; color:#B89A5E;">More on the way</p>
+      <h2 style="font-size:clamp(30px,7.5vw,44px); font-weight:800; line-height:0.96; text-transform:uppercase; letter-spacing:-0.015em; margin-top:10px;">The programme</h2>
+      <div style="margin-top:24px; display:flex; flex-direction:column; gap:10px;">
+
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:14px; background:#1A2B40; border-radius:16px; padding:16px 18px;">
+          <span style="font-size:22px; font-weight:800; text-transform:uppercase; letter-spacing:0.01em; color:#FAF0E0;">Daylight Disco</span>
+          <span style="flex:none; font-size:11px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:#1A2B40; background:#F0B840; padding:6px 12px; border-radius:9999px;">On now</span>
+        </div>
+
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:14px; background:#FFFFFF; border:2px solid #ECDCBC; border-radius:16px; padding:16px 18px;">
+          <span style="font-size:22px; font-weight:800; text-transform:uppercase; letter-spacing:0.01em; color:#1A2B40;">First Aid Courses</span>
+          <span style="flex:none; font-size:11px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:#B89A5E;">Soon</span>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:14px; background:#FFFFFF; border:2px solid #ECDCBC; border-radius:16px; padding:16px 18px;">
+          <span style="font-size:22px; font-weight:800; text-transform:uppercase; letter-spacing:0.01em; color:#1A2B40;">Nutritionist Talks</span>
+          <span style="flex:none; font-size:11px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:#B89A5E;">Soon</span>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:14px; background:#FFFFFF; border:2px solid #ECDCBC; border-radius:16px; padding:16px 18px;">
+          <span style="font-size:22px; font-weight:800; text-transform:uppercase; letter-spacing:0.01em; color:#1A2B40;">Family-Friendly Gigs</span>
+          <span style="flex:none; font-size:11px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:#B89A5E;">Soon</span>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:14px; background:#FFFFFF; border:2px solid #ECDCBC; border-radius:16px; padding:16px 18px;">
+          <span style="font-size:22px; font-weight:800; text-transform:uppercase; letter-spacing:0.01em; color:#1A2B40;">Workshops</span>
+          <span style="flex:none; font-size:11px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:#B89A5E;">Soon</span>
+        </div>
+      </div>
+    </div>
+  </section>
+  </sc-if>
+
+  <!-- ===== FOOTER ===== -->
+  <footer style="background:#1A2B40;">
+    <div style="max-width:600px; margin:0 auto; padding:44px 22px 50px; display:flex; flex-direction:column; align-items:center; gap:16px; text-align:center;">
+      <svg width="46" height="46" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="13.5" r="6.5" fill="#F0B840"></circle><path d="M3 33 C7 25 12 25 16 33 C20 41 28 41 32 33 C36 25 41 25 45 33" stroke="#FAF0E0" stroke-width="4.5" stroke-linecap="round"></path></svg>
+      <span style="font-size:13px; font-weight:800; letter-spacing:0.18em; color:#FAF0E0;">A FAMILY FREQUENCIES EVENT</span>
+      <div style="font-size:14px; font-weight:500; letter-spacing:0.04em; color:#7C8799;">Mt Maunganui · Aotearoa New Zealand</div>
+      <a href="#" style="text-decoration:none; font-size:14px; font-weight:700; letter-spacing:0.06em; color:#F0B840;">@familyfrequencies</a>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:600,&quot;height&quot;:1500},&quot;eventState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;upcoming&quot;,&quot;options&quot;:[&quot;upcoming&quot;,&quot;wrapped&quot;],&quot;tsType&quot;:&quot;'upcoming'|'wrapped'&quot;},&quot;showSignup&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;showFutureEvents&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  state = { signupNote: '' };
+  renderVals() {
+    const s = this.props.eventState ?? 'upcoming';
+    return {
+      isWrapped: s === 'wrapped',
+      showSignup: this.props.showSignup ?? true,
+      showFutureEvents: this.props.showFutureEvents ?? true,
+      signupNote: this.state.signupNote,
+      onSubmit: (e) => {
+        e.preventDefault();
+        this.setState({ signupNote: "You're on the list — see you on the dancefloor." });
+      },
+    };
+  }
+}
+</script>
+</body>
+</html>

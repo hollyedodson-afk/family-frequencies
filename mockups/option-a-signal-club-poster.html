@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Family Frequencies - Brand/Site Mockups</title>
+    <style>
+      :root {
+        --paper: #fff9e9;
+        --ink: #10100f;
+        --blue: #1677d2;
+        --yellow: #ffd83d;
+        --coral: #ff6f5e;
+        --mint: #8be0c4;
+        --violet: #6f5cff;
+        --soft: #f2ead5;
+        --line: 4px solid var(--ink);
+        --shadow: 8px 8px 0 var(--ink);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 20px 20px, rgba(16, 16, 15, 0.12) 2px, transparent 2.5px) 0 0 / 26px 26px,
+          linear-gradient(135deg, #fffdf5, var(--paper));
+        font-family: "Arial Rounded MT Bold", "Trebuchet MS", Arial, sans-serif;
+      }
+
+      .page {
+        width: min(1180px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 28px 0 56px;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        padding: 12px 0 26px;
+      }
+
+      .brand-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        border: var(--line);
+        background: #fff;
+        padding: 9px 14px;
+        font-size: 15px;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 0;
+        box-shadow: 4px 4px 0 var(--ink);
+      }
+
+      .pulse {
+        width: 54px;
+        height: 20px;
+        background:
+          linear-gradient(90deg, transparent 0 5px, var(--ink) 5px 9px, transparent 9px 14px, var(--ink) 14px 20px, transparent 20px 25px, var(--ink) 25px 31px, transparent 31px 38px, var(--ink) 38px 45px, transparent 45px);
+        clip-path: polygon(0 60%, 16% 60%, 22% 0, 32% 100%, 42% 42%, 52% 60%, 64% 60%, 72% 18%, 82% 88%, 90% 60%, 100% 60%, 100% 100%, 0 100%);
+      }
+
+      .nav {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .nav span {
+        border: 3px solid var(--ink);
+        background: var(--yellow);
+        padding: 8px 12px;
+        font-size: 13px;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .hero {
+        position: relative;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 340px;
+        gap: 34px;
+        align-items: stretch;
+        min-height: 520px;
+        border: var(--line);
+        background:
+          repeating-linear-gradient(0deg, transparent 0 18px, rgba(16, 16, 15, 0.07) 18px 22px),
+          #fff;
+        padding: 34px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .hero::after {
+        content: "";
+        position: absolute;
+        inset: auto -70px -90px auto;
+        width: 380px;
+        height: 380px;
+        border: 24px solid var(--blue);
+        border-radius: 50%;
+        opacity: 0.14;
+      }
+
+      .hero-copy {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 30px;
+      }
+
+      .kicker {
+        display: inline-block;
+        width: fit-content;
+        border: 3px solid var(--ink);
+        background: var(--mint);
+        padding: 8px 12px;
+        font-weight: 900;
+        text-transform: uppercase;
+        transform: rotate(-1.5deg);
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        max-width: 780px;
+        font-size: clamp(54px, 8.2vw, 104px);
+        line-height: 0.86;
+        letter-spacing: 0;
+        text-transform: uppercase;
+      }
+
+      .hero-line {
+        width: min(720px, 100%);
+        height: 86px;
+        margin: 22px 0 0;
+      }
+
+      .hero-line svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .tagline {
+        max-width: 580px;
+        font-size: clamp(24px, 3vw, 40px);
+        line-height: 1.02;
+        font-weight: 900;
+      }
+
+      .hero-card {
+        position: relative;
+        z-index: 1;
+        align-self: stretch;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 18px;
+        border: var(--line);
+        background: var(--yellow);
+        padding: 22px;
+        transform: rotate(1.5deg);
+      }
+
+      .hero-card h2 {
+        font-size: 38px;
+        line-height: 0.92;
+        text-transform: uppercase;
+      }
+
+      .event-meta {
+        display: grid;
+        gap: 10px;
+        font-size: 19px;
+        font-weight: 900;
+      }
+
+      .free {
+        display: inline-block;
+        width: fit-content;
+        border: 3px solid var(--ink);
+        background: #fff;
+        padding: 8px 12px;
+        text-transform: uppercase;
+        box-shadow: 4px 4px 0 var(--ink);
+      }
+
+      .section-title {
+        margin: 72px 0 18px;
+        font-size: clamp(34px, 5vw, 62px);
+        line-height: 0.92;
+        text-transform: uppercase;
+      }
+
+      .routes {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .route {
+        min-height: 300px;
+        border: var(--line);
+        background: #fff;
+        padding: 22px;
+        box-shadow: 6px 6px 0 var(--ink);
+      }
+
+      .route h3 {
+        font-size: 30px;
+        line-height: 0.95;
+        text-transform: uppercase;
+      }
+
+      .route p {
+        margin-top: 16px;
+        font-size: 17px;
+        line-height: 1.35;
+        font-weight: 700;
+      }
+
+      .route-art {
+        height: 92px;
+        margin: 22px 0;
+        border: 3px solid var(--ink);
+        background: var(--soft);
+        overflow: hidden;
+      }
+
+      .route:nth-child(1) .route-art {
+        background:
+          repeating-linear-gradient(90deg, var(--ink) 0 4px, transparent 4px 18px),
+          var(--mint);
+      }
+
+      .route:nth-child(2) .route-art {
+        background:
+          radial-gradient(circle, var(--ink) 0 5px, transparent 5.5px) 0 0 / 24px 24px,
+          var(--yellow);
+      }
+
+      .route:nth-child(3) .route-art {
+        background:
+          linear-gradient(135deg, var(--coral) 0 28%, transparent 28%),
+          linear-gradient(45deg, transparent 0 55%, var(--violet) 55%),
+          #fff;
+      }
+
+      .homepage {
+        display: grid;
+        grid-template-columns: 0.95fr 1.05fr;
+        gap: 24px;
+        align-items: start;
+      }
+
+      .poster {
+        border: var(--line);
+        background: #fff;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .poster img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      .event-panel {
+        display: grid;
+        gap: 16px;
+      }
+
+      .big-ticket,
+      .program {
+        border: var(--line);
+        background: #fff;
+        padding: 24px;
+        box-shadow: 6px 6px 0 var(--ink);
+      }
+
+      .big-ticket {
+        background:
+          radial-gradient(circle at 14px 14px, rgba(22, 119, 210, 0.9) 3px, transparent 3.5px) 0 0 / 26px 26px,
+          #fff;
+      }
+
+      .big-ticket h3 {
+        font-size: clamp(42px, 7vw, 82px);
+        line-height: 0.86;
+        text-transform: uppercase;
+        max-width: 560px;
+      }
+
+      .program {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        background: var(--paper);
+      }
+
+      .program span {
+        display: block;
+        border: 3px solid var(--ink);
+        background: #fff;
+        padding: 12px;
+        font-size: 16px;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .system {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .tile {
+        min-height: 170px;
+        border: var(--line);
+        background: #fff;
+        padding: 18px;
+        box-shadow: 5px 5px 0 var(--ink);
+      }
+
+      .tile strong {
+        display: block;
+        font-size: 22px;
+        text-transform: uppercase;
+      }
+
+      .tile p {
+        margin-top: 10px;
+        font-size: 15px;
+        line-height: 1.3;
+        font-weight: 700;
+      }
+
+      .tile:nth-child(1) {
+        background: var(--yellow);
+      }
+
+      .tile:nth-child(2) {
+        background: var(--mint);
+      }
+
+      .tile:nth-child(3) {
+        background: #fff;
+      }
+
+      .tile:nth-child(4) {
+        background: var(--coral);
+      }
+
+      .note {
+        margin-top: 36px;
+        border: var(--line);
+        background: var(--ink);
+        color: #fff;
+        padding: 18px 20px;
+        font-size: 18px;
+        line-height: 1.35;
+        font-weight: 800;
+      }
+
+      @media (max-width: 860px) {
+        .topbar,
+        .hero,
+        .homepage {
+          grid-template-columns: 1fr;
+        }
+
+        .topbar {
+          align-items: flex-start;
+        }
+
+        .routes,
+        .system {
+          grid-template-columns: 1fr;
+        }
+
+        .hero {
+          min-height: auto;
+          padding: 22px;
+        }
+
+        .hero-card {
+          transform: none;
+        }
+
+        .program {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar">
+        <div class="brand-chip"><span class="pulse"></span> Family Frequencies</div>
+        <nav class="nav" aria-label="Mockup sections">
+          <span>Events</span>
+          <span>Workshops</span>
+          <span>Gigs</span>
+        </nav>
+      </header>
+
+      <section class="hero" aria-labelledby="mockup-title">
+        <div class="hero-copy">
+          <div>
+            <span class="kicker">Parent brand route</span>
+            <h1 id="mockup-title">Family Frequencies</h1>
+            <div class="hero-line" aria-hidden="true">
+              <svg viewBox="0 0 820 110" role="img">
+                <path d="M4 56 C46 56 46 18 88 18 C130 18 130 94 172 94 C214 94 214 34 256 34 C298 34 298 72 340 72 C382 72 382 10 424 10 C466 10 466 100 508 100 C550 100 550 56 592 56 C634 56 634 28 676 28 C718 28 718 82 760 82 C792 82 800 56 816 56" fill="none" stroke="#10100f" stroke-width="10" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+          <p class="tagline">Daytime happenings for little dancers and grown-up people.</p>
+        </div>
+        <aside class="hero-card">
+          <h2>Next up:<br />Daylight Disco</h2>
+          <div class="event-meta">
+            <span>27 June 2026</span>
+            <span>12pm-6pm</span>
+            <span>Hide, Mt Maunganui</span>
+            <span class="free">Free entry</span>
+          </div>
+        </aside>
+      </section>
+
+      <h2 class="section-title">Three Parent Brand Routes</h2>
+      <section class="routes" aria-label="Brand routes">
+        <article class="route">
+          <h3>01. Signal Club</h3>
+          <div class="route-art" aria-hidden="true"></div>
+          <p>Most flexible. A strong wordmark, waveform marks, and event labels. Cool enough for gigs, clear enough for first aid.</p>
+        </article>
+        <article class="route">
+          <h3>02. Poster System</h3>
+          <div class="route-art" aria-hidden="true"></div>
+          <p>Most playful. Everything feels like a collectible flyer: halftone fields, big stickers, changing event palettes.</p>
+        </article>
+        <article class="route">
+          <h3>03. Family Radio</h3>
+          <div class="route-art" aria-hidden="true"></div>
+          <p>Most branded. Each event is a station or show. Strong concept, but a touch more niche if you grow beyond music-led events.</p>
+        </article>
+      </section>
+
+      <h2 class="section-title">Recommended Homepage Mockup</h2>
+      <section class="homepage" aria-label="Homepage recommendation">
+        <figure class="poster">
+          <img src="../assets/daylight-disco-reference.png" alt="Daylight Disco artwork reference with parent DJs and babies" />
+        </figure>
+        <div class="event-panel">
+          <article class="big-ticket">
+            <span class="kicker">First frequency</span>
+            <h3>Daylight Disco</h3>
+            <p class="tagline">Jazz house, kids boogie songs, face painting, toys, and good times.</p>
+          </article>
+          <div class="program" aria-label="Event program">
+            <span>Little dancers</span>
+            <span>Big people tunes</span>
+            <span>Face painting</span>
+            <span>Pram-friendly energy</span>
+          </div>
+        </div>
+      </section>
+
+      <h2 class="section-title">Expandable Event System</h2>
+      <section class="system" aria-label="Event system examples">
+        <article class="tile">
+          <strong>Disco</strong>
+          <p>Comic halftone, blue/yellow, records, sunnies, loud poster energy.</p>
+        </article>
+        <article class="tile">
+          <strong>First Aid</strong>
+          <p>Still bold, but clearer: red cross sticker, practical copy, calmer layout.</p>
+        </article>
+        <article class="tile">
+          <strong>Nutrition</strong>
+          <p>Fresh green/yellow palette, fruit/plate icons, talk series format.</p>
+        </article>
+        <article class="tile">
+          <strong>Gigs</strong>
+          <p>Artist-led flyers using the parent frequency mark as the constant.</p>
+        </article>
+      </section>
+
+      <p class="note">
+        Recommendation: use Route 01 as the parent brand foundation, borrow Route 02 for event posters, and keep Daylight Disco as the loudest first expression.
+      </p>
+    </main>
+  </body>
+</html>

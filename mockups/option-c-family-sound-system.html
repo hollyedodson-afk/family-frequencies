@@ -1,0 +1,643 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Family Frequencies - Option C Family Sound System</title>
+    <style>
+      :root {
+        --ink: oklch(13% 0.02 250);
+        --paper: oklch(98.5% 0 0);
+        --blue: oklch(63% 0.23 248);
+        --yellow: oklch(88% 0.18 94);
+        --red: oklch(63% 0.22 28);
+        --green: oklch(73% 0.15 156);
+        --lilac: oklch(82% 0.09 305);
+        --mist: oklch(94% 0.012 245);
+        --line: 2px solid var(--ink);
+        --radius: 8px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        background:
+          linear-gradient(90deg, color-mix(in oklch, var(--ink) 10%, transparent) 1px, transparent 1px) 0 0 / 80px 80px,
+          var(--mist);
+        font-family: "Trebuchet MS", "Avenir Next", Arial, sans-serif;
+      }
+
+      .page {
+        width: min(1220px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 22px 0 64px;
+      }
+
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        padding-bottom: 22px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 900;
+      }
+
+      .brand-mark {
+        position: relative;
+        width: 58px;
+        height: 58px;
+        border: var(--line);
+        border-radius: 50%;
+        background:
+          radial-gradient(circle, var(--paper) 0 5px, var(--ink) 6px 8px, transparent 9px),
+          repeating-radial-gradient(circle, transparent 0 7px, color-mix(in oklch, var(--ink) 70%, transparent) 7px 9px),
+          var(--yellow);
+      }
+
+      .brand-mark::after {
+        content: "";
+        position: absolute;
+        right: -10px;
+        top: 18px;
+        width: 20px;
+        height: 6px;
+        border: var(--line);
+        border-left: 0;
+        background: var(--paper);
+      }
+
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      nav span,
+      .tag {
+        border: var(--line);
+        border-radius: 999px;
+        background: var(--paper);
+        padding: 8px 13px;
+        font-size: 13px;
+        font-weight: 900;
+      }
+
+      .hero {
+        position: relative;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(320px, 430px);
+        gap: clamp(24px, 5vw, 58px);
+        min-height: 650px;
+        align-items: stretch;
+        border: var(--line);
+        border-radius: var(--radius);
+        background:
+          linear-gradient(180deg, color-mix(in oklch, var(--yellow) 42%, var(--paper)), var(--paper));
+        overflow: hidden;
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        inset: 24px auto auto 42%;
+        width: 620px;
+        height: 620px;
+        border: 2px solid color-mix(in oklch, var(--ink) 18%, transparent);
+        border-radius: 50%;
+        background:
+          repeating-radial-gradient(circle, transparent 0 22px, color-mix(in oklch, var(--ink) 18%, transparent) 22px 24px),
+          transparent;
+        transform: translateX(-20%);
+        pointer-events: none;
+      }
+
+      .hero-copy,
+      .sound-stack {
+        position: relative;
+        z-index: 1;
+      }
+
+      .hero-copy {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: clamp(24px, 5vw, 58px);
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        width: fit-content;
+        gap: 10px;
+        border: var(--line);
+        border-radius: 999px;
+        background: var(--ink);
+        color: var(--paper);
+        padding: 9px 14px;
+        font-size: 13px;
+        font-weight: 900;
+      }
+
+      .eyebrow::before {
+        content: "";
+        width: 26px;
+        height: 16px;
+        background:
+          linear-gradient(90deg, var(--paper) 0 3px, transparent 3px 8px, var(--paper) 8px 11px, transparent 11px 16px, var(--paper) 16px 19px, transparent 19px);
+        clip-path: polygon(0 50%, 18% 50%, 24% 0, 35% 100%, 46% 35%, 56% 50%, 68% 50%, 74% 8%, 84% 92%, 90% 50%, 100% 50%, 100% 100%, 0 100%);
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        max-width: 800px;
+        margin-top: 30px;
+        font-size: clamp(54px, 10vw, 112px);
+        line-height: 0.82;
+        letter-spacing: -0.035em;
+        text-wrap: balance;
+      }
+
+      .lead {
+        max-width: 650px;
+        margin-top: 26px;
+        font-size: clamp(22px, 3vw, 36px);
+        line-height: 1.06;
+        font-weight: 900;
+        text-wrap: balance;
+      }
+
+      .sound-line {
+        display: grid;
+        grid-template-columns: repeat(16, 1fr);
+        align-items: end;
+        gap: 5px;
+        height: 82px;
+        max-width: 660px;
+        margin-top: 34px;
+      }
+
+      .sound-line span {
+        display: block;
+        border-radius: 999px;
+        background: var(--ink);
+        min-height: 12px;
+      }
+
+      .sound-line span:nth-child(3n) { background: var(--blue); }
+      .sound-line span:nth-child(4n) { background: var(--red); }
+      .sound-line span:nth-child(5n) { background: var(--green); }
+      .sound-line span:nth-child(1) { height: 26%; }
+      .sound-line span:nth-child(2) { height: 52%; }
+      .sound-line span:nth-child(3) { height: 82%; }
+      .sound-line span:nth-child(4) { height: 40%; }
+      .sound-line span:nth-child(5) { height: 68%; }
+      .sound-line span:nth-child(6) { height: 96%; }
+      .sound-line span:nth-child(7) { height: 48%; }
+      .sound-line span:nth-child(8) { height: 76%; }
+      .sound-line span:nth-child(9) { height: 36%; }
+      .sound-line span:nth-child(10) { height: 88%; }
+      .sound-line span:nth-child(11) { height: 60%; }
+      .sound-line span:nth-child(12) { height: 34%; }
+      .sound-line span:nth-child(13) { height: 72%; }
+      .sound-line span:nth-child(14) { height: 44%; }
+      .sound-line span:nth-child(15) { height: 90%; }
+      .sound-line span:nth-child(16) { height: 54%; }
+
+      .sound-stack {
+        display: grid;
+        gap: 16px;
+        align-content: end;
+        padding: clamp(22px, 4vw, 42px);
+      }
+
+      .speaker {
+        min-height: 290px;
+        border: var(--line);
+        border-radius: var(--radius);
+        background:
+          radial-gradient(circle at 50% 35%, var(--ink) 0 48px, var(--paper) 49px 60px, var(--ink) 61px 66px, transparent 67px),
+          radial-gradient(circle at 50% 72%, var(--ink) 0 34px, var(--paper) 35px 46px, var(--ink) 47px 52px, transparent 53px),
+          var(--blue);
+      }
+
+      .event-ticket {
+        border: var(--line);
+        border-radius: var(--radius);
+        background: var(--paper);
+        padding: 24px;
+        box-shadow: 8px 8px 0 var(--ink);
+      }
+
+      .event-ticket h2 {
+        font-size: clamp(38px, 5vw, 58px);
+        line-height: 0.9;
+        letter-spacing: -0.025em;
+      }
+
+      .meta {
+        display: grid;
+        gap: 8px;
+        margin-top: 18px;
+        font-size: 18px;
+        font-weight: 900;
+      }
+
+      .section {
+        margin-top: 78px;
+      }
+
+      .section-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        gap: 22px;
+        margin-bottom: 22px;
+      }
+
+      .section h2 {
+        max-width: 780px;
+        font-size: clamp(38px, 6vw, 74px);
+        line-height: 0.9;
+        letter-spacing: -0.03em;
+        text-wrap: balance;
+      }
+
+      .note {
+        max-width: 340px;
+        font-size: 17px;
+        line-height: 1.3;
+        font-weight: 850;
+      }
+
+      .language {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 18px;
+      }
+
+      .panel {
+        border: var(--line);
+        border-radius: var(--radius);
+        background: var(--paper);
+        padding: clamp(22px, 4vw, 36px);
+      }
+
+      .poster-rule {
+        min-height: 390px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background:
+          linear-gradient(90deg, transparent 0 56%, color-mix(in oklch, var(--blue) 18%, transparent) 56%),
+          var(--paper);
+      }
+
+      .poster-rule h3 {
+        max-width: 660px;
+        font-size: clamp(40px, 7vw, 86px);
+        line-height: 0.84;
+        letter-spacing: -0.035em;
+      }
+
+      .record-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .record-row span {
+        width: 72px;
+        height: 72px;
+        border: var(--line);
+        border-radius: 50%;
+        background:
+          radial-gradient(circle, var(--paper) 0 8px, var(--ink) 9px 11px, transparent 12px),
+          repeating-radial-gradient(circle, var(--ink) 0 2px, transparent 2px 8px),
+          var(--yellow);
+      }
+
+      .setlist {
+        display: grid;
+        gap: 14px;
+      }
+
+      .track {
+        display: grid;
+        grid-template-columns: 42px 1fr;
+        gap: 12px;
+        align-items: center;
+        border-bottom: 1px solid color-mix(in oklch, var(--ink) 24%, transparent);
+        padding-bottom: 14px;
+        font-weight: 900;
+      }
+
+      .track b {
+        display: grid;
+        place-items: center;
+        width: 42px;
+        height: 42px;
+        border: var(--line);
+        border-radius: 50%;
+        background: var(--yellow);
+      }
+
+      .event-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .event {
+        min-height: 280px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        border: var(--line);
+        border-radius: var(--radius);
+        background: var(--paper);
+        padding: 18px;
+      }
+
+      .event:nth-child(1) { background: var(--yellow); }
+      .event:nth-child(2) { background: color-mix(in oklch, var(--red) 18%, var(--paper)); }
+      .event:nth-child(3) { background: color-mix(in oklch, var(--green) 28%, var(--paper)); }
+      .event:nth-child(4) { background: color-mix(in oklch, var(--lilac) 70%, var(--paper)); }
+
+      .event h3 {
+        font-size: 30px;
+        line-height: 0.95;
+        letter-spacing: -0.02em;
+      }
+
+      .event p {
+        margin-top: 12px;
+        font-size: 15px;
+        line-height: 1.34;
+        font-weight: 850;
+      }
+
+      .mini-staff {
+        display: grid;
+        gap: 7px;
+      }
+
+      .mini-staff span {
+        height: 3px;
+        background: var(--ink);
+      }
+
+      .feature {
+        display: grid;
+        grid-template-columns: minmax(260px, 0.92fr) minmax(0, 1.08fr);
+        gap: 18px;
+      }
+
+      .poster img {
+        display: block;
+        width: 100%;
+        border: var(--line);
+        border-radius: var(--radius);
+        background: var(--paper);
+      }
+
+      .daylight {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 520px;
+        border: var(--line);
+        border-radius: var(--radius);
+        background:
+          radial-gradient(circle at 14px 14px, var(--blue) 0 4px, transparent 5px) 0 0 / 28px 28px,
+          var(--yellow);
+        padding: clamp(22px, 4vw, 38px);
+      }
+
+      .daylight h2 {
+        font-size: clamp(46px, 8vw, 90px);
+      }
+
+      .daylight p {
+        max-width: 560px;
+        font-size: 20px;
+        line-height: 1.28;
+        font-weight: 850;
+      }
+
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 20px;
+      }
+
+      .chips span {
+        border: var(--line);
+        border-radius: 999px;
+        background: var(--paper);
+        padding: 8px 12px;
+        font-size: 14px;
+        font-weight: 900;
+      }
+
+      .verdict {
+        margin-top: 44px;
+        border: var(--line);
+        border-radius: var(--radius);
+        background: var(--ink);
+        color: var(--paper);
+        padding: 22px;
+        font-size: 20px;
+        line-height: 1.35;
+        font-weight: 850;
+      }
+
+      @media (max-width: 940px) {
+        .hero,
+        .language,
+        .feature {
+          grid-template-columns: 1fr;
+        }
+
+        .section-head {
+          align-items: start;
+          flex-direction: column;
+        }
+
+        .event-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 560px) {
+        .page {
+          width: min(100% - 20px, 1220px);
+          padding-top: 12px;
+        }
+
+        header {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .hero-copy,
+        .sound-stack {
+          padding: 20px;
+        }
+
+        h1 {
+          font-size: clamp(48px, 17vw, 72px);
+        }
+
+        .event-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .speaker {
+          min-height: 220px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header>
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span>Family Frequencies</span>
+        </div>
+        <nav aria-label="Mock navigation">
+          <span>Daylight Disco</span>
+          <span>Workshops</span>
+          <span>Family gigs</span>
+        </nav>
+      </header>
+
+      <section class="hero" aria-labelledby="option-c-title">
+        <div class="hero-copy">
+          <div>
+            <span class="eyebrow">Option C: family sound system</span>
+            <h1 id="option-c-title">Family Frequencies</h1>
+            <p class="lead">Daytime music, useful workshops, and family-friendly happenings with a proper beat.</p>
+            <div class="sound-line" aria-hidden="true">
+              <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+        </div>
+        <aside class="sound-stack" aria-label="Featured event">
+          <div class="speaker" aria-hidden="true"></div>
+          <div class="event-ticket">
+            <h2>Daylight Disco</h2>
+            <div class="meta">
+              <span>27 June 2026</span>
+              <span>12pm-6pm</span>
+              <span>Hide, Mt Maunganui</span>
+              <span>Free entry</span>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="section" aria-labelledby="language-title">
+        <div class="section-head">
+          <h2 id="language-title">Make the parent brand musical first.</h2>
+          <p class="note">The system uses records, speakers, waveforms, track lists, and gig cues. Event colours can change without losing the brand.</p>
+        </div>
+        <div class="language">
+          <article class="panel poster-rule">
+            <span class="tag">Brand rule</span>
+            <h3>Everything is a set, track, gig, signal, or sound.</h3>
+            <div class="record-row" aria-hidden="true">
+              <span></span><span></span><span></span><span></span>
+            </div>
+          </article>
+          <article class="panel setlist">
+            <div class="track"><b>01</b><span>Family Frequencies is the promoter</span></div>
+            <div class="track"><b>02</b><span>Each event gets its own sound</span></div>
+            <div class="track"><b>03</b><span>Daylight Disco can stay loud</span></div>
+            <div class="track"><b>04</b><span>Workshops still feel connected</span></div>
+            <div class="track"><b>05</b><span>The website can grow into a listings hub</span></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="events-title">
+        <div class="section-head">
+          <h2 id="events-title">The event types become different tracks.</h2>
+          <p class="note">More obviously music-coded than Option B, but not locked to only disco events.</p>
+        </div>
+        <div class="event-grid">
+          <article class="event">
+            <div>
+              <h3>Dance Track</h3>
+              <p>Daylight Disco, family gigs, daytime DJ sets, big playful poster language.</p>
+            </div>
+            <div class="mini-staff" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+          </article>
+          <article class="event">
+            <div>
+              <h3>Safety Track</h3>
+              <p>First aid courses with clearer layouts, still carrying the same set-list structure.</p>
+            </div>
+            <div class="mini-staff" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+          </article>
+          <article class="event">
+            <div>
+              <h3>Food Track</h3>
+              <p>Nutrition chats, local experts, relaxed talks, fresh colourways and softer tempo.</p>
+            </div>
+            <div class="mini-staff" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+          </article>
+          <article class="event">
+            <div>
+              <h3>Community Track</h3>
+              <p>Meetups, collaborations, recurring sessions, and future family programming.</p>
+            </div>
+            <div class="mini-staff" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section feature" aria-labelledby="daylight-title">
+        <figure class="poster">
+          <img src="../assets/daylight-disco-reference.png" alt="Daylight Disco artwork with parent DJs and babies at turntables" />
+        </figure>
+        <article class="daylight">
+          <span class="tag">First live set</span>
+          <div>
+            <h2 id="daylight-title">Daylight Disco is the launch track.</h2>
+            <p>The existing comic artwork fits inside this system as the loud event sleeve, while Family Frequencies remains the bigger music-led brand.</p>
+            <div class="chips" aria-label="Daylight Disco features">
+              <span>Jazz house</span>
+              <span>Kids boogie songs</span>
+              <span>Face painting</span>
+              <span>Toys</span>
+              <span>Good times</span>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <p class="verdict">
+        Option C is the most music-forward parent-brand route. It says sound, gigs, records, and rhythm more clearly, while still giving non-music events a place as different tracks in the Family Frequencies programme.
+      </p>
+    </main>
+  </body>
+</html>
