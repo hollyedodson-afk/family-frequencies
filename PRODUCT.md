@@ -37,7 +37,7 @@ The website is the public home for the brand. Its job is to tell people what's o
 
 - **Date:** 4 July 2026
 - **Venue:** Hide, Mt Maunganui
-- **Time:** 12pm–6pm
+- **Time:** 12pm–5pm
 - **Cost:** Free
 - **Booking:** Not required (walk-in)
 - **Music/vibe:** Jazz house, kids boogie songs, face painting, toys, good times
