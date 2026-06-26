@@ -17,13 +17,13 @@ export default async function handler(req, res) {
   }
 
   try {
-    const response = await fetch(`https://api.kit.com/v4/forms/${formId}/subscribers`, {
+    const response = await fetch('https://api.kit.com/v4/subscribers', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'X-Kit-Api-Key': apiKey,
       },
-      body: JSON.stringify({ email_address: email }),
+      body: JSON.stringify({ email_address: email, form_id: Number(formId) }),
     });
 
     if (!response.ok) {
