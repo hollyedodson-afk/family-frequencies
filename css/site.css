@@ -146,6 +146,7 @@ svg {
 
 .ticker {
   overflow: hidden;
+  border-bottom: 3px solid var(--navy);
   background: var(--rose);
 }
 
