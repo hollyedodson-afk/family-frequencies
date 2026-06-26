@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en-NZ">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>What's On | Family Frequencies</title>
+  <meta name="description" content="Upcoming daytime events for families in the Bay of Plenty — parties, workshops, and gigs for people with small humans in tow.">
+  <meta property="og:title" content="What's On | Family Frequencies">
+  <meta property="og:description" content="Daytime events for families across the Bay of Plenty.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <link rel="stylesheet" href="css/site.css">
+  <style>
+    .events-hero {
+      background: var(--navy);
+      color: var(--cream);
+      padding-block: 42px 48px;
+    }
+    .events-hero__inner {
+      position: relative;
+    }
+    .events-hero__sun {
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: var(--gold);
+      opacity: 0.1;
+      pointer-events: none;
+    }
+    .events-hero p.eyebrow {
+      color: var(--gold);
+    }
+    .events-hero h1 {
+      margin: 8px 0 0;
+      font-size: clamp(44px, 13vw, 72px);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 0.87;
+      text-transform: uppercase;
+    }
+    .events-hero h1 em {
+      color: var(--gold);
+      font-style: normal;
+    }
+    .events-hero__sub {
+      margin: 16px 0 0;
+      color: #b9c2cf;
+      font-size: 19px;
+      font-weight: 500;
+      line-height: 1.4;
+      max-width: 34ch;
+    }
+
+    /* ── Event sections ── */
+    .events-section {
+      background: var(--cream);
+    }
+    .events-section__inner {
+      padding-block: 36px 52px;
+    }
+    .events-section .eyebrow {
+      margin-bottom: 4px;
+    }
+    .events-section .section-title {
+      margin: 8px 0 22px;
+    }
+
+    /* ── Event list card ── */
+    .event-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .event-card {
+      display: block;
+      overflow: hidden;
+      border: 3px solid var(--navy);
+      border-radius: 20px;
+      background: white;
+      box-shadow: 6px 6px 0 var(--gold);
+      text-decoration: none;
+      color: var(--navy);
+      transition: box-shadow 0.16s ease, transform 0.16s ease;
+    }
+    .event-card:hover {
+      box-shadow: 10px 10px 0 var(--gold);
+      transform: translate(-2px, -2px);
+    }
+    .event-card:active {
+      box-shadow: 3px 3px 0 var(--gold);
+      transform: translate(2px, 2px);
+    }
+    .event-card__image {
+      position: relative;
+      overflow: hidden;
+      border-bottom: 3px solid var(--navy);
+      max-height: 260px;
+    }
+    .event-card__image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .event-card__body {
+      padding: 18px 20px 16px;
+    }
+    .event-card h3 {
+      margin: 0;
+      font-size: 30px;
+      font-weight: 900;
+      letter-spacing: -0.01em;
+      line-height: 0.92;
+      text-transform: uppercase;
+    }
+    .event-card__meta {
+      margin: 9px 0 0;
+      color: var(--body);
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    .event-card__footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      background: var(--navy);
+      color: var(--cream);
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .event-card__arrow {
+      color: var(--gold);
+      font-size: 18px;
+    }
+
+    /* ── Past events ── */
+    .past-events {
+      background: var(--cream);
+      border-top: 2px solid var(--divider);
+      padding-top: 0;
+    }
+    .past-events__inner {
+      padding-block: 36px 52px;
+    }
+    .past-events .section-title {
+      margin: 8px 0 22px;
+    }
+    .past-event-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 14px 4px;
+      border-bottom: 2px solid var(--divider);
+      text-decoration: none;
+      color: var(--navy);
+      opacity: 0.6;
+    }
+    .past-event-row:last-child {
+      border-bottom: none;
+    }
+    .past-event-row__name {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+    }
+    .past-event-row__date {
+      flex: none;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    /* ── Nothing on ── */
+    .no-events {
+      margin-top: 8px;
+      padding: 28px 24px;
+      border: 2px dashed var(--divider);
+      border-radius: 16px;
+      text-align: center;
+    }
+    .no-events p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand-lockup" href="index.html" aria-label="Family Frequencies home">
+        <svg class="brand-lockup__mark" viewBox="0 0 48 48" fill="none" aria-hidden="true"><circle cx="24" cy="13.5" r="6.5" fill="#F0B840"/><path d="M3 33 C7 25 12 25 16 33 C20 41 28 41 32 33 C36 25 41 25 45 33" stroke="#FAF0E0" stroke-width="4" stroke-linecap="round"/></svg>
+        <span class="brand-lockup__words"><span>Family</span><span>Frequencies</span></span>
+      </a>
+      <a class="pill-button" href="#signup">Get on the list</a>
+    </div>
+  </header>
+
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker__track">
+      <div class="ticker__set"><span>Daytime Club Culture</span><span class="ticker__dot">●</span><span>For Families</span><span class="ticker__dot">●</span><span>Bay of Plenty</span><span class="ticker__dot">●</span></div>
+      <div class="ticker__set" aria-hidden="true"><span>Daytime Club Culture</span><span class="ticker__dot">●</span><span>For Families</span><span class="ticker__dot">●</span><span>Bay of Plenty</span><span class="ticker__dot">●</span></div>
+    </div>
+  </div>
+
+  <main>
+
+    <!-- Page hero -->
+    <section class="events-hero">
+      <div class="container events-hero__inner">
+        <div class="events-hero__sun" aria-hidden="true"></div>
+        <p class="eyebrow">Family Frequencies</p>
+        <h1>What's<br><em>on</em></h1>
+        <p class="events-hero__sub">Daytime events for families across the Bay of Plenty — all ages, always a good time.</p>
+      </div>
+    </section>
+
+    <div class="wave-divider" aria-hidden="true"><svg viewBox="0 0 600 40" preserveAspectRatio="none"><path d="M0 0 C33 32 67 32 100 0 C133 32 167 32 200 0 C233 32 267 32 300 0 C333 32 367 32 400 0 C433 32 467 32 500 0 C533 32 567 32 600 0 L600 40 L0 40 Z" fill="#1A2B40"/></svg></div>
+
+    <!-- ═══════════════════════════════════════════
+         UPCOMING EVENTS
+         Add new <a class="event-card"> blocks here.
+         Remove the .no-events block below when there are events.
+    ════════════════════════════════════════════ -->
+    <section class="events-section">
+      <div class="container events-section__inner">
+        <p class="eyebrow">Coming up</p>
+        <h2 class="section-title">Next up</h2>
+
+        <div class="event-list">
+
+          <!-- EVENT: Daylight Disco -->
+          <a class="event-card" href="daylight-disco.html">
+            <div class="event-card__image">
+              <img
+                src="assets/drive-download-20260623T045834Z-3-001/front%20pack%20daddys%20illustration%20only.jpg"
+                alt="Two dads with babies in front-packs DJing at the decks — the Front Pack Daddys"
+                width="3508" height="2480"
+                loading="lazy"
+              >
+              <span class="status-tag">On now</span>
+            </div>
+            <div class="event-card__body">
+              <h3>Daylight Disco</h3>
+              <p class="event-card__meta">Sat 4 July 2026 · 12–5pm · Hide, Mt Maunganui</p>
+              <div class="chip-row">
+                <span class="chip">Free entry</span>
+                <span class="chip">All ages</span>
+                <span class="chip">Licensed</span>
+              </div>
+            </div>
+            <div class="event-card__footer">
+              <span>View event</span>
+              <span class="event-card__arrow">→</span>
+            </div>
+          </a>
+
+          <!-- ADD MORE EVENT CARDS ABOVE THIS LINE -->
+
+        </div>
+
+        <!-- Remove this block when there are more upcoming events -->
+        <!--
+        <div class="no-events" style="margin-top:24px;">
+          <p>Nothing else in the diary yet — but we're always cooking something up.<br>Get on the list so you hear first.</p>
+        </div>
+        -->
+
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         PAST EVENTS
+         Move finished events here as .past-event-row blocks.
+    ════════════════════════════════════════════ -->
+    <!--
+    <section class="past-events">
+      <div class="container past-events__inner">
+        <p class="eyebrow eyebrow--muted">Past events</p>
+        <h2 class="section-title">Previously</h2>
+        <div>
+          <div class="past-event-row">
+            <span class="past-event-row__name">Event Name</span>
+            <span class="past-event-row__date">Mon 1 Jan 2026</span>
+          </div>
+        </div>
+      </div>
+    </section>
+    -->
+
+    <!-- Signup -->
+    <section class="signup" id="signup">
+      <div class="container signup__inner">
+        <h2>Get on<br>the list</h2>
+        <p class="signup__copy">We'll only email when there's something on. No spam, no newsletters about nothing.</p>
+        <form class="signup__form" data-signup-form>
+          <label for="events-email">Email address</label>
+          <input id="events-email" type="email" name="email" autocomplete="email" required placeholder="your@email.co.nz">
+          <button type="submit">Keep me posted</button>
+        </form>
+        <p class="signup__note" data-signup-note aria-live="polite"></p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <svg class="site-footer__mark" viewBox="0 0 48 48" fill="none" aria-hidden="true"><circle cx="24" cy="13.5" r="6.5" fill="#F0B840"/><path d="M3 33 C7 25 12 25 16 33 C20 41 28 41 32 33 C36 25 41 25 45 33" stroke="#FAF0E0" stroke-width="4.5" stroke-linecap="round"/></svg>
+      <div class="site-footer__words"><span>Family</span><span>Frequencies</span></div>
+      <div class="site-footer__location">Mt Maunganui · Aotearoa New Zealand</div>
+      <span class="site-footer__social">@familyfrequencies</span>
+    </div>
+  </footer>
+
+  <script src="js/site.js" defer></script>
+  <script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
