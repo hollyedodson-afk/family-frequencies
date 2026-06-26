@@ -25,9 +25,34 @@
 })();
 
 document.querySelectorAll('[data-signup-form]').forEach((form) => {
-  form.addEventListener('submit', (event) => {
+  form.addEventListener('submit', async (event) => {
     event.preventDefault();
     const note = form.parentElement.querySelector('[data-signup-note]');
-    note.textContent = 'Thanks - sign-up will be live soon.';
+    const input = form.querySelector('input[type="email"]');
+    const button = form.querySelector('button[type="submit"]');
+
+    note.textContent = '';
+    button.disabled = true;
+    button.textContent = 'Sending…';
+
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: input.value }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        note.textContent = 'You\'re on the list! We\'ll be in touch.';
+        form.reset();
+      } else {
+        note.textContent = data.error || 'Something went wrong — please try again.';
+      }
+    } catch {
+      note.textContent = 'Something went wrong — please try again.';
+    } finally {
+      button.disabled = false;
+      button.textContent = 'Keep me posted';
+    }
   });
 });
