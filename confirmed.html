@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en-NZ">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>You're in! | Family Frequencies</title>
+  <meta name="description" content="You're confirmed — we'll be in touch when something's on.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/site.css">
+  <style>
+    .confirmed-section {
+      min-height: 70vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--ff-space-2xl) var(--ff-space-lg);
+      text-align: center;
+    }
+    .confirmed-inner {
+      max-width: 520px;
+    }
+    .confirmed-mark {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto var(--ff-space-lg);
+      display: block;
+    }
+    .confirmed-eyebrow {
+      font-size: var(--ff-text-sm);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ff-rose);
+      margin: 0 0 var(--ff-space-sm);
+    }
+    .confirmed-heading {
+      font-size: clamp(40px, 8vw, 72px);
+      line-height: 0.95;
+      text-transform: uppercase;
+      color: var(--ff-cream);
+      margin: 0 0 var(--ff-space-lg);
+    }
+    .confirmed-heading em {
+      color: var(--ff-gold);
+      font-style: normal;
+    }
+    .confirmed-body {
+      font-size: var(--ff-text-lg);
+      line-height: 1.6;
+      color: var(--ff-cream);
+      opacity: 0.8;
+      margin: 0 0 var(--ff-space-xl);
+    }
+  </style>
+</head>
+<body style="background: var(--ff-navy);">
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand-lockup" href="index.html" aria-label="Family Frequencies home">
+        <svg class="brand-lockup__mark" viewBox="0 0 48 48" fill="none" aria-hidden="true"><circle cx="24" cy="13.5" r="6.5" fill="#F0B840"/><path d="M3 33 C7 25 12 25 16 33 C20 41 28 41 32 33 C36 25 41 25 45 33" stroke="#FAF0E0" stroke-width="4" stroke-linecap="round"/></svg>
+        <span class="brand-lockup__words"><span>Family</span><span>Frequencies</span></span>
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <section class="confirmed-section">
+      <div class="confirmed-inner">
+        <svg class="confirmed-mark" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+          <circle cx="32" cy="32" r="30" stroke="#F0B840" stroke-width="3"/>
+          <path d="M20 32 L28 40 L44 24" stroke="#F0B840" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <p class="confirmed-eyebrow">You're confirmed</p>
+        <h1 class="confirmed-heading">See you <em>out there</em></h1>
+        <p class="confirmed-body">We'll be in touch when there's something on. No spam, no noise — just the good stuff.</p>
+        <a class="pill-button" href="index.html">See what's on →</a>
+      </div>
+    </section>
+  </main>
+
+  <script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
