@@ -6,6 +6,7 @@
 # Dependencies + worktrees
 node_modules/
 .worktrees/
+.worktrees
 *.tmp
 
 # Heavy brand/content assets — keep local, not in the public repo

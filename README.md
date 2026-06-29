@@ -9,6 +9,12 @@ Static website for Family Frequencies, a family-friendly daytime-events brand in
 
 Both pages share `css/site.css` and `js/site.js`. Open them through a local static server; no build step is required.
 
+## Backend Configuration
+
+Backend work is Vercel serverless functions under `api/`, with database schema changes captured in `supabase/migrations/`.
+
+Required environment variables are listed in `.env.example`. Keep real values in `.env` locally and in Vercel environment variables, never in committed files.
+
 ## Still To Connect
 
 - Mailing-list provider and form endpoint
