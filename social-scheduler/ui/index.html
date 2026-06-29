@@ -42,7 +42,7 @@
 
     .rail { padding: 22px; }
     .workspace { min-width: 0; padding: 22px; }
-    .inspector { padding: 22px; overflow-y: auto; }
+    .inspector { padding: 14px 12px; overflow-y: auto; }
     .rail__brand { display: flex; gap: 12px; align-items: center; margin-bottom: 28px; }
     .brand-mark { display: grid; place-items: center; width: 44px; height: 44px; border: 2px solid var(--gold); color: var(--gold); font-weight: 900; }
     .eyebrow { margin: 0 0 4px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--orange); }
@@ -119,8 +119,8 @@
     .library-card img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 6px; background: var(--cream); }
 
     .media-frame { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); border-radius: 8px; padding: 10px; }
-    .media-frame img { width: 100%; max-height: 380px; object-fit: contain; display: block; }
-    .inspector-form { display: grid; gap: 14px; }
+    .media-frame img { width: 100%; max-height: 200px; object-fit: contain; display: block; }
+    .inspector-form { display: grid; gap: 8px; }
     .inspector-meta { display: flex; gap: 8px; flex-wrap: wrap; }
     .status-pill,
     .type-pill { display: inline-flex; align-items: center; min-height: 28px; border-radius: 999px; padding: 0 10px; font-size: 0.72rem; font-weight: 900; text-transform: uppercase; }
@@ -130,9 +130,11 @@
     .field input,
     .field select,
     .field textarea { width: 100%; padding: 10px; background: var(--paper); color: var(--ink); }
-    .field textarea { min-height: 96px; resize: vertical; text-transform: none; letter-spacing: 0; font-weight: 500; }
+    .field textarea { min-height: 68px; resize: vertical; text-transform: none; letter-spacing: 0; font-weight: 500; }
     .check-row { display: flex; align-items: center; gap: 10px; font-weight: 700; }
     .empty-state { display: grid; align-content: center; min-height: 70vh; gap: 10px; color: rgba(255,255,255,0.72); }
+    .chip-count { font-size: 0.68rem; opacity: 0.7; margin-left: 4px; }
+    [hidden] { display: none !important; }
 
     #toast {
       position: fixed;
@@ -275,11 +277,11 @@
       </nav>
 
       <div class="filter-group" aria-label="Status filters">
-        <button class="filter-chip is-active" type="button" data-filter="all">All</button>
-        <button class="filter-chip" type="button" data-filter="draft">Draft</button>
-        <button class="filter-chip" type="button" data-filter="needs_music">Needs music</button>
-        <button class="filter-chip" type="button" data-filter="scheduled">Scheduled</button>
-        <button class="filter-chip" type="button" data-filter="posted">Posted</button>
+        <button class="filter-chip is-active" type="button" data-filter="all">All <span class="chip-count" id="chip-count-all"></span></button>
+        <button class="filter-chip" type="button" data-filter="draft">Draft <span class="chip-count" id="chip-count-draft"></span></button>
+        <button class="filter-chip" type="button" data-filter="needs_music">Needs music <span class="chip-count" id="chip-count-music"></span></button>
+        <button class="filter-chip" type="button" data-filter="scheduled">Scheduled <span class="chip-count" id="chip-count-scheduled"></span></button>
+        <button class="filter-chip" type="button" data-filter="posted">Posted <span class="chip-count" id="chip-count-posted"></span></button>
       </div>
     </aside>
 
@@ -353,6 +355,15 @@
             <option value="feed">Feed</option>
             <option value="reel">Reel</option>
             <option value="story">Story</option>
+          </select>
+        </label>
+        <label class="field">Status
+          <select id="i-status">
+            <option value="draft">Draft</option>
+            <option value="needs_music">Needs music</option>
+            <option value="scheduled">Scheduled</option>
+            <option value="posted">Posted</option>
+            <option value="rejected">Rejected</option>
           </select>
         </label>
         <label class="check-row">
@@ -588,6 +599,7 @@
       month: 'short',
       hour: 'numeric',
       minute: '2-digit',
+      timeZone: 'Pacific/Auckland',
     }).format(new Date(value));
   }
 
@@ -665,6 +677,7 @@
     document.getElementById('i-caption').value = post.caption;
     document.getElementById('i-scheduled').value = post.scheduled_at ? post.scheduled_at.slice(0, 16) : '';
     document.getElementById('i-type').value = post.type;
+    document.getElementById('i-status').value = post.status;
     document.getElementById('i-music').checked = post.needs_music;
     document.getElementById('i-notes').value = post.notes;
   }
@@ -687,6 +700,11 @@
     document.getElementById('metric-posted').textContent = count(post => post.status === 'posted');
     const next = nextScheduledPost();
     document.getElementById('metric-next').textContent = next ? formatDateTime(next.scheduled_at) : 'Nothing scheduled';
+    document.getElementById('chip-count-all').textContent = appState.posts.length;
+    document.getElementById('chip-count-draft').textContent = count(p => p.status === 'draft');
+    document.getElementById('chip-count-music').textContent = count(p => p.needs_music || p.status === 'needs_music');
+    document.getElementById('chip-count-scheduled').textContent = count(p => p.status === 'scheduled');
+    document.getElementById('chip-count-posted').textContent = count(p => p.status === 'posted');
   }
 
   function initCalendar() {
@@ -749,6 +767,7 @@
       caption: getEl('i-caption').value,
       scheduled_at: getEl('i-scheduled').value ? getEl('i-scheduled').value + ':00' : '',
       type: getEl('i-type').value,
+      status: getEl('i-status').value,
       needs_music: getEl('i-music').checked ? 'TRUE' : 'FALSE',
       notes: getEl('i-notes').value,
     };
