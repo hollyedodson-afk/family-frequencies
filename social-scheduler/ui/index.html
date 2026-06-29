@@ -134,6 +134,73 @@
     .check-row { display: flex; align-items: center; gap: 10px; font-weight: 700; }
     .empty-state { display: grid; align-content: center; min-height: 70vh; gap: 10px; color: rgba(255,255,255,0.72); }
 
+    #toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 40;
+      min-width: 220px;
+      max-width: min(360px, calc(100vw - 32px));
+      padding: 12px 14px;
+      border-radius: 8px;
+      background: rgba(24, 32, 44, 0.94);
+      color: var(--paper);
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    #toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #toast.error {
+      background: #8f2d2d;
+    }
+
+    .fc .fc-toolbar-title {
+      color: var(--navy);
+      font-size: 1.15rem;
+      text-transform: uppercase;
+    }
+
+    .fc .fc-button {
+      border-radius: 8px;
+    }
+
+    .fc-event-card {
+      display: grid;
+      gap: 4px;
+      line-height: 1.2;
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .type-tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 18px;
+      padding: 0 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.18);
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .card-caption {
+      font-size: 0.78rem;
+      font-weight: 700;
+      white-space: normal;
+    }
+
     @media (max-width: 1080px) {
       .app-shell { grid-template-columns: 210px minmax(0, 1fr); }
       .inspector { grid-column: 1 / -1; }
@@ -288,6 +355,30 @@
 
   let cal, currentPost = null, uploadedUrl = '';
 
+  function getEl(id) {
+    return document.getElementById(id);
+  }
+
+  function setView(view) {
+    document.querySelectorAll('.view-tab').forEach(btn => {
+      btn.classList.toggle('is-active', btn.dataset.view === view);
+    });
+    document.querySelectorAll('.view-panel').forEach(panel => {
+      panel.classList.toggle('is-active', panel.id === `view-${view}`);
+    });
+  }
+
+  function bindShellActions() {
+    document.querySelector('[data-action="refresh"]')?.addEventListener('click', refetch);
+    document.querySelector('[data-action="new-post"]')?.addEventListener('click', openSidebar);
+    document.querySelector('[data-action="save"]')?.addEventListener('click', doSave);
+    document.querySelector('[data-action="approve"]')?.addEventListener('click', () => doApprove('approve'));
+    document.querySelector('[data-action="reject"]')?.addEventListener('click', () => doApprove('reject'));
+    document.querySelectorAll('.view-tab').forEach(btn => {
+      btn.addEventListener('click', () => setView(btn.dataset.view));
+    });
+  }
+
   // ── CSV PARSER ────────────────────────────────────────────────
   function parseCSV(text) {
     const rows = [];
@@ -365,6 +456,7 @@
 
   // ── CALENDAR INIT ─────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', () => {
+    bindShellActions();
     cal = new FullCalendar.Calendar(document.getElementById('calendar'), {
       initialView: 'dayGridMonth',
       headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek' },
@@ -410,54 +502,54 @@
       ? (isVideo ? p.media_url.replace(/\.mp4(\?.*)?$/i, '.jpg') : p.media_url)
       : '';
 
-    // Header
-    document.getElementById('m-type').textContent = p.type || '';
-    document.getElementById('m-title').textContent = (p.caption || '').substring(0, 70) || 'Post';
-    const pill = document.getElementById('m-status');
-    pill.textContent = p.status || '';
-    pill.style.background = STATUS_COLOR[p.status] || '#7f8c8d';
+    getEl('empty-inspector')?.setAttribute('hidden', '');
+    getEl('post-inspector')?.removeAttribute('hidden');
 
-    // Preview
-    const thumb = document.getElementById('m-thumb');
-    thumb.src = thumbSrc;
-    thumb.style.display = thumbSrc ? 'block' : 'none';
-    const link = document.getElementById('m-link');
-    link.href = p.media_url || '#';
-    link.style.display = p.media_url ? 'block' : 'none';
+    const media = getEl('i-media');
+    if (media) {
+      media.src = thumbSrc || p.media_url || '';
+      media.hidden = !(thumbSrc || p.media_url);
+    }
 
-    // Form
-    document.getElementById('m-caption').value   = p.caption || '';
-    document.getElementById('m-scheduled').value  = (p.scheduled_at || '').substring(0, 16);
-    document.getElementById('m-type-sel').value   = p.type || 'feed';
-    document.getElementById('m-music').checked    = p.needs_music === 'TRUE';
-    document.getElementById('m-notes').value      = p.notes || '';
+    const statusPill = getEl('i-status-pill');
+    if (statusPill) {
+      statusPill.textContent = p.status || 'draft';
+      statusPill.style.background = STATUS_COLOR[p.status] || '#7f8c8d';
+      statusPill.style.color = '#fff';
+    }
 
-    // Approve/reject only for drafts
-    const isDraft = p.status === 'draft';
-    document.getElementById('btn-approve').style.display = isDraft ? '' : 'none';
-    document.getElementById('btn-reject').style.display  = isDraft ? '' : 'none';
+    const typePill = getEl('i-type-pill');
+    if (typePill) {
+      typePill.textContent = p.type || 'feed';
+    }
 
-    document.getElementById('overlay').classList.add('open');
+    const scheduled = (p.scheduled_at || '').substring(0, 16);
+    if (getEl('i-caption')) getEl('i-caption').value = p.caption || '';
+    if (getEl('i-scheduled')) getEl('i-scheduled').value = scheduled;
+    if (getEl('i-type')) getEl('i-type').value = p.type || 'feed';
+    if (getEl('i-music')) getEl('i-music').checked = p.needs_music === true || p.needs_music === 'TRUE';
+    if (getEl('i-notes')) getEl('i-notes').value = p.notes || '';
   }
 
   function closeModal() {
-    document.getElementById('overlay').classList.remove('open');
+    getEl('post-inspector')?.setAttribute('hidden', '');
+    getEl('empty-inspector')?.removeAttribute('hidden');
     currentPost = null;
   }
 
   function overlayClick(e) {
-    if (e.target === document.getElementById('overlay')) closeModal();
+    if (e.target === getEl('overlay')) closeModal();
   }
 
   async function doSave() {
     if (!currentPost) return;
     const updated = {
       ...currentPost,
-      caption:      document.getElementById('m-caption').value,
-      scheduled_at: document.getElementById('m-scheduled').value + ':00',
-      type:         document.getElementById('m-type-sel').value,
-      needs_music:  document.getElementById('m-music').checked ? 'TRUE' : 'FALSE',
-      notes:        document.getElementById('m-notes').value,
+      caption:      getEl('i-caption')?.value || '',
+      scheduled_at: (getEl('i-scheduled')?.value || '') ? `${getEl('i-scheduled').value}:00` : '',
+      type:         getEl('i-type')?.value || 'feed',
+      needs_music:  getEl('i-music')?.checked ? 'TRUE' : 'FALSE',
+      notes:        getEl('i-notes')?.value || '',
     };
     try {
       await post(UPDATE_URL, updated);
@@ -478,23 +570,34 @@
   }
 
   // ── NEW POST SIDEBAR ──────────────────────────────────────────
-  function openSidebar()  { document.getElementById('sidebar').classList.add('open'); }
+  function openSidebar()  {
+    showToast('New post drawer will be wired in Task 6');
+  }
   function closeSidebar() {
+    const sidebar = getEl('sidebar');
+    if (!sidebar) {
+      uploadedUrl = '';
+      return;
+    }
     document.getElementById('sidebar').classList.remove('open');
     uploadedUrl = '';
-    document.getElementById('upload-name').textContent = '';
-    document.getElementById('file-input').value = '';
+    if (getEl('upload-name')) getEl('upload-name').textContent = '';
+    if (getEl('file-input')) getEl('file-input').value = '';
   }
 
   function handleFile(input) {
     if (!input.files[0]) return;
-    document.getElementById('upload-name').textContent = input.files[0].name;
+    if (getEl('upload-name')) getEl('upload-name').textContent = input.files[0].name;
     uploadFile(input.files[0]);
   }
 
   async function uploadFile(file) {
-    const bar  = document.getElementById('prog-bar');
-    const fill = document.getElementById('prog-fill');
+    const bar  = getEl('prog-bar');
+    const fill = getEl('prog-fill');
+    if (!bar || !fill) {
+      showToast('New post drawer will be wired in Task 6');
+      return;
+    }
     bar.classList.add('on'); fill.style.width = '0%';
     const isVideo = file.type.startsWith('video/');
     const url = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/${isVideo ? 'video' : 'image'}/upload`;
@@ -526,6 +629,10 @@
   }
 
   async function submitNew() {
+    if (!getEl('new-scheduled') || !getEl('new-type') || !getEl('new-caption') || !getEl('new-music') || !getEl('new-notes')) {
+      showToast('New post drawer will be wired in Task 6');
+      return;
+    }
     if (!uploadedUrl) { showToast('Upload a file first', true); return; }
     const sched = document.getElementById('new-scheduled').value;
     if (!sched) { showToast('Set a scheduled date/time', true); return; }
