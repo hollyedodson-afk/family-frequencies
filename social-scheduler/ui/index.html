@@ -784,7 +784,9 @@
     try {
       await postJson(UPDATE_URL, updated);
       Object.assign(post, normalizePost(updated));
-      showToast('Saved');
+      const savedStatus = updated.status || 'draft';
+      const savedWhen = updated.scheduled_at ? ` for ${formatDateTime(updated.scheduled_at)}` : '';
+      showToast(`Saved as ${savedStatus}${savedWhen}`);
       renderApp();
     } catch (error) {
       showToast('Save failed. Check n8n workflow 06.', true);
@@ -797,7 +799,8 @@
     try {
       await postJson(APPROVE_URL, { id: post.id, action });
       post.status = action === 'approve' ? 'scheduled' : 'rejected';
-      showToast(action === 'approve' ? 'Approved' : 'Rejected');
+      const when = post.scheduled_at ? ` — posts ${formatDateTime(post.scheduled_at)}` : '';
+      showToast(action === 'approve' ? `Approved${when}` : 'Rejected');
       renderApp();
     } catch (error) {
       showToast('Approval action failed. Check n8n workflow 04.', true);
@@ -938,7 +941,7 @@
     el.textContent = msg;
     el.className = 'show' + (err ? ' error' : '');
     clearTimeout(_toast);
-    _toast = setTimeout(() => el.className = '', 3200);
+    _toast = setTimeout(() => el.className = '', 4500);
   }
 </script>
 </body>
