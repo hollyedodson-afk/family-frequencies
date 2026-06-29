@@ -1,0 +1,32 @@
+[
+  {
+    "id": "sample-001",
+    "type": "feed",
+    "caption": "Here's what Saturday looks like. Jazz house, kids boogie songs, face painting, toys — a proper boogie before nap time.\n\nFree. No booking. 12–5pm at Hide Thirst & Hunger.\n\n#familyfrequencies #daylightdisco",
+    "scheduled_at": "2026-07-01T09:00:00",
+    "needs_music": "FALSE",
+    "notes": "What to expect post.",
+    "status": "draft",
+    "media_url": "../../brand/export/feed/05-what-to-expect.png"
+  },
+  {
+    "id": "sample-002",
+    "type": "story",
+    "caption": "",
+    "scheduled_at": "2026-07-02T09:05:00",
+    "needs_music": "TRUE",
+    "notes": "Countdown story. Add music before posting.",
+    "status": "needs_music",
+    "media_url": "../../brand/export/stories/S-cd-2.png"
+  },
+  {
+    "id": "sample-003",
+    "type": "feed",
+    "caption": "Tomorrow. Daylight Disco — 12–5pm, Hide Thirst & Hunger. Free, no booking. Just turn up.",
+    "scheduled_at": "2026-07-03T09:00:00",
+    "needs_music": "FALSE",
+    "notes": "Day-before reminder.",
+    "status": "scheduled",
+    "media_url": "../../brand/export/feed/06-reminder.png"
+  }
+]
