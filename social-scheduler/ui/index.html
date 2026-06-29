@@ -91,6 +91,9 @@
     .button--primary { background: var(--orange); color: white; border-color: var(--orange); }
     .button--success { background: #138A4B; color: white; border-color: #138A4B; }
     .button--quiet { background: transparent; color: inherit; }
+    .button--danger { background: transparent; color: #c0392b; border-color: #c0392b; }
+    .media-link { display: block; font-size: 0.72rem; font-weight: 800; color: var(--gold); text-decoration: none; margin-top: 4px; opacity: 0.8; text-align: right; }
+    .media-link:hover { opacity: 1; }
 
     .summary-card,
     .queue-card,
@@ -340,6 +343,7 @@
         <div class="media-frame">
           <img id="i-media" alt="Selected post media preview" />
         </div>
+        <a id="i-media-link" class="media-link" href="#" target="_blank" rel="noopener" hidden>View on Cloudinary ↗</a>
         <div class="inspector-meta">
           <span id="i-status-pill" class="status-pill"></span>
           <span id="i-type-pill" class="type-pill"></span>
@@ -374,6 +378,7 @@
           <textarea id="i-notes"></textarea>
         </label>
         <div class="inspector-actions">
+          <button class="button button--danger" type="button" data-action="delete">Delete</button>
           <button class="button button--quiet" type="button" data-action="reject">Reject</button>
           <button class="button button--success" type="button" data-action="approve">Approve</button>
           <button class="button button--primary" type="button" data-action="save">Save</button>
@@ -419,6 +424,7 @@
   const SUBMIT_URL    = 'http://localhost:5678/webhook/ff-submit-post';
   const APPROVE_URL   = 'http://localhost:5678/webhook/ff-approve-post';
   const UPDATE_URL    = 'http://localhost:5678/webhook/ff-update-post';
+  const DELETE_URL    = 'http://localhost:5678/webhook/ff-delete-post';
   const SHEET_ID      = '1FIrB4lsDqJuGvoOpNTfNhM64xfkg6TkUVNTPhGWvR1g';
   // ─────────────────────────────────────────────────────────────
 
@@ -491,6 +497,7 @@
     document.querySelector('[data-action="save"]')?.addEventListener('click', saveSelectedPost);
     document.querySelector('[data-action="approve"]')?.addEventListener('click', () => approveSelectedPost('approve'));
     document.querySelector('[data-action="reject"]')?.addEventListener('click', () => approveSelectedPost('reject'));
+    document.querySelector('[data-action="delete"]')?.addEventListener('click', deleteSelectedPost);
     document.addEventListener('keydown', event => {
       if (event.key !== 'Enter' && event.key !== ' ') return;
       const card = event.target.closest?.('[data-post-id]');
@@ -672,6 +679,9 @@
     document.getElementById('post-inspector').hidden = !post;
     if (!post) return;
     document.getElementById('i-media').src = mediaPreview(post);
+    const mediaLink = document.getElementById('i-media-link');
+    mediaLink.href = post.media_url || '#';
+    mediaLink.hidden = !post.media_url;
     document.getElementById('i-status-pill').textContent = post.status;
     document.getElementById('i-type-pill').textContent = post.type;
     document.getElementById('i-caption').value = post.caption;
@@ -792,6 +802,18 @@
     } catch (error) {
       showToast('Approval action failed. Check n8n workflow 04.', true);
     }
+  }
+
+  async function deleteSelectedPost() {
+    const post = selectedPost();
+    if (!post) return;
+    const label = (post.caption || post.notes || post.type).slice(0, 60);
+    if (!confirm(`Delete "${label}"?\n\nRemoves from this queue. The Sheet row is also deleted if n8n WF-delete is active.`)) return;
+    try { await postJson(DELETE_URL, { id: post.id }); } catch(_) {}
+    appState.posts = appState.posts.filter(p => p.id !== post.id);
+    appState.selectedId = appState.posts[0]?.id || null;
+    showToast('Post deleted');
+    renderApp();
   }
 
   // ── NEW POST DRAWER ───────────────────────────────────────────
