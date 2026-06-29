@@ -315,9 +315,8 @@ For first aid course and other events involving physical activity:
 - Participant confirms they are fit to participate
 - Release of liability for injury during practical exercises (except gross negligence)
 - Medical conditions: attendees must disclose relevant conditions on registration
-- Emergency contact field on ticket purchase form (add to Stripe checkout metadata and ff_tickets)
 
-**Note:** The liability waiver content should be reviewed before the first aid course goes live. Draft will be included in the build for legal review.
+**Note:** The liability waiver content should be reviewed before the first aid course goes live. Draft will be included in the build for legal review. Emergency contact field is out of scope for v1 (requires Stripe custom fields + schema column) — add in a future iteration.
 
 Stripe checkout for physical events adds:
 *"By purchasing you agree to our [Terms & Conditions], [Privacy Policy], and [Liability Waiver]."*
@@ -337,7 +336,7 @@ Stripe checkout for physical events adds:
 
 Free and ticketed events both trigger. Ticketed events include ticket link in Instagram draft and email.
 
-**n8n dependency:** WF08 requires n8n to be accessible via public URL (not localhost) so Supabase can POST to it. Options: deploy n8n to Railway/Render, or use an ngrok tunnel for now.
+**n8n is deployed on Railway** — public URL available, no blocker. Supabase webhooks can POST to it directly. WF08 can be implemented in any order relative to Tasks 1–19.
 
 ---
 
