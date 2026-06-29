@@ -407,6 +407,30 @@
       appState.sort = event.target.value;
       renderApp();
     });
+    document.querySelectorAll('.filter-chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        appState.filter = btn.dataset.filter || 'all';
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+          chip.classList.toggle('is-active', chip === btn);
+        });
+        renderApp();
+      });
+    });
+    getEl('queue-list')?.addEventListener('click', event => {
+      const card = event.target.closest('[data-post-id]');
+      if (card) selectPost(card.dataset.postId);
+    });
+    getEl('library-grid')?.addEventListener('click', event => {
+      const card = event.target.closest('[data-post-id]');
+      if (card) selectPost(card.dataset.postId);
+    });
+    document.addEventListener('keydown', event => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      const card = event.target.closest?.('[data-post-id]');
+      if (!card) return;
+      event.preventDefault();
+      selectPost(card.dataset.postId);
+    });
   }
 
   // ── CSV PARSER ────────────────────────────────────────────────
@@ -463,6 +487,11 @@
     return appState.posts.find(post => post.id === appState.selectedId) || null;
   }
 
+  function selectPost(id) {
+    appState.selectedId = id;
+    renderApp();
+  }
+
   function visiblePosts() {
     const filtered = appState.filter === 'all'
       ? appState.posts
@@ -492,28 +521,31 @@
     }).format(new Date(value));
   }
 
-  function calendarEvents(_info, ok) {
-    ok(appState.posts.map(post => {
+  function mediaPreview(post) {
+    if (!post?.media_url) return '';
+    if (post.media_url.match(/\.mp4(\?.*)?$/i)) return post.media_url.replace(/\.mp4(\?.*)?$/i, '.jpg');
+    return post.media_url;
+  }
+
+  function calendarEvents() {
+    return appState.posts.map(post => {
       const color = STATUS_COLOR[post.status] || '#7f8c8d';
       return {
         id: post.id,
-        title: post.caption || `[${post.type}]`,
+        title: post.caption || post.notes || `[${post.type}]`,
         start: post.scheduled_at,
         backgroundColor: color,
         borderColor: color,
         textColor: '#fff',
         extendedProps: post,
       };
-    }));
+    });
   }
 
   // ── EVENT CARD RENDERER ───────────────────────────────────────
   function renderCard(arg) {
     const p = arg.event.extendedProps;
-    const isVideo = p.type === 'reel' || p.type === 'story';
-    const thumbSrc = p.media_url
-      ? (isVideo ? p.media_url.replace(/\.mp4(\?.*)?$/i, '.jpg') : p.media_url)
-      : '';
+    const thumbSrc = mediaPreview(p);
     const caption = esc((p.caption || '').substring(0, 48) || `[${p.type}]`);
     return { html: `
       <div class="fc-event-card">
@@ -526,13 +558,54 @@
     };
   }
 
+  function renderQueue() {
+    const list = document.getElementById('queue-list');
+    const posts = visiblePosts();
+    list.innerHTML = posts.map(post => `
+      <article class="queue-card ${post.id === appState.selectedId ? 'is-selected' : ''}" data-post-id="${esc(post.id)}" tabindex="0">
+        <img class="queue-thumb" src="${esc(mediaPreview(post))}" alt="">
+        <div>
+          <div class="queue-title">${esc(post.type)} · ${esc(post.status)}</div>
+          <div class="queue-copy">${esc((post.caption || post.notes || 'No caption yet').slice(0, 130))}</div>
+        </div>
+        <time>${esc(formatDateTime(post.scheduled_at))}</time>
+      </article>
+    `).join('') || '<div class="summary-card">No posts match this filter.</div>';
+  }
+
+  function renderLibrary() {
+    const grid = document.getElementById('library-grid');
+    grid.innerHTML = appState.posts.map(post => `
+      <article class="library-card ${post.id === appState.selectedId ? 'is-selected' : ''}" data-post-id="${esc(post.id)}" tabindex="0">
+        <img src="${esc(mediaPreview(post))}" alt="">
+        <strong>${esc(post.type)}</strong>
+        <small>${esc(post.status)}</small>
+      </article>
+    `).join('');
+  }
+
+  function renderInspector() {
+    const post = selectedPost();
+    document.getElementById('empty-inspector').hidden = Boolean(post);
+    document.getElementById('post-inspector').hidden = !post;
+    if (!post) return;
+    document.getElementById('i-media').src = mediaPreview(post);
+    document.getElementById('i-status-pill').textContent = post.status;
+    document.getElementById('i-type-pill').textContent = post.type;
+    document.getElementById('i-caption').value = post.caption;
+    document.getElementById('i-scheduled').value = post.scheduled_at ? post.scheduled_at.slice(0, 16) : '';
+    document.getElementById('i-type').value = post.type;
+    document.getElementById('i-music').checked = post.needs_music;
+    document.getElementById('i-notes').value = post.notes;
+  }
+
   function renderApp() {
     if (typeof renderTabs === 'function') renderTabs();
     renderMetrics();
     visiblePosts();
-    if (typeof renderQueue === 'function') renderQueue();
-    if (typeof renderLibrary === 'function') renderLibrary();
-    if (typeof renderInspector === 'function') renderInspector();
+    renderQueue();
+    renderLibrary();
+    renderInspector();
     if (cal) cal.refetchEvents();
   }
 
@@ -546,9 +619,7 @@
     document.getElementById('metric-next').textContent = next ? formatDateTime(next.scheduled_at) : 'Nothing scheduled';
   }
 
-  // ── CALENDAR INIT ─────────────────────────────────────────────
-  document.addEventListener('DOMContentLoaded', () => {
-    bindShellActions();
+  function initCalendar() {
     cal = new FullCalendar.Calendar(document.getElementById('calendar'), {
       initialView: 'dayGridMonth',
       headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek' },
@@ -557,12 +628,18 @@
       eventAllow: () => true,
       firstDay: 1,
       height: 'auto',
-      events: calendarEvents,
+      events: (_info, ok) => ok(calendarEvents()),
       eventContent: renderCard,
-      eventClick: info => openModal(info.event.extendedProps),
+      eventClick: info => selectPost(info.event.id),
       eventDrop: handleDrop,
     });
     cal.render();
+  }
+
+  // ── CALENDAR INIT ─────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', () => {
+    bindShellActions();
+    initCalendar();
     loadPosts();
   });
 
@@ -588,46 +665,8 @@
   }
 
   // ── MODAL ─────────────────────────────────────────────────────
-  function openModal(p) {
-    appState.selectedId = p.id;
-    const isVideo = p.type === 'reel' || p.type === 'story';
-    const thumbSrc = p.media_url
-      ? (isVideo ? p.media_url.replace(/\.mp4(\?.*)?$/i, '.jpg') : p.media_url)
-      : '';
-
-    getEl('empty-inspector')?.setAttribute('hidden', '');
-    getEl('post-inspector')?.removeAttribute('hidden');
-
-    const media = getEl('i-media');
-    if (media) {
-      media.src = thumbSrc || p.media_url || '';
-      media.hidden = !(thumbSrc || p.media_url);
-    }
-
-    const statusPill = getEl('i-status-pill');
-    if (statusPill) {
-      statusPill.textContent = p.status || 'draft';
-      statusPill.style.background = STATUS_COLOR[p.status] || '#7f8c8d';
-      statusPill.style.color = '#fff';
-    }
-
-    const typePill = getEl('i-type-pill');
-    if (typePill) {
-      typePill.textContent = p.type || 'feed';
-    }
-
-    const scheduled = (p.scheduled_at || '').substring(0, 16);
-    if (getEl('i-caption')) getEl('i-caption').value = p.caption || '';
-    if (getEl('i-scheduled')) getEl('i-scheduled').value = scheduled;
-    if (getEl('i-type')) getEl('i-type').value = p.type || 'feed';
-    if (getEl('i-music')) getEl('i-music').checked = p.needs_music === true || p.needs_music === 'TRUE';
-    if (getEl('i-notes')) getEl('i-notes').value = p.notes || '';
-  }
-
   function closeModal() {
-    getEl('post-inspector')?.setAttribute('hidden', '');
-    getEl('empty-inspector')?.removeAttribute('hidden');
-    appState.selectedId = null;
+    selectPost(null);
   }
 
   function overlayClick(e) {
