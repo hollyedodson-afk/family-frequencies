@@ -366,6 +366,9 @@
     document.querySelectorAll('.view-panel').forEach(panel => {
       panel.classList.toggle('is-active', panel.id === `view-${view}`);
     });
+    if (view === 'calendar' && cal) {
+      requestAnimationFrame(() => cal.updateSize());
+    }
   }
 
   function bindShellActions() {
