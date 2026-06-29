@@ -554,7 +554,7 @@
       const post = {};
       hdrs.forEach((h, i) => post[h] = (r[i] || '').trim());
       return post;
-    });
+    }).filter(p => p.status !== 'deleted');
   }
 
   function selectedPost() {
