@@ -353,13 +353,36 @@
 
   const DONE_STATUSES = new Set(['posted', 'processing', 'failed', 'rejected']);
 
-  let cal, currentPost = null, uploadedUrl = '';
+  let cal;
+
+  const appState = {
+    posts: [],
+    selectedId: null,
+    view: 'inbox',
+    filter: 'all',
+    sort: 'time',
+    uploadedUrl: '',
+  };
+
+  function normalizePost(raw) {
+    return {
+      id: raw.id || crypto.randomUUID(),
+      type: raw.type || 'feed',
+      caption: raw.caption || '',
+      scheduled_at: raw.scheduled_at || '',
+      needs_music: raw.needs_music === true || raw.needs_music === 'TRUE' || raw.status === 'needs_music',
+      notes: raw.notes || '',
+      status: raw.status || 'draft',
+      media_url: raw.media_url || '',
+    };
+  }
 
   function getEl(id) {
     return document.getElementById(id);
   }
 
   function setView(view) {
+    appState.view = view;
     document.querySelectorAll('.view-tab').forEach(btn => {
       btn.classList.toggle('is-active', btn.dataset.view === view);
     });
@@ -379,6 +402,10 @@
     document.querySelector('[data-action="reject"]')?.addEventListener('click', () => doApprove('reject'));
     document.querySelectorAll('.view-tab').forEach(btn => {
       btn.addEventListener('click', () => setView(btn.dataset.view));
+    });
+    getEl('sort-select')?.addEventListener('change', event => {
+      appState.sort = event.target.value;
+      renderApp();
     });
   }
 
@@ -405,37 +432,79 @@
     return rows;
   }
 
-  // ── LOAD EVENTS ───────────────────────────────────────────────
-  async function fetchEvents(info, ok, fail) {
+  async function loadPosts() {
     try {
-      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Sheet1`;
-      const res = await fetch(url);
-      if (!res.ok) throw new Error('Sheet load failed — is it shared as "Anyone with link can view"?');
-      const text = await res.text();
-      const rows = parseCSV(text);
-      if (rows.length < 2) { ok([]); return; }
-      const hdrs = rows[0].map(h => h.trim());
-      const events = rows.slice(1)
-        .filter(r => r.length >= hdrs.length && r[0])
-        .map(r => {
-          const p = {};
-          hdrs.forEach((h, i) => p[h] = (r[i] || '').trim());
-          const color = STATUS_COLOR[p.status] || '#7f8c8d';
-          return {
-            id: p.id,
-            title: p.caption || `[${p.type}]`,
-            start: p.scheduled_at,
-            backgroundColor: color,
-            borderColor: color,
-            textColor: '#fff',
-            extendedProps: p,
-          };
-        });
-      ok(events);
-    } catch(e) {
-      fail(e);
-      showToast(e.message || 'Failed to load sheet', true);
+      const sheetPosts = await loadSheetPosts();
+      appState.posts = sheetPosts.map(normalizePost);
+    } catch (error) {
+      const fixture = await fetch('sample-posts.json');
+      appState.posts = (await fixture.json()).map(normalizePost);
+      showToast('Using local sample posts. Sheet did not load.', true);
     }
+    if (!appState.selectedId && appState.posts[0]) appState.selectedId = appState.posts[0].id;
+    renderApp();
+  }
+
+  async function loadSheetPosts() {
+    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Sheet1`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('Sheet load failed');
+    const rows = parseCSV(await res.text());
+    if (rows.length < 2) return [];
+    const hdrs = rows[0].map(h => h.trim());
+    return rows.slice(1).filter(r => r.length >= hdrs.length && r[0]).map(r => {
+      const post = {};
+      hdrs.forEach((h, i) => post[h] = (r[i] || '').trim());
+      return post;
+    });
+  }
+
+  function selectedPost() {
+    return appState.posts.find(post => post.id === appState.selectedId) || null;
+  }
+
+  function visiblePosts() {
+    const filtered = appState.filter === 'all'
+      ? appState.posts
+      : appState.posts.filter(post => post.status === appState.filter || (appState.filter === 'needs_music' && post.needs_music));
+    return filtered.slice().sort((a, b) => {
+      if (appState.sort === 'status') return a.status.localeCompare(b.status);
+      if (appState.sort === 'type') return a.type.localeCompare(b.type);
+      return String(a.scheduled_at).localeCompare(String(b.scheduled_at));
+    });
+  }
+
+  function nextScheduledPost() {
+    const now = new Date();
+    return appState.posts
+      .filter(post => post.scheduled_at && new Date(post.scheduled_at) >= now && post.status !== 'posted')
+      .sort((a, b) => new Date(a.scheduled_at) - new Date(b.scheduled_at))[0] || null;
+  }
+
+  function formatDateTime(value) {
+    if (!value) return 'Unscheduled';
+    return new Intl.DateTimeFormat('en-NZ', {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short',
+      hour: 'numeric',
+      minute: '2-digit',
+    }).format(new Date(value));
+  }
+
+  function calendarEvents(_info, ok) {
+    ok(appState.posts.map(post => {
+      const color = STATUS_COLOR[post.status] || '#7f8c8d';
+      return {
+        id: post.id,
+        title: post.caption || `[${post.type}]`,
+        start: post.scheduled_at,
+        backgroundColor: color,
+        borderColor: color,
+        textColor: '#fff',
+        extendedProps: post,
+      };
+    }));
   }
 
   // ── EVENT CARD RENDERER ───────────────────────────────────────
@@ -457,6 +526,26 @@
     };
   }
 
+  function renderApp() {
+    if (typeof renderTabs === 'function') renderTabs();
+    renderMetrics();
+    visiblePosts();
+    if (typeof renderQueue === 'function') renderQueue();
+    if (typeof renderLibrary === 'function') renderLibrary();
+    if (typeof renderInspector === 'function') renderInspector();
+    if (cal) cal.refetchEvents();
+  }
+
+  function renderMetrics() {
+    const count = predicate => appState.posts.filter(predicate).length;
+    document.getElementById('metric-draft').textContent = count(post => post.status === 'draft');
+    document.getElementById('metric-music').textContent = count(post => post.needs_music || post.status === 'needs_music');
+    document.getElementById('metric-scheduled').textContent = count(post => post.status === 'scheduled');
+    document.getElementById('metric-posted').textContent = count(post => post.status === 'posted');
+    const next = nextScheduledPost();
+    document.getElementById('metric-next').textContent = next ? formatDateTime(next.scheduled_at) : 'Nothing scheduled';
+  }
+
   // ── CALENDAR INIT ─────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', () => {
     bindShellActions();
@@ -468,15 +557,16 @@
       eventAllow: () => true,
       firstDay: 1,
       height: 'auto',
-      events: fetchEvents,
+      events: calendarEvents,
       eventContent: renderCard,
       eventClick: info => openModal(info.event.extendedProps),
       eventDrop: handleDrop,
     });
     cal.render();
+    loadPosts();
   });
 
-  function refetch() { cal && cal.refetchEvents(); }
+  function refetch() { loadPosts(); }
 
   // ── DRAG & DROP ───────────────────────────────────────────────
   async function handleDrop(info) {
@@ -499,7 +589,7 @@
 
   // ── MODAL ─────────────────────────────────────────────────────
   function openModal(p) {
-    currentPost = { ...p };
+    appState.selectedId = p.id;
     const isVideo = p.type === 'reel' || p.type === 'story';
     const thumbSrc = p.media_url
       ? (isVideo ? p.media_url.replace(/\.mp4(\?.*)?$/i, '.jpg') : p.media_url)
@@ -537,7 +627,7 @@
   function closeModal() {
     getEl('post-inspector')?.setAttribute('hidden', '');
     getEl('empty-inspector')?.removeAttribute('hidden');
-    currentPost = null;
+    appState.selectedId = null;
   }
 
   function overlayClick(e) {
@@ -545,6 +635,7 @@
   }
 
   async function doSave() {
+    const currentPost = selectedPost();
     if (!currentPost) return;
     const updated = {
       ...currentPost,
@@ -558,17 +649,18 @@
       await post(UPDATE_URL, updated);
       showToast('Saved ✓');
       closeModal();
-      setTimeout(refetch, 600);
+      setTimeout(loadPosts, 600);
     } catch(e) { showToast('Save failed', true); }
   }
 
   async function doApprove(action) {
+    const currentPost = selectedPost();
     if (!currentPost) return;
     try {
       await post(APPROVE_URL, { id: currentPost.id, action });
       showToast(action === 'approve' ? 'Approved ✓' : 'Rejected');
       closeModal();
-      setTimeout(refetch, 600);
+      setTimeout(loadPosts, 600);
     } catch(e) { showToast('Action failed', true); }
   }
 
@@ -579,11 +671,11 @@
   function closeSidebar() {
     const sidebar = getEl('sidebar');
     if (!sidebar) {
-      uploadedUrl = '';
+      appState.uploadedUrl = '';
       return;
     }
     document.getElementById('sidebar').classList.remove('open');
-    uploadedUrl = '';
+    appState.uploadedUrl = '';
     if (getEl('upload-name')) getEl('upload-name').textContent = '';
     if (getEl('file-input')) getEl('file-input').value = '';
   }
@@ -616,7 +708,7 @@
         };
         xhr.onload = () => {
           if (xhr.status >= 200 && xhr.status < 300) {
-            uploadedUrl = JSON.parse(xhr.responseText).secure_url;
+            appState.uploadedUrl = JSON.parse(xhr.responseText).secure_url;
             fill.style.width = '100%';
             setTimeout(() => bar.classList.remove('on'), 900);
             res();
@@ -636,13 +728,13 @@
       showToast('New post drawer will be wired in Task 6');
       return;
     }
-    if (!uploadedUrl) { showToast('Upload a file first', true); return; }
+    if (!appState.uploadedUrl) { showToast('Upload a file first', true); return; }
     const sched = document.getElementById('new-scheduled').value;
     if (!sched) { showToast('Set a scheduled date/time', true); return; }
     const payload = {
       type:         document.getElementById('new-type').value,
       caption:      document.getElementById('new-caption').value,
-      media_url:    uploadedUrl,
+      media_url:    appState.uploadedUrl,
       scheduled_at: sched + ':00',
       needs_music:  document.getElementById('new-music').checked,
       notes:        document.getElementById('new-notes').value,
@@ -656,7 +748,7 @@
       document.getElementById('new-scheduled').value = '';
       document.getElementById('new-music').checked  = false;
       document.getElementById('new-notes').value    = '';
-      setTimeout(refetch, 700);
+      setTimeout(loadPosts, 700);
     } catch(e) { showToast('Submit failed', true); }
   }
 
