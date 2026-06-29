@@ -434,6 +434,8 @@
     uploadedUrl: '',
   };
 
+  let uploadSessionToken = 0;
+
   function normalizePost(raw) {
     return {
       id: raw.id || crypto.randomUUID(),
@@ -780,10 +782,20 @@
 
   function closeNewPostDrawer() {
     document.getElementById('new-post-drawer').hidden = true;
+    uploadSessionToken += 1;
+    resetNewPostForm();
+  }
+
+  function resetNewPostForm() {
     appState.uploadedUrl = '';
     document.getElementById('upload-name').textContent = 'Choose image or video';
     document.getElementById('file-input').value = '';
     document.getElementById('prog-fill').style.width = '0%';
+    document.getElementById('new-caption').value = '';
+    document.getElementById('new-scheduled').value = '';
+    document.getElementById('new-type').value = 'feed';
+    document.getElementById('new-music').checked = false;
+    document.getElementById('new-notes').value = '';
   }
 
   function bindDrawerEvents() {
@@ -805,24 +817,31 @@
     const fd = new FormData();
     fd.append('upload_preset', UPLOAD_PRESET);
     fd.append('file', file);
+    const token = ++uploadSessionToken;
     try {
       await new Promise((res, rej) => {
         const xhr = new XMLHttpRequest();
         xhr.open('POST', url);
         xhr.upload.onprogress = e => {
+          if (token !== uploadSessionToken) return;
           if (e.lengthComputable) fill.style.width = Math.round(e.loaded/e.total*100) + '%';
         };
         xhr.onload = () => {
+          if (token !== uploadSessionToken) return res();
           if (xhr.status >= 200 && xhr.status < 300) {
             appState.uploadedUrl = JSON.parse(xhr.responseText).secure_url;
             fill.style.width = '100%';
             res();
           } else rej(new Error('Upload ' + xhr.status));
         };
-        xhr.onerror = () => rej(new Error('Network error'));
+        xhr.onerror = () => {
+          if (token !== uploadSessionToken) return res();
+          rej(new Error('Network error'));
+        };
         xhr.send(fd);
       });
     } catch(e) {
+      if (token !== uploadSessionToken) return;
       showToast('Upload failed', true);
       fill.style.width = '0%';
     }
