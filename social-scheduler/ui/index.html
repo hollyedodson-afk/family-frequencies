@@ -201,6 +201,49 @@
       white-space: normal;
     }
 
+    .drawer {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: flex;
+      justify-content: flex-end;
+      background: rgba(26, 43, 64, 0.42);
+    }
+
+    .drawer[hidden] { display: none; }
+
+    .drawer__panel {
+      width: min(420px, 100vw);
+      height: 100%;
+      overflow-y: auto;
+      background: var(--paper);
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .upload-zone {
+      display: grid;
+      place-items: center;
+      min-height: 120px;
+      border: 2px dashed var(--line);
+      border-radius: 8px;
+      background: var(--cream);
+      cursor: pointer;
+      margin: 18px 0;
+    }
+
+    .upload-zone input { display: none; }
+
+    .prog-bar {
+      height: 4px;
+      background: var(--line);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    .prog-fill { height: 100%; width: 0%; background: var(--orange); }
+
     @media (max-width: 1080px) {
       .app-shell { grid-template-columns: 210px minmax(0, 1fr); }
       .inspector { grid-column: 1 / -1; }
@@ -328,7 +371,34 @@
     </aside>
   </div>
 
-  <div id="new-post-drawer" class="drawer" hidden></div>
+  <div id="new-post-drawer" class="drawer" hidden>
+    <div class="drawer__panel">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Upload</p>
+          <h3>New post</h3>
+        </div>
+        <button class="button button--quiet" type="button" data-action="close-drawer">Close</button>
+      </div>
+      <label class="upload-zone">
+        <input type="file" id="file-input" accept="image/*,video/*" />
+        <span id="upload-name">Choose image or video</span>
+      </label>
+      <div class="prog-bar" id="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
+      <label class="field">Caption <textarea id="new-caption"></textarea></label>
+      <label class="field">Scheduled <input type="datetime-local" id="new-scheduled" /></label>
+      <label class="field">Type
+        <select id="new-type">
+          <option value="feed">Feed</option>
+          <option value="reel">Reel</option>
+          <option value="story">Story</option>
+        </select>
+      </label>
+      <label class="check-row"><input type="checkbox" id="new-music" /> Needs music before posting</label>
+      <label class="field">Notes <textarea id="new-notes"></textarea></label>
+      <button class="button button--primary" type="button" data-action="submit-new">Add to queue</button>
+    </div>
+  </div>
   <div id="toast"></div>
 
 <script>
@@ -384,6 +454,7 @@
   function bindEvents() {
     document.querySelector('[data-action="refresh"]')?.addEventListener('click', loadPosts);
     document.querySelector('[data-action="new-post"]')?.addEventListener('click', openNewPostDrawer);
+    bindDrawerEvents();
     getEl('sort-select')?.addEventListener('change', event => {
       appState.sort = event.target.value;
       renderApp();
@@ -702,36 +773,33 @@
     }
   }
 
-  // ── NEW POST SIDEBAR ──────────────────────────────────────────
-  function openNewPostDrawer()  {
-    showToast('New post drawer will be wired in Task 6');
-  }
-  function closeSidebar() {
-    const sidebar = getEl('sidebar');
-    if (!sidebar) {
-      appState.uploadedUrl = '';
-      return;
-    }
-    document.getElementById('sidebar').classList.remove('open');
-    appState.uploadedUrl = '';
-    if (getEl('upload-name')) getEl('upload-name').textContent = '';
-    if (getEl('file-input')) getEl('file-input').value = '';
+  // ── NEW POST DRAWER ───────────────────────────────────────────
+  function openNewPostDrawer() {
+    document.getElementById('new-post-drawer').hidden = false;
   }
 
-  function handleFile(input) {
-    if (!input.files[0]) return;
-    if (getEl('upload-name')) getEl('upload-name').textContent = input.files[0].name;
-    uploadFile(input.files[0]);
+  function closeNewPostDrawer() {
+    document.getElementById('new-post-drawer').hidden = true;
+    appState.uploadedUrl = '';
+    document.getElementById('upload-name').textContent = 'Choose image or video';
+    document.getElementById('file-input').value = '';
+    document.getElementById('prog-fill').style.width = '0%';
+  }
+
+  function bindDrawerEvents() {
+    document.querySelector('[data-action="close-drawer"]').addEventListener('click', closeNewPostDrawer);
+    document.querySelector('[data-action="submit-new"]').addEventListener('click', submitNewPost);
+    document.getElementById('file-input').addEventListener('change', event => {
+      const file = event.target.files[0];
+      if (!file) return;
+      document.getElementById('upload-name').textContent = file.name;
+      uploadFile(file);
+    });
   }
 
   async function uploadFile(file) {
-    const bar  = getEl('prog-bar');
     const fill = getEl('prog-fill');
-    if (!bar || !fill) {
-      showToast('New post drawer will be wired in Task 6');
-      return;
-    }
-    bar.classList.add('on'); fill.style.width = '0%';
+    fill.style.width = '0%';
     const isVideo = file.type.startsWith('video/');
     const url = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/${isVideo ? 'video' : 'image'}/upload`;
     const fd = new FormData();
@@ -748,7 +816,6 @@
           if (xhr.status >= 200 && xhr.status < 300) {
             appState.uploadedUrl = JSON.parse(xhr.responseText).secure_url;
             fill.style.width = '100%';
-            setTimeout(() => bar.classList.remove('on'), 900);
             res();
           } else rej(new Error('Upload ' + xhr.status));
         };
@@ -757,37 +824,32 @@
       });
     } catch(e) {
       showToast('Upload failed', true);
-      bar.classList.remove('on');
+      fill.style.width = '0%';
     }
   }
 
-  async function submitNew() {
-    if (!getEl('new-scheduled') || !getEl('new-type') || !getEl('new-caption') || !getEl('new-music') || !getEl('new-notes')) {
-      showToast('New post drawer will be wired in Task 6');
-      return;
-    }
+  async function submitNewPost() {
     if (!appState.uploadedUrl) { showToast('Upload a file first', true); return; }
-    const sched = document.getElementById('new-scheduled').value;
-    if (!sched) { showToast('Set a scheduled date/time', true); return; }
+    const scheduled = document.getElementById('new-scheduled').value;
+    if (!scheduled) { showToast('Set a scheduled time', true); return; }
     const payload = {
-      type:         document.getElementById('new-type').value,
-      caption:      document.getElementById('new-caption').value,
-      media_url:    appState.uploadedUrl,
-      scheduled_at: sched + ':00',
-      needs_music:  document.getElementById('new-music').checked,
-      notes:        document.getElementById('new-notes').value,
-      status:       'draft',
+      type: document.getElementById('new-type').value,
+      caption: document.getElementById('new-caption').value,
+      media_url: appState.uploadedUrl,
+      scheduled_at: scheduled + ':00',
+      needs_music: document.getElementById('new-music').checked,
+      notes: document.getElementById('new-notes').value,
+      status: 'draft',
     };
     try {
       await postJson(SUBMIT_URL, payload);
-      showToast('Added to queue ✓');
-      closeSidebar();
-      document.getElementById('new-caption').value  = '';
-      document.getElementById('new-scheduled').value = '';
-      document.getElementById('new-music').checked  = false;
-      document.getElementById('new-notes').value    = '';
-      setTimeout(loadPosts, 700);
-    } catch(e) { showToast('Submit failed', true); }
+      appState.posts.unshift(normalizePost(payload));
+      closeNewPostDrawer();
+      showToast('Added to queue');
+      renderApp();
+    } catch (error) {
+      showToast('Submit failed. Check n8n workflow 01.', true);
+    }
   }
 
   // ── UTILS ─────────────────────────────────────────────────────
