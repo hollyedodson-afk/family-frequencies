@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FF Social Queue</title>
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet" integrity="sha384-a+uEN0SA9NPmaoLnc5WsmxDS2SgEiUlzTisgqmWvaOsxzPREhiatn8EIBuY/Zsl2" crossorigin="anonymous" />
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js" integrity="sha384-5JIwZN3kuxX2zKsavvNmbZ3zhZZMUtu/eQiK3BbXukpSXp0Cd2ZP4OAYKx7mrPgI" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --navy: #1A2B40;
+      --blue: #00B2F5;
+      --orange: #F07800;
+      --gold: #F0B840;
+      --cream: #FAF0E0;
+      --paper: #FFFDFC;
+      --ink: #18202C;
+      --muted: #667085;
+      --line: rgba(26, 43, 64, 0.14);
+      --shadow: 0 18px 48px rgba(26, 43, 64, 0.12);
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      background: var(--cream);
+      color: var(--ink);
+      font-family: Barlow, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .app-shell {
+      display: grid;
+      grid-template-columns: 248px minmax(0, 1fr) 380px;
+      min-height: 100vh;
+    }
+
+    .rail,
+    .inspector {
+      background: var(--navy);
+      color: var(--paper);
+    }
+
+    .rail { padding: 22px; }
+    .workspace { min-width: 0; padding: 22px; }
+    .inspector { padding: 22px; overflow-y: auto; }
+    .rail__brand { display: flex; gap: 12px; align-items: center; margin-bottom: 28px; }
+    .brand-mark { display: grid; place-items: center; width: 44px; height: 44px; border: 2px solid var(--gold); color: var(--gold); font-weight: 900; }
+    .eyebrow { margin: 0 0 4px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--orange); }
+    h1, h2, h3 { margin: 0; line-height: 0.95; text-transform: uppercase; letter-spacing: 0; }
+    h1 { font-size: 1.35rem; }
+    h2 { font-size: 2rem; }
+    h3 { font-size: 1.45rem; }
+
+    .view-tabs,
+    .filter-group,
+    .topbar,
+    .topbar__actions,
+    .summary-strip,
+    .section-head,
+    .inspector-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .view-tabs,
+    .filter-group { flex-direction: column; }
+    .topbar,
+    .section-head { align-items: center; justify-content: space-between; }
+    .summary-strip { margin: 20px 0; display: grid; grid-template-columns: repeat(4, minmax(120px, 1fr)) 1.6fr; }
+
+    .button,
+    .view-tab,
+    .filter-chip,
+    select,
+    input,
+    textarea {
+      min-height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      font: inherit;
+    }
+
+    .button,
+    .view-tab,
+    .filter-chip { cursor: pointer; font-weight: 800; }
+    .view-tab,
+    .filter-chip { background: rgba(255,255,255,0.08); color: var(--paper); text-align: left; padding: 10px 12px; }
+    .view-tab.is-active,
+    .filter-chip.is-active { background: var(--gold); color: var(--navy); }
+    .button { padding: 0 14px; background: var(--paper); color: var(--navy); }
+    .button--primary { background: var(--orange); color: white; border-color: var(--orange); }
+    .button--success { background: #138A4B; color: white; border-color: #138A4B; }
+    .button--quiet { background: transparent; color: inherit; }
+
+    .summary-card,
+    .queue-card,
+    .library-card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 1px 0 rgba(26, 43, 64, 0.05);
+    }
+
+    .summary-card { padding: 14px; }
+    .summary-card span { display: block; font-size: 1.45rem; font-weight: 900; color: var(--navy); }
+    .summary-card small { color: var(--muted); font-weight: 700; }
+
+    .view-panel { display: none; }
+    .view-panel.is-active { display: block; }
+    .queue-list { display: grid; gap: 10px; }
+    .queue-card { display: grid; grid-template-columns: 84px 1fr auto; gap: 14px; align-items: center; padding: 10px; cursor: pointer; }
+    .queue-card.is-selected { outline: 3px solid var(--gold); }
+    .queue-thumb { width: 84px; height: 84px; object-fit: cover; border-radius: 6px; background: var(--cream); }
+    .queue-title { font-weight: 900; color: var(--navy); }
+    .queue-copy { color: var(--muted); font-size: 0.9rem; line-height: 1.35; }
+
+    .library-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+    .library-card { padding: 8px; cursor: pointer; }
+    .library-card img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 6px; background: var(--cream); }
+
+    .media-frame { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); border-radius: 8px; padding: 10px; }
+    .media-frame img { width: 100%; max-height: 380px; object-fit: contain; display: block; }
+    .inspector-form { display: grid; gap: 14px; }
+    .inspector-meta { display: flex; gap: 8px; flex-wrap: wrap; }
+    .status-pill,
+    .type-pill { display: inline-flex; align-items: center; min-height: 28px; border-radius: 999px; padding: 0 10px; font-size: 0.72rem; font-weight: 900; text-transform: uppercase; }
+    .status-pill { background: var(--gold); color: var(--navy); }
+    .type-pill { background: rgba(255,255,255,0.12); color: var(--paper); }
+    .field { display: grid; gap: 6px; font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; }
+    .field input,
+    .field select,
+    .field textarea { width: 100%; padding: 10px; background: var(--paper); color: var(--ink); }
+    .field textarea { min-height: 96px; resize: vertical; text-transform: none; letter-spacing: 0; font-weight: 500; }
+    .check-row { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+    .empty-state { display: grid; align-content: center; min-height: 70vh; gap: 10px; color: rgba(255,255,255,0.72); }
+
+    @media (max-width: 1080px) {
+      .app-shell { grid-template-columns: 210px minmax(0, 1fr); }
+      .inspector { grid-column: 1 / -1; }
+    }
+
+    @media (max-width: 760px) {
+      .app-shell { display: block; }
+      .rail, .workspace, .inspector { padding: 16px; }
+      .summary-strip { grid-template-columns: repeat(2, 1fr); }
+      .queue-card { grid-template-columns: 72px 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="rail" aria-label="Social scheduler navigation">
+      <div class="rail__brand">
+        <div class="brand-mark">FF</div>
+        <div>
+          <p class="eyebrow">Family Frequencies</p>
+          <h1>Social Queue</h1>
+        </div>
+      </div>
+
+      <nav class="view-tabs" aria-label="Views">
+        <button class="view-tab is-active" type="button" data-view="inbox">Inbox</button>
+        <button class="view-tab" type="button" data-view="calendar">Calendar</button>
+        <button class="view-tab" type="button" data-view="library">Library</button>
+      </nav>
+
+      <div class="filter-group" aria-label="Status filters">
+        <button class="filter-chip is-active" type="button" data-filter="all">All</button>
+        <button class="filter-chip" type="button" data-filter="draft">Draft</button>
+        <button class="filter-chip" type="button" data-filter="needs_music">Needs music</button>
+        <button class="filter-chip" type="button" data-filter="scheduled">Scheduled</button>
+        <button class="filter-chip" type="button" data-filter="posted">Posted</button>
+      </div>
+    </aside>
+
+    <main class="workspace">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Campaign</p>
+          <h2>Daylight Disco launch</h2>
+        </div>
+        <div class="topbar__actions">
+          <button class="button button--quiet" type="button" data-action="refresh">Refresh</button>
+          <button class="button button--primary" type="button" data-action="new-post">New post</button>
+        </div>
+      </header>
+
+      <section class="summary-strip" aria-label="Queue summary">
+        <article class="summary-card"><span id="metric-draft">0</span><small>Drafts</small></article>
+        <article class="summary-card"><span id="metric-music">0</span><small>Need music</small></article>
+        <article class="summary-card"><span id="metric-scheduled">0</span><small>Scheduled</small></article>
+        <article class="summary-card"><span id="metric-posted">0</span><small>Posted</small></article>
+        <article class="summary-card summary-card--wide"><span id="metric-next">No posts loaded</span><small>Next up</small></article>
+      </section>
+
+      <section id="view-inbox" class="view-panel is-active" aria-label="Inbox">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Needs attention</p>
+            <h3>Review queue</h3>
+          </div>
+          <select id="sort-select" aria-label="Sort posts">
+            <option value="time">Scheduled time</option>
+            <option value="status">Status</option>
+            <option value="type">Post type</option>
+          </select>
+        </div>
+        <div id="queue-list" class="queue-list"></div>
+      </section>
+
+      <section id="view-calendar" class="view-panel" aria-label="Calendar">
+        <div id="calendar"></div>
+      </section>
+
+      <section id="view-library" class="view-panel" aria-label="Library">
+        <div id="library-grid" class="library-grid"></div>
+      </section>
+    </main>
+
+    <aside class="inspector" aria-label="Selected post">
+      <div id="empty-inspector" class="empty-state">
+        <p class="eyebrow">Select a post</p>
+        <h2>Preview, edit, approve.</h2>
+        <p>Choose a post from the queue or calendar to see the media, caption, notes, and publishing controls.</p>
+      </div>
+
+      <form id="post-inspector" class="inspector-form" hidden>
+        <div class="media-frame">
+          <img id="i-media" alt="Selected post media preview" />
+        </div>
+        <div class="inspector-meta">
+          <span id="i-status-pill" class="status-pill"></span>
+          <span id="i-type-pill" class="type-pill"></span>
+        </div>
+        <label class="field">Caption
+          <textarea id="i-caption"></textarea>
+        </label>
+        <label class="field">Scheduled
+          <input id="i-scheduled" type="datetime-local" />
+        </label>
+        <label class="field">Type
+          <select id="i-type">
+            <option value="feed">Feed</option>
+            <option value="reel">Reel</option>
+            <option value="story">Story</option>
+          </select>
+        </label>
+        <label class="check-row">
+          <input id="i-music" type="checkbox" />
+          Needs music before posting
+        </label>
+        <label class="field">Notes
+          <textarea id="i-notes"></textarea>
+        </label>
+        <div class="inspector-actions">
+          <button class="button button--quiet" type="button" data-action="reject">Reject</button>
+          <button class="button button--success" type="button" data-action="approve">Approve</button>
+          <button class="button button--primary" type="button" data-action="save">Save</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+
+  <div id="new-post-drawer" class="drawer" hidden></div>
+  <div id="toast"></div>
+
+<script>
+  // ── CONFIG ────────────────────────────────────────────────────
+  const CLOUD_NAME    = 'dxh9cnlqu';
+  const UPLOAD_PRESET = 'ml_default';
+  const SUBMIT_URL    = 'http://localhost:5678/webhook/ff-submit-post';
+  const APPROVE_URL   = 'http://localhost:5678/webhook/ff-approve-post';
+  const UPDATE_URL    = 'http://localhost:5678/webhook/ff-update-post';
+  const SHEET_ID      = '1FIrB4lsDqJuGvoOpNTfNhM64xfkg6TkUVNTPhGWvR1g';
+  // ─────────────────────────────────────────────────────────────
+
+  const STATUS_COLOR = {
+    draft:       '#f39c12',
+    scheduled:   '#2980b9',
+    posted:      '#27ae60',
+    needs_music: '#8e44ad',
+    failed:      '#e74c3c',
+    rejected:    '#95a5a6',
+    processing:  '#16a085',
+  };
+
+  const DONE_STATUSES = new Set(['posted', 'processing', 'failed', 'rejected']);
+
+  let cal, currentPost = null, uploadedUrl = '';
+
+  // ── CSV PARSER ────────────────────────────────────────────────
+  function parseCSV(text) {
+    const rows = [];
+    let row = [], f = '', q = false;
+    for (let i = 0; i < text.length; i++) {
+      const c = text[i], n = text[i+1];
+      if (q) {
+        if (c === '"' && n === '"') { f += '"'; i++; }
+        else if (c === '"') { q = false; }
+        else { f += c; }
+      } else {
+        if (c === '"') { q = true; }
+        else if (c === ',') { row.push(f); f = ''; }
+        else if (c === '\n' || (c === '\r' && n === '\n')) {
+          if (c === '\r') i++;
+          row.push(f); rows.push(row); row = []; f = '';
+        } else { f += c; }
+      }
+    }
+    if (f || row.length) { row.push(f); if (row.some(x=>x)) rows.push(row); }
+    return rows;
+  }
+
+  // ── LOAD EVENTS ───────────────────────────────────────────────
+  async function fetchEvents(info, ok, fail) {
+    try {
+      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Sheet1`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('Sheet load failed — is it shared as "Anyone with link can view"?');
+      const text = await res.text();
+      const rows = parseCSV(text);
+      if (rows.length < 2) { ok([]); return; }
+      const hdrs = rows[0].map(h => h.trim());
+      const events = rows.slice(1)
+        .filter(r => r.length >= hdrs.length && r[0])
+        .map(r => {
+          const p = {};
+          hdrs.forEach((h, i) => p[h] = (r[i] || '').trim());
+          const color = STATUS_COLOR[p.status] || '#7f8c8d';
+          return {
+            id: p.id,
+            title: p.caption || `[${p.type}]`,
+            start: p.scheduled_at,
+            backgroundColor: color,
+            borderColor: color,
+            textColor: '#fff',
+            extendedProps: p,
+          };
+        });
+      ok(events);
+    } catch(e) {
+      fail(e);
+      showToast(e.message || 'Failed to load sheet', true);
+    }
+  }
+
+  // ── EVENT CARD RENDERER ───────────────────────────────────────
+  function renderCard(arg) {
+    const p = arg.event.extendedProps;
+    const isVideo = p.type === 'reel' || p.type === 'story';
+    const thumbSrc = p.media_url
+      ? (isVideo ? p.media_url.replace(/\.mp4(\?.*)?$/i, '.jpg') : p.media_url)
+      : '';
+    const caption = esc((p.caption || '').substring(0, 48) || `[${p.type}]`);
+    return { html: `
+      <div class="fc-event-card">
+        <div class="card-top">
+          <span class="type-tag">${esc(p.type||'')}</span>
+          ${thumbSrc ? `<img src="${thumbSrc}" style="width:14px;height:14px;object-fit:cover;border-radius:2px;flex-shrink:0" onerror="this.remove()" />` : ''}
+        </div>
+        <div class="card-caption">${caption}</div>
+      </div>`
+    };
+  }
+
+  // ── CALENDAR INIT ─────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', () => {
+    cal = new FullCalendar.Calendar(document.getElementById('calendar'), {
+      initialView: 'dayGridMonth',
+      headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek' },
+      editable: true,
+      eventStartEditable: true,
+      eventAllow: () => true,
+      firstDay: 1,
+      height: 'auto',
+      events: fetchEvents,
+      eventContent: renderCard,
+      eventClick: info => openModal(info.event.extendedProps),
+      eventDrop: handleDrop,
+    });
+    cal.render();
+  });
+
+  function refetch() { cal && cal.refetchEvents(); }
+
+  // ── DRAG & DROP ───────────────────────────────────────────────
+  async function handleDrop(info) {
+    const p = { ...info.event.extendedProps };
+    if (DONE_STATUSES.has(p.status)) {
+      info.revert();
+      showToast(`Can't reschedule a ${p.status} post`, true);
+      return;
+    }
+    p.scheduled_at = dtStr(info.event.start);
+    try {
+      await post(UPDATE_URL, p);
+      showToast('Rescheduled ✓');
+      setTimeout(refetch, 700);
+    } catch(e) {
+      info.revert();
+      showToast('Save failed — activate Workflow 06 in n8n then try again', true);
+    }
+  }
+
+  // ── MODAL ─────────────────────────────────────────────────────
+  function openModal(p) {
+    currentPost = { ...p };
+    const isVideo = p.type === 'reel' || p.type === 'story';
+    const thumbSrc = p.media_url
+      ? (isVideo ? p.media_url.replace(/\.mp4(\?.*)?$/i, '.jpg') : p.media_url)
+      : '';
+
+    // Header
+    document.getElementById('m-type').textContent = p.type || '';
+    document.getElementById('m-title').textContent = (p.caption || '').substring(0, 70) || 'Post';
+    const pill = document.getElementById('m-status');
+    pill.textContent = p.status || '';
+    pill.style.background = STATUS_COLOR[p.status] || '#7f8c8d';
+
+    // Preview
+    const thumb = document.getElementById('m-thumb');
+    thumb.src = thumbSrc;
+    thumb.style.display = thumbSrc ? 'block' : 'none';
+    const link = document.getElementById('m-link');
+    link.href = p.media_url || '#';
+    link.style.display = p.media_url ? 'block' : 'none';
+
+    // Form
+    document.getElementById('m-caption').value   = p.caption || '';
+    document.getElementById('m-scheduled').value  = (p.scheduled_at || '').substring(0, 16);
+    document.getElementById('m-type-sel').value   = p.type || 'feed';
+    document.getElementById('m-music').checked    = p.needs_music === 'TRUE';
+    document.getElementById('m-notes').value      = p.notes || '';
+
+    // Approve/reject only for drafts
+    const isDraft = p.status === 'draft';
+    document.getElementById('btn-approve').style.display = isDraft ? '' : 'none';
+    document.getElementById('btn-reject').style.display  = isDraft ? '' : 'none';
+
+    document.getElementById('overlay').classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('overlay').classList.remove('open');
+    currentPost = null;
+  }
+
+  function overlayClick(e) {
+    if (e.target === document.getElementById('overlay')) closeModal();
+  }
+
+  async function doSave() {
+    if (!currentPost) return;
+    const updated = {
+      ...currentPost,
+      caption:      document.getElementById('m-caption').value,
+      scheduled_at: document.getElementById('m-scheduled').value + ':00',
+      type:         document.getElementById('m-type-sel').value,
+      needs_music:  document.getElementById('m-music').checked ? 'TRUE' : 'FALSE',
+      notes:        document.getElementById('m-notes').value,
+    };
+    try {
+      await post(UPDATE_URL, updated);
+      showToast('Saved ✓');
+      closeModal();
+      setTimeout(refetch, 600);
+    } catch(e) { showToast('Save failed', true); }
+  }
+
+  async function doApprove(action) {
+    if (!currentPost) return;
+    try {
+      await post(APPROVE_URL, { id: currentPost.id, action });
+      showToast(action === 'approve' ? 'Approved ✓' : 'Rejected');
+      closeModal();
+      setTimeout(refetch, 600);
+    } catch(e) { showToast('Action failed', true); }
+  }
+
+  // ── NEW POST SIDEBAR ──────────────────────────────────────────
+  function openSidebar()  { document.getElementById('sidebar').classList.add('open'); }
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    uploadedUrl = '';
+    document.getElementById('upload-name').textContent = '';
+    document.getElementById('file-input').value = '';
+  }
+
+  function handleFile(input) {
+    if (!input.files[0]) return;
+    document.getElementById('upload-name').textContent = input.files[0].name;
+    uploadFile(input.files[0]);
+  }
+
+  async function uploadFile(file) {
+    const bar  = document.getElementById('prog-bar');
+    const fill = document.getElementById('prog-fill');
+    bar.classList.add('on'); fill.style.width = '0%';
+    const isVideo = file.type.startsWith('video/');
+    const url = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/${isVideo ? 'video' : 'image'}/upload`;
+    const fd = new FormData();
+    fd.append('upload_preset', UPLOAD_PRESET);
+    fd.append('file', file);
+    try {
+      await new Promise((res, rej) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', url);
+        xhr.upload.onprogress = e => {
+          if (e.lengthComputable) fill.style.width = Math.round(e.loaded/e.total*100) + '%';
+        };
+        xhr.onload = () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            uploadedUrl = JSON.parse(xhr.responseText).secure_url;
+            fill.style.width = '100%';
+            setTimeout(() => bar.classList.remove('on'), 900);
+            res();
+          } else rej(new Error('Upload ' + xhr.status));
+        };
+        xhr.onerror = () => rej(new Error('Network error'));
+        xhr.send(fd);
+      });
+    } catch(e) {
+      showToast('Upload failed', true);
+      bar.classList.remove('on');
+    }
+  }
+
+  async function submitNew() {
+    if (!uploadedUrl) { showToast('Upload a file first', true); return; }
+    const sched = document.getElementById('new-scheduled').value;
+    if (!sched) { showToast('Set a scheduled date/time', true); return; }
+    const payload = {
+      type:         document.getElementById('new-type').value,
+      caption:      document.getElementById('new-caption').value,
+      media_url:    uploadedUrl,
+      scheduled_at: sched + ':00',
+      needs_music:  document.getElementById('new-music').checked,
+      notes:        document.getElementById('new-notes').value,
+      status:       'draft',
+    };
+    try {
+      await post(SUBMIT_URL, payload);
+      showToast('Added to queue ✓');
+      closeSidebar();
+      document.getElementById('new-caption').value  = '';
+      document.getElementById('new-scheduled').value = '';
+      document.getElementById('new-music').checked  = false;
+      document.getElementById('new-notes').value    = '';
+      setTimeout(refetch, 700);
+    } catch(e) { showToast('Submit failed', true); }
+  }
+
+  // ── UTILS ─────────────────────────────────────────────────────
+  async function post(url, data) {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res;
+  }
+
+  function dtStr(date) {
+    const p = n => String(n).padStart(2,'0');
+    return `${date.getFullYear()}-${p(date.getMonth()+1)}-${p(date.getDate())}T${p(date.getHours())}:${p(date.getMinutes())}:00`;
+  }
+
+  function esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  let _toast;
+  function showToast(msg, err) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'show' + (err ? ' error' : '');
+    clearTimeout(_toast);
+    _toast = setTimeout(() => el.className = '', 3200);
+  }
+</script>
+</body>
+</html>
