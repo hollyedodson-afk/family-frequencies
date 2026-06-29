@@ -381,49 +381,32 @@
     return document.getElementById(id);
   }
 
-  function setView(view) {
-    appState.view = view;
-    document.querySelectorAll('.view-tab').forEach(btn => {
-      btn.classList.toggle('is-active', btn.dataset.view === view);
-    });
-    document.querySelectorAll('.view-panel').forEach(panel => {
-      panel.classList.toggle('is-active', panel.id === `view-${view}`);
-    });
-    if (view === 'calendar' && cal) {
-      requestAnimationFrame(() => cal.updateSize());
-    }
-  }
-
-  function bindShellActions() {
-    document.querySelector('[data-action="refresh"]')?.addEventListener('click', refetch);
-    document.querySelector('[data-action="new-post"]')?.addEventListener('click', openSidebar);
-    document.querySelector('[data-action="save"]')?.addEventListener('click', doSave);
-    document.querySelector('[data-action="approve"]')?.addEventListener('click', () => doApprove('approve'));
-    document.querySelector('[data-action="reject"]')?.addEventListener('click', () => doApprove('reject'));
-    document.querySelectorAll('.view-tab').forEach(btn => {
-      btn.addEventListener('click', () => setView(btn.dataset.view));
-    });
+  function bindEvents() {
+    document.querySelector('[data-action="refresh"]')?.addEventListener('click', loadPosts);
+    document.querySelector('[data-action="new-post"]')?.addEventListener('click', openNewPostDrawer);
     getEl('sort-select')?.addEventListener('change', event => {
       appState.sort = event.target.value;
       renderApp();
     });
-    document.querySelectorAll('.filter-chip').forEach(btn => {
-      btn.addEventListener('click', () => {
-        appState.filter = btn.dataset.filter || 'all';
-        document.querySelectorAll('.filter-chip').forEach(chip => {
-          chip.classList.toggle('is-active', chip === btn);
-        });
+    document.querySelectorAll('.view-tab').forEach(button => {
+      button.addEventListener('click', () => {
+        appState.view = button.dataset.view;
         renderApp();
       });
     });
-    getEl('queue-list')?.addEventListener('click', event => {
+    document.querySelectorAll('.filter-chip').forEach(button => {
+      button.addEventListener('click', () => {
+        appState.filter = button.dataset.filter || 'all';
+        renderApp();
+      });
+    });
+    document.addEventListener('click', event => {
       const card = event.target.closest('[data-post-id]');
       if (card) selectPost(card.dataset.postId);
     });
-    getEl('library-grid')?.addEventListener('click', event => {
-      const card = event.target.closest('[data-post-id]');
-      if (card) selectPost(card.dataset.postId);
-    });
+    document.querySelector('[data-action="save"]')?.addEventListener('click', saveSelectedPost);
+    document.querySelector('[data-action="approve"]')?.addEventListener('click', () => approveSelectedPost('approve'));
+    document.querySelector('[data-action="reject"]')?.addEventListener('click', () => approveSelectedPost('reject'));
     document.addEventListener('keydown', event => {
       if (event.key !== 'Enter' && event.key !== ' ') return;
       const card = event.target.closest?.('[data-post-id]');
@@ -490,6 +473,20 @@
   function selectPost(id) {
     appState.selectedId = id;
     renderApp();
+  }
+
+  function renderTabs() {
+    document.querySelectorAll('.view-tab').forEach(button => {
+      button.classList.toggle('is-active', button.dataset.view === appState.view);
+    });
+    document.querySelectorAll('.filter-chip').forEach(button => {
+      button.classList.toggle('is-active', button.dataset.filter === appState.filter);
+    });
+    document.querySelectorAll('.view-panel').forEach(panel => panel.classList.remove('is-active'));
+    getEl(`view-${appState.view}`)?.classList.add('is-active');
+    if (appState.view === 'calendar' && cal) {
+      requestAnimationFrame(() => cal.updateSize());
+    }
   }
 
   function visiblePosts() {
@@ -600,7 +597,7 @@
   }
 
   function renderApp() {
-    if (typeof renderTabs === 'function') renderTabs();
+    renderTabs();
     renderMetrics();
     visiblePosts();
     renderQueue();
@@ -638,12 +635,10 @@
 
   // ── CALENDAR INIT ─────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', () => {
-    bindShellActions();
+    bindEvents();
     initCalendar();
     loadPosts();
   });
-
-  function refetch() { loadPosts(); }
 
   // ── DRAG & DROP ───────────────────────────────────────────────
   async function handleDrop(info) {
@@ -655,9 +650,9 @@
     }
     p.scheduled_at = dtStr(info.event.start);
     try {
-      await post(UPDATE_URL, p);
+      await postJson(UPDATE_URL, p);
       showToast('Rescheduled ✓');
-      setTimeout(refetch, 700);
+      setTimeout(loadPosts, 700);
     } catch(e) {
       info.revert();
       showToast('Save failed — activate Workflow 06 in n8n then try again', true);
@@ -673,38 +668,42 @@
     if (e.target === getEl('overlay')) closeModal();
   }
 
-  async function doSave() {
-    const currentPost = selectedPost();
-    if (!currentPost) return;
+  async function saveSelectedPost() {
+    const post = selectedPost();
+    if (!post) return;
     const updated = {
-      ...currentPost,
-      caption:      getEl('i-caption')?.value || '',
-      scheduled_at: (getEl('i-scheduled')?.value || '') ? `${getEl('i-scheduled').value}:00` : '',
-      type:         getEl('i-type')?.value || 'feed',
-      needs_music:  getEl('i-music')?.checked ? 'TRUE' : 'FALSE',
-      notes:        getEl('i-notes')?.value || '',
+      ...post,
+      caption: getEl('i-caption').value,
+      scheduled_at: getEl('i-scheduled').value ? getEl('i-scheduled').value + ':00' : '',
+      type: getEl('i-type').value,
+      needs_music: getEl('i-music').checked ? 'TRUE' : 'FALSE',
+      notes: getEl('i-notes').value,
     };
     try {
-      await post(UPDATE_URL, updated);
-      showToast('Saved ✓');
-      closeModal();
-      setTimeout(loadPosts, 600);
-    } catch(e) { showToast('Save failed', true); }
+      await postJson(UPDATE_URL, updated);
+      Object.assign(post, normalizePost(updated));
+      showToast('Saved');
+      renderApp();
+    } catch (error) {
+      showToast('Save failed. Check n8n workflow 06.', true);
+    }
   }
 
-  async function doApprove(action) {
-    const currentPost = selectedPost();
-    if (!currentPost) return;
+  async function approveSelectedPost(action) {
+    const post = selectedPost();
+    if (!post) return;
     try {
-      await post(APPROVE_URL, { id: currentPost.id, action });
-      showToast(action === 'approve' ? 'Approved ✓' : 'Rejected');
-      closeModal();
-      setTimeout(loadPosts, 600);
-    } catch(e) { showToast('Action failed', true); }
+      await postJson(APPROVE_URL, { id: post.id, action });
+      post.status = action === 'approve' ? 'scheduled' : 'rejected';
+      showToast(action === 'approve' ? 'Approved' : 'Rejected');
+      renderApp();
+    } catch (error) {
+      showToast('Approval action failed. Check n8n workflow 04.', true);
+    }
   }
 
   // ── NEW POST SIDEBAR ──────────────────────────────────────────
-  function openSidebar()  {
+  function openNewPostDrawer()  {
     showToast('New post drawer will be wired in Task 6');
   }
   function closeSidebar() {
@@ -780,7 +779,7 @@
       status:       'draft',
     };
     try {
-      await post(SUBMIT_URL, payload);
+      await postJson(SUBMIT_URL, payload);
       showToast('Added to queue ✓');
       closeSidebar();
       document.getElementById('new-caption').value  = '';
@@ -792,7 +791,7 @@
   }
 
   // ── UTILS ─────────────────────────────────────────────────────
-  async function post(url, data) {
+  async function postJson(url, data) {
     const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
