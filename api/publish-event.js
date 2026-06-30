@@ -1,14 +1,10 @@
+import { parseAdminEmails, requireAdmin } from './admin-auth.js';
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const authHeader = req.headers.authorization;
-  if (!authHeader?.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
-
-  const jwt = authHeader.slice(7);
   const supabaseUrl = process.env.SUPABASE_URL;
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   const stripeKey = process.env.STRIPE_SECRET_KEY;
@@ -18,19 +14,9 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Server configuration error' });
   }
 
-  const userResponse = await fetch(`${supabaseUrl}/auth/v1/user`, {
-    headers: {
-      apikey: serviceKey,
-      Authorization: `Bearer ${jwt}`,
-    },
-  });
-
-  if (!userResponse.ok) {
-    return res.status(401).json({ error: 'Invalid session' });
-  }
-  const user = await userResponse.json();
-  if (!adminEmails.includes(String(user.email || '').toLowerCase())) {
-    return res.status(403).json({ error: 'Forbidden' });
+  const admin = await requireAdmin(req, { supabaseUrl, serviceKey, adminEmails });
+  if (!admin.ok) {
+    return res.status(admin.status).json({ error: admin.error });
   }
 
   const { event_id } = req.body || {};
@@ -163,13 +149,6 @@ async function updateEvent(supabaseUrl, serviceKey, eventId, payload) {
     },
     body: JSON.stringify(payload),
   });
-}
-
-function parseAdminEmails(value) {
-  return String(value || '')
-    .split(',')
-    .map((email) => email.trim().toLowerCase())
-    .filter(Boolean);
 }
 
 function isUuid(value) {

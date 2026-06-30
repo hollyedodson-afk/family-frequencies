@@ -15,6 +15,12 @@ Backend work is Vercel serverless functions under `api/`, with database schema c
 
 Required environment variables are listed in `.env.example`. Keep real values in `.env` locally and in Vercel environment variables, never in committed files.
 
+## Internal Admin
+
+The internal dashboard lives at `admin/index.html`. It is for co-organiser operations only: Supabase login, event CRUD, ticketing fields, publish action, attendee list, CSV export, and Kit subscriber stats.
+
+The admin dashboard reads public Supabase config from `/api/admin-config` and uses Supabase Auth for the session. Ticketed publish actions still go through `/api/publish-event`, which checks `FF_ADMIN_EMAILS` server-side before creating Stripe products/prices.
+
 ## Still To Connect
 
 - Mailing-list provider and form endpoint
