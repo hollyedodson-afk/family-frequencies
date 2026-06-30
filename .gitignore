@@ -7,6 +7,8 @@
 node_modules/
 .worktrees/
 .worktrees
+.env.*
+!.env.example
 *.tmp
 
 # Heavy brand/content assets — keep local, not in the public repo
