@@ -100,6 +100,9 @@ test('serializeAttendeesCsv exports attendee rows', () => {
       buyer_email: 'holly@example.com',
       quantity: 2,
       ticket_type: 'general',
+      payment_method: 'bank_transfer',
+      payment_status: 'pending',
+      payment_reference: 'FIRSTAID-ABC123',
       amount_paid_cents: 9000,
       created_at: '2026-07-01T10:00:00.000Z',
     },
@@ -107,6 +110,6 @@ test('serializeAttendeesCsv exports attendee rows', () => {
 
   assert.equal(
     csv,
-    'name,email,quantity,ticket_type,amount_paid,purchased_at\nHolly Read,holly@example.com,2,general,$90,2026-07-01T10:00:00.000Z'
+    'name,email,quantity,ticket_type,payment_method,payment_status,payment_reference,amount_due,purchased_at\nHolly Read,holly@example.com,2,general,bank_transfer,pending,FIRSTAID-ABC123,$90,2026-07-01T10:00:00.000Z'
   );
 });

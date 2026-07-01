@@ -7,10 +7,9 @@ export default async function handler(req, res) {
 
   const supabaseUrl = process.env.SUPABASE_URL;
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  const stripeKey = process.env.STRIPE_SECRET_KEY;
   const adminEmails = parseAdminEmails(process.env.FF_ADMIN_EMAILS);
 
-  if (!supabaseUrl || !serviceKey || !stripeKey || adminEmails.length === 0) {
+  if (!supabaseUrl || !serviceKey || adminEmails.length === 0) {
     return res.status(500).json({ error: 'Server configuration error' });
   }
 
@@ -49,93 +48,22 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Event is not ticketed' });
   }
 
-  if (event.stripe_price_id) {
-    const patched = await updateEvent(supabaseUrl, serviceKey, event_id, {
-      status: 'published',
-      updated_at: new Date().toISOString(),
-    });
-
-    if (!patched.ok) {
-      return res.status(502).json({ error: 'Could not publish event' });
-    }
-
-    return res.status(200).json({ stripe_price_id: event.stripe_price_id });
-  }
-
   if (!event.price_cents) {
     return res.status(400).json({ error: 'price_cents required to publish ticketed event' });
   }
 
-  try {
-    const product = await createStripeProduct(stripeKey, event);
-    const price = await createStripePrice(stripeKey, product.id, event.price_cents, event.id);
-    const patched = await updateEvent(supabaseUrl, serviceKey, event_id, {
-      status: 'published',
-      stripe_product_id: product.id,
-      stripe_price_id: price.id,
-      updated_at: new Date().toISOString(),
-    });
-
-    if (!patched.ok) {
-      return res.status(502).json({ error: 'Could not save Stripe product details' });
-    }
-
-    return res.status(200).json({
-      stripe_product_id: product.id,
-      stripe_price_id: price.id,
-    });
-  } catch (err) {
-    console.error('Publish event error:', err);
-    return res.status(500).json({ error: 'Something went wrong' });
-  }
-}
-
-async function createStripeProduct(stripeKey, event) {
-  const response = await fetch('https://api.stripe.com/v1/products', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${stripeKey}`,
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Idempotency-Key': `ff-product-${event.id}`,
-    },
-    body: new URLSearchParams({
-      name: event.title,
-      description: event.description || event.title,
-      'metadata[event_id]': event.id,
-      'metadata[slug]': event.slug,
-    }).toString(),
+  const patched = await updateEvent(supabaseUrl, serviceKey, event_id, {
+    status: 'published',
+    updated_at: new Date().toISOString(),
   });
 
-  if (!response.ok) {
-    const body = await response.text();
-    throw new Error(`Stripe product create failed: ${response.status} ${body}`);
+  if (!patched.ok) {
+    const body = await patched.text();
+    console.error('Publish event update error:', patched.status, body);
+    return res.status(502).json({ error: 'Could not publish event' });
   }
 
-  return response.json();
-}
-
-async function createStripePrice(stripeKey, productId, amountCents, eventId) {
-  const response = await fetch('https://api.stripe.com/v1/prices', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${stripeKey}`,
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Idempotency-Key': `ff-price-${eventId}`,
-    },
-    body: new URLSearchParams({
-      currency: 'nzd',
-      unit_amount: String(amountCents),
-      product: productId,
-      'metadata[event_id]': eventId,
-    }).toString(),
-  });
-
-  if (!response.ok) {
-    const body = await response.text();
-    throw new Error(`Stripe price create failed: ${response.status} ${body}`);
-  }
-
-  return response.json();
+  return res.status(200).json({ payment_method: 'bank_transfer' });
 }
 
 async function updateEvent(supabaseUrl, serviceKey, eventId, payload) {

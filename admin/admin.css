@@ -138,26 +138,49 @@ input:focus, textarea:focus, select:focus {
   line-height: 1;
 }
 
-.topbar {
+.dashboard {
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: 254px minmax(0, 1fr);
+  background: #eef2f0;
+}
+
+.admin-sidebar {
   position: sticky;
   top: 0;
-  z-index: 10;
-  min-height: 64px;
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  padding: 12px 20px;
+  min-height: 100dvh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 22px;
+  padding: 18px;
   background: var(--navy);
   color: var(--cream);
 }
 
-.topbar-brand {
-  display: inline-flex;
+.sidebar-brand {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 12px;
   align-items: center;
-  gap: 10px;
   color: var(--cream);
   text-decoration: none;
+}
+
+.sidebar-brand small {
+  display: block;
+  color: rgba(250,240,224,0.72);
+  font-size: 11px;
   font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.sidebar-brand strong {
+  display: block;
+  font-family: "Barlow Condensed", Barlow, sans-serif;
+  font-size: 26px;
+  font-weight: 900;
+  line-height: 0.95;
   text-transform: uppercase;
 }
 
@@ -169,31 +192,60 @@ input:focus, textarea:focus, select:focus {
   box-shadow: 16px 0 0 var(--blue);
 }
 
-.tabs {
-  display: flex;
-  gap: 6px;
-  margin-left: auto;
+.tool-list {
+  display: grid;
+  align-content: start;
+  gap: 8px;
 }
 
 .tab {
-  border: 0;
-  border-radius: 999px;
-  padding: 8px 14px;
-  background: transparent;
-  color: rgba(250,240,224,0.72);
+  width: 100%;
+  display: grid;
+  gap: 2px;
+  border: 1px solid rgba(250,240,224,0.14);
+  border-radius: 8px;
+  padding: 12px;
+  background: rgba(255,255,255,0.06);
+  color: rgba(250,240,224,0.74);
   cursor: pointer;
   font-weight: 900;
+  text-align: left;
+}
+
+.tab span {
+  color: currentColor;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.tab small {
+  color: rgba(250,240,224,0.54);
+  font-size: 12px;
+  font-weight: 800;
 }
 
 .tab.is-active {
-  background: var(--cream);
+  border-color: var(--gold);
+  background: var(--gold);
   color: var(--navy);
 }
 
+.tab.is-active small { color: rgba(26,43,64,0.72); }
+
+.admin-main {
+  min-width: 0;
+}
+
 .workspace {
-  width: min(1180px, calc(100% - 32px));
+  width: min(1180px, calc(100% - 40px));
   margin: 0 auto;
   padding: 28px 0 72px;
+}
+
+.workspace-fill {
+  width: calc(100% - 40px);
+  min-height: 100dvh;
 }
 
 .workspace-header {
@@ -271,6 +323,10 @@ input:focus, textarea:focus, select:focus {
 .pill-published { background: #d9f2e6; color: var(--green); }
 .pill-past { background: #e5e9ee; color: #526071; }
 .pill-ticketed { background: #dbe9fb; color: #264c77; }
+.pill-pending { background: #fff2c2; color: #7a5410; }
+.pill-paid { background: #d9f2e6; color: var(--green); }
+.pill-cancelled,
+.pill-refunded { background: #f8dddd; color: var(--red); }
 
 .mini-btn {
   border: 2px solid var(--line);
@@ -285,6 +341,9 @@ input:focus, textarea:focus, select:focus {
 }
 
 .mini-btn:hover { border-color: var(--navy); }
+
+.mini-btn-danger { color: #b3261e; }
+.mini-btn-danger:hover { border-color: #b3261e; }
 
 .form-panel { position: sticky; top: 82px; }
 .event-form { display: grid; gap: 14px; padding: 18px; }
@@ -389,13 +448,41 @@ input:focus, textarea:focus, select:focus {
   font-size: 12px;
 }
 
+.scheduler-panel {
+  overflow: hidden;
+}
+
+.scheduler-frame {
+  display: block;
+  width: 100%;
+  height: min(980px, calc(100dvh - 148px));
+  min-height: 720px;
+  border: 0;
+  background: var(--cream);
+}
+
 @media (max-width: 860px) {
-  .topbar { align-items: stretch; flex-wrap: wrap; }
-  .tabs { order: 3; width: 100%; overflow-x: auto; margin-left: 0; }
+  .dashboard { display: block; }
+  .admin-sidebar {
+    position: static;
+    min-height: 0;
+    grid-template-rows: auto auto;
+  }
+  .sidebar-brand { grid-template-columns: 30px 1fr; }
+  .tool-list {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+  .tab {
+    min-width: 156px;
+  }
   .workspace { width: min(100% - 20px, 1180px); }
+  .workspace-fill { width: min(100% - 20px, 1180px); }
   .layout-grid, .attendees-grid, .form-grid, .ticket-fields { grid-template-columns: 1fr; }
   .form-panel { position: static; }
   .workspace-header { align-items: start; flex-direction: column; }
   .event-row { grid-template-columns: 1fr; }
   .event-actions { justify-content: flex-start; }
+  .scheduler-frame { min-height: 760px; height: 760px; }
 }

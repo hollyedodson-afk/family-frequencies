@@ -63,11 +63,14 @@ export function serializeAttendeesCsv(tickets) {
     ticket.buyer_email,
     ticket.quantity,
     ticket.ticket_type,
+    ticket.payment_method,
+    ticket.payment_status,
+    ticket.payment_reference,
     formatMoney(ticket.amount_paid_cents),
     ticket.created_at,
   ].map(csvEscape).join(','));
 
-  return ['name,email,quantity,ticket_type,amount_paid,purchased_at', ...rows].join('\n');
+  return ['name,email,quantity,ticket_type,payment_method,payment_status,payment_reference,amount_due,purchased_at', ...rows].join('\n');
 }
 
 function cleanRequired(value) {

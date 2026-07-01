@@ -33,24 +33,19 @@
   </main>
 
   <div id="view-dashboard" class="dashboard" hidden>
-    <aside class="admin-sidebar" aria-label="Admin tools">
-      <a class="sidebar-brand" href="/" aria-label="Family Frequencies home">
+    <header class="topbar">
+      <a class="topbar-brand" href="/" aria-label="Family Frequencies home">
         <span class="brand-dot" aria-hidden="true"></span>
-        <span>
-          <small>Family Frequencies</small>
-          <strong>Admin Tools</strong>
-        </span>
+        <span>FF Admin</span>
       </a>
-      <nav class="tabs tool-list" aria-label="Admin sections">
-        <button class="tab is-active" type="button" data-tab="events"><span>Events</span><small>Calendar + pages</small></button>
-        <button class="tab" type="button" data-tab="attendees"><span>Attendees</span><small>Tickets + payments</small></button>
-        <button class="tab" type="button" data-tab="scheduling"><span>Scheduling</span><small>Social queue</small></button>
-        <button class="tab" type="button" data-tab="stats"><span>Stats</span><small>Audience</small></button>
+      <nav class="tabs" aria-label="Admin sections">
+        <button class="tab is-active" type="button" data-tab="events">Events</button>
+        <button class="tab" type="button" data-tab="attendees">Attendees</button>
+        <button class="tab" type="button" data-tab="stats">Stats</button>
       </nav>
       <button id="btn-logout" class="btn btn-ghost" type="button">Sign out</button>
-    </aside>
+    </header>
 
-    <main class="admin-main">
     <section id="tab-events" class="workspace">
       <div class="workspace-header">
         <div>
@@ -174,24 +169,6 @@
       </div>
     </section>
 
-    <section id="tab-scheduling" class="workspace workspace-fill" hidden>
-      <div class="workspace-header">
-        <div>
-          <p class="eyebrow">Publishing</p>
-          <h2>Scheduling</h2>
-        </div>
-        <a class="btn btn-secondary" href="../social-scheduler/ui/index.html" target="_blank" rel="noopener">Open full screen</a>
-      </div>
-      <section class="panel scheduler-panel">
-        <iframe
-          class="scheduler-frame"
-          title="Family Frequencies social scheduler"
-          src="../social-scheduler/ui/index.html"
-          loading="lazy"
-        ></iframe>
-      </section>
-    </section>
-
     <section id="tab-stats" class="workspace" hidden>
       <div class="workspace-header">
         <div>
@@ -205,10 +182,47 @@
         </div>
       </section>
     </section>
-    </main>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.108.2/dist/umd/supabase.min.js" crossorigin="anonymous"></script>
-  <script type="module" src="admin.js"></script>
+  
+<script>
+(() => {
+  const login = document.getElementById('view-login');
+  const dash = document.getElementById('view-dashboard');
+  if (login) login.hidden = true;
+  if (dash) dash.hidden = false;
+  const eventList = document.getElementById('event-list-admin');
+  const count = document.getElementById('event-count');
+  if (count) count.textContent = '2';
+  if (eventList) eventList.innerHTML = "\n    <article class=\"event-row\">\n      <div>\n        <strong>First Aid for Families</strong>\n        <p class=\"event-meta\">2026-08-01 · Hide, Mt Maunganui</p>\n        <span class=\"pill pill-published\">published</span>\n        <span class=\"pill pill-ticketed\">$45 · 8 / 20 sold · 12 remaining</span>\n      </div>\n      <div class=\"event-actions\"><button class=\"mini-btn\" type=\"button\">Edit</button><button class=\"mini-btn\" type=\"button\">Attendees</button></div>\n    </article>\n    <article class=\"event-row\">\n      <div>\n        <strong>Daylight Disco</strong>\n        <p class=\"event-meta\">2026-07-04 · Hide, Mt Maunganui</p>\n        <span class=\"pill pill-published\">published</span>\n      </div>\n      <div class=\"event-actions\"><button class=\"mini-btn\" type=\"button\">Edit</button></div>\n    </article>\n  ";
+  const form = document.getElementById('event-form-wrap');
+  if (form) form.hidden = false;
+  const formTitle = document.getElementById('event-form-title');
+  if (formTitle) formTitle.textContent = 'Edit event';
+  const fields = document.getElementById('event-form');
+  if (fields) {
+    fields.elements.title.value = 'First Aid for Families';
+    fields.elements.slug.value = 'first-aid-for-families';
+    fields.elements.event_date.value = '2026-08-01';
+    fields.elements.time_start.value = '10:00';
+    fields.elements.venue.value = 'Hide, Mt Maunganui';
+    fields.elements.status.value = 'published';
+    fields.elements.description.value = 'Practical first aid session for parents and caregivers.';
+    fields.elements.chips.value = 'Ticketed, Workshop, Families';
+    fields.elements.is_ticketed.checked = true;
+    fields.elements.price_nzd.value = '45.00';
+    fields.elements.capacity.value = '20';
+  }
+  const ticketFields = document.getElementById('ticket-fields');
+  if (ticketFields) ticketFields.hidden = false;
+  const pay = document.getElementById('payment-status');
+  if (pay) pay.textContent = 'Manual bank transfer reservations are active when published.';
+  const attendees = document.getElementById('attendees-detail');
+  if (attendees) attendees.innerHTML = "\n    <div class=\"panel-head\"><div><h3>First Aid for Families</h3><p class=\"event-meta\">8 / 20 sold · 12 remaining</p></div></div>\n    <div class=\"event-list\">\n      <div class=\"capacity\"><div class=\"capacity-track\"><div class=\"capacity-fill\" style=\"width:40%\"></div></div></div>\n      <table class=\"attendee-table\">\n        <thead><tr><th>Name</th><th>Email</th><th>Qty</th><th>Reference</th><th>Due</th><th>Status</th><th>Reserved</th><th></th></tr></thead>\n        <tbody>\n          <tr><td>Holly Read</td><td>holly@example.com</td><td>2</td><td>FIRSTAID-ABC123</td><td>$90</td><td><span class=\"pill pill-pending\">pending</span></td><td>1 Aug, 10:15 am</td><td><button class=\"mini-btn\" type=\"button\">Mark paid</button></td></tr>\n          <tr><td>Toby Read</td><td>toby@example.com</td><td>1</td><td>FIRSTAID-ZX912Q</td><td>$45</td><td><span class=\"pill pill-paid\">paid</span></td><td>1 Aug, 10:21 am</td><td></td></tr>\n        </tbody>\n      </table>\n    </div>\n  ";
+  const attendeeList = document.getElementById('attendee-event-list');
+  if (attendeeList) attendeeList.innerHTML = "\n    <article class=\"event-row\"><div><strong>First Aid for Families</strong><p class=\"event-meta\">8 / 20 sold · 12 remaining</p></div><div class=\"event-actions\"><button class=\"mini-btn\" type=\"button\">View</button></div></article>\n  ";
+})();
+</script>
+
 </body>
 </html>

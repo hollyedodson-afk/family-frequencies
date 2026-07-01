@@ -33,7 +33,7 @@ const els = {
   publishEvent: document.getElementById('btn-publish-event'),
   deleteEvent: document.getElementById('btn-delete-event'),
   ticketFields: document.getElementById('ticket-fields'),
-  stripeStatus: document.getElementById('stripe-status'),
+  paymentStatus: document.getElementById('payment-status'),
   formError: document.getElementById('form-error'),
   formSuccess: document.getElementById('form-success'),
   attendeeEventList: document.getElementById('attendee-event-list'),
@@ -108,22 +108,36 @@ async function showDashboard() {
   els.loginView.hidden = true;
   els.dashboardView.hidden = false;
   await loadEvents();
+  const initialTab = tabFromHash();
+  if (initialTab !== 'events') {
+    await activateTab(initialTab);
+  }
 }
 
 async function activateTab(tabName) {
+  const target = document.getElementById(`tab-${tabName}`) ? tabName : 'events';
   document.querySelectorAll('.tab').forEach((tab) => {
-    tab.classList.toggle('is-active', tab.dataset.tab === tabName);
+    tab.classList.toggle('is-active', tab.dataset.tab === target);
   });
   document.querySelectorAll('.workspace').forEach((panel) => {
-    panel.hidden = panel.id !== `tab-${tabName}`;
+    panel.hidden = panel.id !== `tab-${target}`;
   });
 
-  if (tabName === 'attendees') {
+  if (target === 'attendees') {
     renderAttendeeEventList();
   }
-  if (tabName === 'stats' && !state.statsLoaded) {
+  if (target === 'stats' && !state.statsLoaded) {
     await loadStats();
   }
+
+  if (window.location.hash.slice(1) !== target) {
+    window.history.replaceState(null, '', `#${target}`);
+  }
+}
+
+function tabFromHash() {
+  const value = window.location.hash.slice(1);
+  return document.getElementById(`tab-${value}`) ? value : 'events';
 }
 
 async function loadEvents() {
@@ -198,10 +212,10 @@ function openForm(event) {
     els.eventForm.elements.price_nzd.value = event.price_cents ? String(event.price_cents / 100) : '';
     els.eventForm.elements.capacity.value = event.capacity || '';
     els.eventForm.elements.ticket_sale_opens.value = toDatetimeLocal(event.ticket_sale_opens);
-    els.stripeStatus.textContent = event.stripe_price_id ? `Stripe price: ${event.stripe_price_id}` : 'Stripe price will be created when publishing.';
+    els.paymentStatus.textContent = event.is_ticketed ? 'Manual bank transfer reservations are active when published.' : '';
   } else {
     els.eventForm.elements.status.value = 'draft';
-    els.stripeStatus.textContent = '';
+    els.paymentStatus.textContent = '';
   }
 
   updateTicketingVisibility();
@@ -241,7 +255,7 @@ async function handleSaveEvent(event) {
   if (id) {
     result = await state.sb.from('ff_events').update(payload).eq('id', id);
   } else {
-    result = await state.sb.from('ff_events').insert(payload);
+    result = await state.sb.from('ff_events').insert(payload).select().single();
   }
 
   setBusy(els.saveEvent, false, 'Save event');
@@ -251,10 +265,12 @@ async function handleSaveEvent(event) {
     return;
   }
 
-  els.formSuccess.textContent = 'Saved.';
   await loadEvents();
-  if (!id) {
-    closeForm();
+  if (!id && result.data) {
+    openForm(findEvent(result.data.id));
+    els.formSuccess.textContent = 'Saved as draft. Publish when ready.';
+  } else {
+    els.formSuccess.textContent = 'Saved.';
   }
 }
 
@@ -318,7 +334,7 @@ async function handlePublishEvent() {
   } catch (err) {
     els.formError.textContent = err.message || 'Publish failed';
   } finally {
-    setBusy(els.publishEvent, false, 'Publish + Stripe');
+    setBusy(els.publishEvent, false, 'Publish');
   }
 }
 
@@ -393,8 +409,14 @@ function renderAttendees(event, tickets) {
       <td>${escapeHtml(ticket.buyer_name)}</td>
       <td>${escapeHtml(ticket.buyer_email)}</td>
       <td>${ticket.quantity}</td>
+      <td>${escapeHtml(ticket.payment_reference || '')}</td>
       <td>${formatMoney(ticket.amount_paid_cents)}</td>
+      <td><span class="pill pill-${escapeHtml(ticket.payment_status || 'pending')}">${escapeHtml(ticket.payment_status || 'pending')}</span></td>
       <td>${formatDateTime(ticket.created_at)}</td>
+      <td>
+        ${ticket.payment_status === 'pending' ? `<button class="mini-btn" type="button" data-ticket-paid="${ticket.id}">Mark paid</button>` : ''}
+        ${['pending', 'paid'].includes(ticket.payment_status) ? `<button class="mini-btn mini-btn-danger" type="button" data-ticket-cancel="${ticket.id}">Cancel</button>` : ''}
+      </td>
     </tr>
   `).join('');
 
@@ -411,12 +433,43 @@ function renderAttendees(event, tickets) {
       </div>
       ${tickets.length ? `
         <table class="attendee-table">
-          <thead><tr><th>Name</th><th>Email</th><th>Qty</th><th>Paid</th><th>Purchased</th></tr></thead>
+          <thead><tr><th>Name</th><th>Email</th><th>Qty</th><th>Reference</th><th>Due</th><th>Status</th><th>Reserved</th><th></th></tr></thead>
           <tbody>${rows}</tbody>
         </table>
       ` : '<p class="empty-state">No attendees yet.</p>'}
     </div>
   `;
+
+  els.attendeesDetail.querySelectorAll('[data-ticket-paid]').forEach((button) => {
+    button.addEventListener('click', () => updateTicketPaymentStatus(button.dataset.ticketPaid, 'paid'));
+  });
+  els.attendeesDetail.querySelectorAll('[data-ticket-cancel]').forEach((button) => {
+    button.addEventListener('click', () => {
+      if (confirm('Cancel this ticket? Their spot goes back on sale.')) {
+        updateTicketPaymentStatus(button.dataset.ticketCancel, 'cancelled');
+      }
+    });
+  });
+}
+
+async function updateTicketPaymentStatus(ticketId, paymentStatus) {
+  const response = await fetch('/api/update-ticket', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${state.session.access_token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ ticket_id: ticketId, payment_status: paymentStatus }),
+  });
+
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({}));
+    alert(body.error || 'Could not update ticket');
+    return;
+  }
+
+  await selectAttendeeEvent(state.selectedEventId);
+  await loadEvents();
 }
 
 function exportAttendeesCsv() {

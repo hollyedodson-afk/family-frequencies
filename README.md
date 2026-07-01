@@ -17,9 +17,24 @@ Required environment variables are listed in `.env.example`. Keep real values in
 
 ## Internal Admin
 
-The internal dashboard lives at `admin/index.html`. It is for co-organiser operations only: Supabase login, event CRUD, ticketing fields, publish action, attendee list, CSV export, and Kit subscriber stats.
+The internal dashboard lives at `admin/index.html`. It is for co-organiser operations only: Supabase login, event CRUD, ticketing fields, publish action, attendee list, payment-status checks, CSV export, and Kit subscriber stats.
 
-The admin dashboard reads public Supabase config from `/api/admin-config` and uses Supabase Auth for the session. Ticketed publish actions still go through `/api/publish-event`, which checks `FF_ADMIN_EMAILS` server-side before creating Stripe products/prices.
+The admin dashboard reads public Supabase config from `/api/admin-config` and uses Supabase Auth for the session. Ticketed publish actions still go through `/api/publish-event`, which checks `FF_ADMIN_EMAILS` server-side.
+
+### Admin access lockdown (required before launch)
+
+RLS now checks the `ff_admins` allowlist (`supabase/migrations/20260702_admin_lockdown.sql`) instead of trusting any authenticated user. After applying the migration:
+
+1. `INSERT INTO ff_admins (email) VALUES ('holly@...'), ('toby@...');` (lowercase, must match Supabase Auth emails and `FF_ADMIN_EMAILS`)
+2. Disable public signups: Supabase Dashboard -> Authentication -> Sign In / Up -> disable "Allow new users to sign up"
+
+Without step 1 the admin dashboard cannot write events or read attendees.
+
+## Ticket Payments
+
+Ticketing currently uses manual bank transfer reservations. `/api/checkout` reserves capacity, creates a pending ticket, and returns a payment reference plus `BANK_TRANSFER_INSTRUCTIONS`. Admins confirm the transfer manually from the Attendees tab by marking the ticket as paid.
+
+Stripe keys remain optional for a later card-payment phase.
 
 ## Still To Connect
 
