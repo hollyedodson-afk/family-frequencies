@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en-NZ">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Admin | Family Frequencies</title>
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Barlow:wght@500;600;700;800;900&display=swap">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <main id="view-login" class="login-view">
+    <section class="login-panel" aria-labelledby="login-title">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="13.5" r="6.5" fill="#F0B840"/><path d="M3 33 C7 25 12 25 16 33 C20 41 28 41 32 33 C36 25 41 25 45 33" stroke="#1A2B40" stroke-width="4" stroke-linecap="round"/></svg>
+      </div>
+      <p class="eyebrow">Internal</p>
+      <h1 id="login-title">Family Frequencies Admin</h1>
+      <form id="login-form" class="stack">
+        <label>Email
+          <input id="login-email" type="email" required autocomplete="email" placeholder="you@example.com">
+        </label>
+        <label>Password
+          <input id="login-password" type="password" required autocomplete="current-password">
+        </label>
+        <button class="btn btn-primary" type="submit">Sign in</button>
+        <p id="login-error" class="form-message error" aria-live="polite"></p>
+      </form>
+    </section>
+  </main>
+
+  <div id="view-dashboard" class="dashboard" hidden>
+    <header class="topbar">
+      <a class="topbar-brand" href="/" aria-label="Family Frequencies home">
+        <span class="brand-dot" aria-hidden="true"></span>
+        <span>FF Admin</span>
+      </a>
+      <nav class="tabs" aria-label="Admin sections">
+        <button class="tab is-active" type="button" data-tab="events">Events</button>
+        <button class="tab" type="button" data-tab="attendees">Attendees</button>
+        <button class="tab" type="button" data-tab="stats">Stats</button>
+      </nav>
+      <button id="btn-logout" class="btn btn-ghost" type="button">Sign out</button>
+    </header>
+
+    <section id="tab-events" class="workspace">
+      <div class="workspace-header">
+        <div>
+          <p class="eyebrow">Calendar</p>
+          <h2>Events</h2>
+        </div>
+        <button id="btn-add-event" class="btn btn-primary" type="button">+ Add event</button>
+      </div>
+
+      <div class="layout-grid">
+        <section class="panel">
+          <div class="panel-head">
+            <h3>Event list</h3>
+            <span id="event-count" class="counter">0</span>
+          </div>
+          <div id="event-list-admin" class="event-list" aria-live="polite"></div>
+        </section>
+
+        <section id="event-form-wrap" class="panel form-panel" hidden>
+          <div class="panel-head">
+            <h3 id="event-form-title">New event</h3>
+            <button id="btn-close-form" class="icon-btn" type="button" aria-label="Close form">×</button>
+          </div>
+
+          <form id="event-form" class="event-form">
+            <input type="hidden" name="id">
+            <div class="form-grid">
+              <label>Title
+                <input name="title" type="text" required placeholder="First Aid Course">
+              </label>
+              <label>Slug
+                <input name="slug" type="text" required pattern="[a-z0-9-]+" placeholder="first-aid-course">
+              </label>
+              <label>Date
+                <input name="event_date" type="date" required>
+              </label>
+              <div class="two-up">
+                <label>Start
+                  <input name="time_start" type="time">
+                </label>
+                <label>End
+                  <input name="time_end" type="time">
+                </label>
+              </div>
+              <label>Venue
+                <input name="venue" type="text" required placeholder="Hide, Mt Maunganui">
+              </label>
+              <label>Status
+                <select name="status">
+                  <option value="draft">Draft</option>
+                  <option value="published">Published</option>
+                  <option value="past">Past</option>
+                </select>
+              </label>
+            </div>
+
+            <label>Description
+              <textarea name="description" rows="4" placeholder="Event description"></textarea>
+            </label>
+            <label>Image URL
+              <input name="image_url" type="text" placeholder="assets/event.jpg">
+            </label>
+            <label>Detail URL
+              <input name="detail_url" type="text" placeholder="daylight-disco or /event/first-aid-course">
+            </label>
+            <label>Chips
+              <input name="chips" type="text" placeholder="Ticketed, All ages, Workshop">
+            </label>
+
+            <fieldset class="ticket-box">
+              <label class="check-row">
+                <input name="is_ticketed" type="checkbox">
+                <span>Ticketed event</span>
+              </label>
+              <div id="ticket-fields" class="ticket-fields" hidden>
+                <label>Price NZD
+                  <input name="price_nzd" type="number" min="0" step="0.01" placeholder="45.00">
+                </label>
+                <label>Capacity
+                  <input name="capacity" type="number" min="1" step="1" placeholder="20">
+                </label>
+                <label>Tickets open
+                  <input name="ticket_sale_opens" type="datetime-local">
+                </label>
+                <p id="payment-status" class="hint"></p>
+              </div>
+            </fieldset>
+
+            <div class="form-actions">
+              <button id="btn-save-event" class="btn btn-primary" type="submit">Save event</button>
+              <button id="btn-publish-event" class="btn btn-gold" type="button" hidden>Publish</button>
+              <button id="btn-delete-event" class="btn btn-danger" type="button" hidden>Delete</button>
+            </div>
+            <p id="form-error" class="form-message error" aria-live="polite"></p>
+            <p id="form-success" class="form-message success" aria-live="polite"></p>
+          </form>
+        </section>
+      </div>
+    </section>
+
+    <section id="tab-attendees" class="workspace" hidden>
+      <div class="workspace-header">
+        <div>
+          <p class="eyebrow">Attendance</p>
+          <h2>Ticket holders</h2>
+        </div>
+        <button id="btn-export-csv" class="btn btn-secondary" type="button" disabled>Export CSV</button>
+      </div>
+      <div class="layout-grid attendees-grid">
+        <section class="panel">
+          <div class="panel-head">
+            <h3>Ticketed events</h3>
+          </div>
+          <div id="attendee-event-list" class="event-list"></div>
+        </section>
+        <section class="panel">
+          <div id="attendees-detail" class="attendees-detail empty-state">
+            <p>Select a ticketed event to view attendees.</p>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section id="tab-stats" class="workspace" hidden>
+      <div class="workspace-header">
+        <div>
+          <p class="eyebrow">Audience</p>
+          <h2>Stats</h2>
+        </div>
+      </div>
+      <section class="panel">
+        <div id="stats-content" class="stats-grid">
+          <p class="empty-state">Open the stats tab to load Kit subscriber counts.</p>
+        </div>
+      </section>
+    </section>
+  </div>
+
+  
+<script>
+(() => {
+  const login = document.getElementById('view-login');
+  const dash = document.getElementById('view-dashboard');
+  if (login) login.hidden = true;
+  if (dash) dash.hidden = false;
+  const eventList = document.getElementById('event-list-admin');
+  const count = document.getElementById('event-count');
+  if (count) count.textContent = '2';
+  if (eventList) eventList.innerHTML = "\n    <article class=\"event-row\">\n      <div>\n        <strong>First Aid for Families</strong>\n        <p class=\"event-meta\">2026-08-01 · Hide, Mt Maunganui</p>\n        <span class=\"pill pill-published\">published</span>\n        <span class=\"pill pill-ticketed\">$45 · 8 / 20 sold · 12 remaining</span>\n      </div>\n      <div class=\"event-actions\"><button class=\"mini-btn\" type=\"button\">Edit</button><button class=\"mini-btn\" type=\"button\">Attendees</button></div>\n    </article>\n    <article class=\"event-row\">\n      <div>\n        <strong>Daylight Disco</strong>\n        <p class=\"event-meta\">2026-07-04 · Hide, Mt Maunganui</p>\n        <span class=\"pill pill-published\">published</span>\n      </div>\n      <div class=\"event-actions\"><button class=\"mini-btn\" type=\"button\">Edit</button></div>\n    </article>\n  ";
+  const form = document.getElementById('event-form-wrap');
+  if (form) form.hidden = false;
+  const formTitle = document.getElementById('event-form-title');
+  if (formTitle) formTitle.textContent = 'Edit event';
+  const fields = document.getElementById('event-form');
+  if (fields) {
+    fields.elements.title.value = 'First Aid for Families';
+    fields.elements.slug.value = 'first-aid-for-families';
+    fields.elements.event_date.value = '2026-08-01';
+    fields.elements.time_start.value = '10:00';
+    fields.elements.venue.value = 'Hide, Mt Maunganui';
+    fields.elements.status.value = 'published';
+    fields.elements.description.value = 'Practical first aid session for parents and caregivers.';
+    fields.elements.chips.value = 'Ticketed, Workshop, Families';
+    fields.elements.is_ticketed.checked = true;
+    fields.elements.price_nzd.value = '45.00';
+    fields.elements.capacity.value = '20';
+  }
+  const ticketFields = document.getElementById('ticket-fields');
+  if (ticketFields) ticketFields.hidden = false;
+  const pay = document.getElementById('payment-status');
+  if (pay) pay.textContent = 'Manual bank transfer reservations are active when published.';
+  const attendees = document.getElementById('attendees-detail');
+  if (attendees) attendees.innerHTML = "\n    <div class=\"panel-head\"><div><h3>First Aid for Families</h3><p class=\"event-meta\">8 / 20 sold · 12 remaining</p></div></div>\n    <div class=\"event-list\">\n      <div class=\"capacity\"><div class=\"capacity-track\"><div class=\"capacity-fill\" style=\"width:40%\"></div></div></div>\n      <table class=\"attendee-table\">\n        <thead><tr><th>Name</th><th>Email</th><th>Qty</th><th>Reference</th><th>Due</th><th>Status</th><th>Reserved</th><th></th></tr></thead>\n        <tbody>\n          <tr><td>Holly Read</td><td>holly@example.com</td><td>2</td><td>FIRSTAID-ABC123</td><td>$90</td><td><span class=\"pill pill-pending\">pending</span></td><td>1 Aug, 10:15 am</td><td><button class=\"mini-btn\" type=\"button\">Mark paid</button></td></tr>\n          <tr><td>Toby Read</td><td>toby@example.com</td><td>1</td><td>FIRSTAID-ZX912Q</td><td>$45</td><td><span class=\"pill pill-paid\">paid</span></td><td>1 Aug, 10:21 am</td><td></td></tr>\n        </tbody>\n      </table>\n    </div>\n  ";
+  const attendeeList = document.getElementById('attendee-event-list');
+  if (attendeeList) attendeeList.innerHTML = "\n    <article class=\"event-row\"><div><strong>First Aid for Families</strong><p class=\"event-meta\">8 / 20 sold · 12 remaining</p></div><div class=\"event-actions\"><button class=\"mini-btn\" type=\"button\">View</button></div></article>\n  ";
+})();
+</script>
+
+</body>
+</html>

@@ -150,6 +150,7 @@
     }
     .replace-media input { display: none; }
     .replace-media__progress { margin: 8px 0 6px; }
+    .embed-only { display: none; }
 
     .summary-card,
     .queue-card,
@@ -230,6 +231,115 @@
 
     .fc .fc-button {
       border-radius: 8px;
+    }
+
+    body.is-embedded {
+      background: #eef2f0;
+    }
+
+    body.is-embedded .app-shell {
+      grid-template-columns: minmax(0, 1fr) 340px;
+      grid-template-rows: auto minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    body.is-embedded .rail {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: minmax(220px, 0.8fr) minmax(280px, 1.2fr);
+      gap: 12px;
+      align-items: start;
+      padding: 14px;
+      background: var(--paper);
+      color: var(--ink);
+      border-bottom: 1px solid var(--line);
+    }
+
+    body.is-embedded .rail__brand {
+      margin: 0;
+    }
+
+    body.is-embedded .brand-mark {
+      border-color: var(--navy);
+      color: var(--navy);
+    }
+
+    body.is-embedded .rail .eyebrow {
+      color: var(--orange);
+    }
+
+    body.is-embedded .rail h1 {
+      color: var(--navy);
+    }
+
+    body.is-embedded .view-tabs,
+    body.is-embedded .filter-group {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    body.is-embedded .view-tabs {
+      grid-column: 2;
+      grid-row: 1;
+      justify-content: flex-end;
+    }
+
+    body.is-embedded .filter-group {
+      grid-column: 1 / -1;
+    }
+
+    body.is-embedded .view-tab,
+    body.is-embedded .filter-chip {
+      min-height: 36px;
+      padding: 8px 10px;
+      background: #fff;
+      color: var(--navy);
+      border-color: var(--line);
+    }
+
+    body.is-embedded .view-tab.is-active,
+    body.is-embedded .filter-chip.is-active {
+      background: var(--navy);
+      color: var(--paper);
+    }
+
+    body.is-embedded .workspace {
+      padding: 18px;
+    }
+
+    body.is-embedded .inspector {
+      padding: 18px 14px;
+    }
+
+    body.is-embedded .topbar {
+      align-items: start;
+    }
+
+    body.is-embedded .topbar h2 {
+      font-size: 1.65rem;
+    }
+
+    body.is-embedded .summary-strip {
+      margin: 14px 0;
+      grid-template-columns: repeat(4, minmax(100px, 1fr));
+    }
+
+    body.is-embedded .summary-card--wide {
+      grid-column: 1 / -1;
+    }
+
+    body.is-embedded .queue-card {
+      grid-template-columns: 72px 1fr auto;
+    }
+
+    body.is-embedded .queue-thumb {
+      width: 72px;
+      height: 72px;
+    }
+
+    body.is-embedded .embed-only {
+      display: inline-flex;
     }
 
     .fc-event-card {
@@ -363,6 +473,10 @@
         grid-template-columns: var(--rail-width) minmax(0, 1fr);
       }
       .workspace { padding: 18px 40px; }
+      body.is-embedded .app-shell { grid-template-columns: 1fr; }
+      body.is-embedded .rail,
+      body.is-embedded .workspace,
+      body.is-embedded .inspector { grid-column: 1; }
     }
 
     @media (max-width: 760px) {
@@ -373,6 +487,11 @@
       .panel-toggle { display: none; }
       .summary-strip { grid-template-columns: repeat(2, 1fr); }
       .queue-card { grid-template-columns: 72px 1fr; }
+      body.is-embedded .rail { display: block; }
+      body.is-embedded .view-tabs,
+      body.is-embedded .filter-group { margin-top: 12px; }
+      body.is-embedded .topbar { display: grid; }
+      body.is-embedded .summary-strip { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
@@ -414,6 +533,8 @@
           <h2>Daylight Disco launch</h2>
         </div>
         <div class="topbar__actions">
+          <a class="button button--quiet embed-only" href="../../admin/index.html#scheduling" target="_top">Back to Admin</a>
+          <a id="close-fullscreen" class="button button--quiet" href="../../admin/index.html#scheduling">Close full screen</a>
           <button class="button button--quiet" type="button" data-action="refresh">Refresh</button>
           <button class="button button--primary" type="button" data-action="new-post">New post</button>
         </div>
@@ -627,6 +748,11 @@
   function bindEvents() {
     document.querySelector('[data-action="toggle-rail"]')?.addEventListener('click', () => togglePanel('rail'));
     document.querySelector('[data-action="toggle-inspector"]')?.addEventListener('click', () => togglePanel('inspector'));
+    const closeFullscreen = getEl('close-fullscreen');
+    if (closeFullscreen && window.self !== window.top) {
+      closeFullscreen.hidden = true;
+    }
+
     document.querySelector('[data-action="refresh"]')?.addEventListener('click', loadPosts);
     document.querySelector('[data-action="new-post"]')?.addEventListener('click', openNewPostDrawer);
     bindDrawerEvents();
@@ -1004,6 +1130,9 @@
 
   // ── CALENDAR INIT ─────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', () => {
+    if (window.self !== window.top) {
+      document.body.classList.add('is-embedded');
+    }
     bindEvents();
     initCalendar();
     loadPosts();

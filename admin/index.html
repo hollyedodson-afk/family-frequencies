@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en-NZ">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Admin | Family Frequencies</title>
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Barlow:wght@500;600;700;800;900&display=swap">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <main id="view-login" class="login-view">
+    <section class="login-panel" aria-labelledby="login-title">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="13.5" r="6.5" fill="#F0B840"/><path d="M3 33 C7 25 12 25 16 33 C20 41 28 41 32 33 C36 25 41 25 45 33" stroke="#1A2B40" stroke-width="4" stroke-linecap="round"/></svg>
+      </div>
+      <p class="eyebrow">Internal</p>
+      <h1 id="login-title">Family Frequencies Admin</h1>
+      <form id="login-form" class="stack">
+        <label>Email
+          <input id="login-email" type="email" required autocomplete="email" placeholder="you@example.com">
+        </label>
+        <label>Password
+          <input id="login-password" type="password" required autocomplete="current-password">
+        </label>
+        <button class="btn btn-primary" type="submit">Sign in</button>
+        <p id="login-error" class="form-message error" aria-live="polite"></p>
+      </form>
+    </section>
+  </main>
+
+  <div id="view-dashboard" class="dashboard" hidden>
+    <aside class="admin-sidebar" aria-label="Admin tools">
+      <a class="sidebar-brand" href="/" aria-label="Family Frequencies home">
+        <span class="brand-dot" aria-hidden="true"></span>
+        <span>
+          <small>Family Frequencies</small>
+          <strong>Admin Tools</strong>
+        </span>
+      </a>
+      <nav class="tabs tool-list" aria-label="Admin sections">
+        <button class="tab is-active" type="button" data-tab="events"><span>Events</span><small>Calendar + pages</small></button>
+        <button class="tab" type="button" data-tab="attendees"><span>Attendees</span><small>Tickets + payments</small></button>
+        <button class="tab" type="button" data-tab="scheduling"><span>Scheduling</span><small>Social queue</small></button>
+        <button class="tab" type="button" data-tab="stats"><span>Stats</span><small>Audience</small></button>
+      </nav>
+      <button id="btn-logout" class="btn btn-ghost" type="button">Sign out</button>
+    </aside>
+
+    <main class="admin-main">
+    <section id="tab-events" class="workspace">
+      <div class="workspace-header">
+        <div>
+          <p class="eyebrow">Calendar</p>
+          <h2>Events</h2>
+        </div>
+        <button id="btn-add-event" class="btn btn-primary" type="button">+ Add event</button>
+      </div>
+
+      <div class="layout-grid">
+        <section class="panel">
+          <div class="panel-head">
+            <h3>Event list</h3>
+            <span id="event-count" class="counter">0</span>
+          </div>
+          <div id="event-list-admin" class="event-list" aria-live="polite"></div>
+        </section>
+
+        <section id="event-form-wrap" class="panel form-panel" hidden>
+          <div class="panel-head">
+            <h3 id="event-form-title">New event</h3>
+            <button id="btn-close-form" class="icon-btn" type="button" aria-label="Close form">×</button>
+          </div>
+
+          <form id="event-form" class="event-form">
+            <input type="hidden" name="id">
+            <div class="form-grid">
+              <label>Title
+                <input name="title" type="text" required placeholder="First Aid Course">
+              </label>
+              <label>Slug
+                <input name="slug" type="text" required pattern="[a-z0-9-]+" placeholder="first-aid-course">
+              </label>
+              <label>Date
+                <input name="event_date" type="date" required>
+              </label>
+              <div class="two-up">
+                <label>Start
+                  <input name="time_start" type="time">
+                </label>
+                <label>End
+                  <input name="time_end" type="time">
+                </label>
+              </div>
+              <label>Venue
+                <input name="venue" type="text" required placeholder="Hide, Mt Maunganui">
+              </label>
+              <label>Status
+                <select name="status">
+                  <option value="draft">Draft</option>
+                  <option value="published">Published</option>
+                  <option value="past">Past</option>
+                </select>
+              </label>
+            </div>
+
+            <label>Description
+              <textarea name="description" rows="4" placeholder="Event description"></textarea>
+            </label>
+            <label>Image URL
+              <input name="image_url" type="text" placeholder="assets/event.jpg">
+            </label>
+            <label>Detail URL
+              <input name="detail_url" type="text" placeholder="daylight-disco or /event/first-aid-course">
+            </label>
+            <label>Chips
+              <input name="chips" type="text" placeholder="Ticketed, All ages, Workshop">
+            </label>
+
+            <fieldset class="ticket-box">
+              <label class="check-row">
+                <input name="is_ticketed" type="checkbox">
+                <span>Ticketed event</span>
+              </label>
+              <div id="ticket-fields" class="ticket-fields" hidden>
+                <label>Price NZD
+                  <input name="price_nzd" type="number" min="0" step="0.01" placeholder="45.00">
+                </label>
+                <label>Capacity
+                  <input name="capacity" type="number" min="1" step="1" placeholder="20">
+                </label>
+                <label>Tickets open
+                  <input name="ticket_sale_opens" type="datetime-local">
+                </label>
+                <p id="payment-status" class="hint"></p>
+              </div>
+            </fieldset>
+
+            <div class="form-actions">
+              <button id="btn-save-event" class="btn btn-primary" type="submit">Save event</button>
+              <button id="btn-publish-event" class="btn btn-gold" type="button" hidden>Publish</button>
+              <button id="btn-delete-event" class="btn btn-danger" type="button" hidden>Delete</button>
+            </div>
+            <p id="form-error" class="form-message error" aria-live="polite"></p>
+            <p id="form-success" class="form-message success" aria-live="polite"></p>
+          </form>
+        </section>
+      </div>
+    </section>
+
+    <section id="tab-attendees" class="workspace" hidden>
+      <div class="workspace-header">
+        <div>
+          <p class="eyebrow">Attendance</p>
+          <h2>Ticket holders</h2>
+        </div>
+        <button id="btn-export-csv" class="btn btn-secondary" type="button" disabled>Export CSV</button>
+      </div>
+      <div class="layout-grid attendees-grid">
+        <section class="panel">
+          <div class="panel-head">
+            <h3>Ticketed events</h3>
+          </div>
+          <div id="attendee-event-list" class="event-list"></div>
+        </section>
+        <section class="panel">
+          <div id="attendees-detail" class="attendees-detail empty-state">
+            <p>Select a ticketed event to view attendees.</p>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section id="tab-scheduling" class="workspace workspace-fill" hidden>
+      <div class="workspace-header">
+        <div>
+          <p class="eyebrow">Publishing</p>
+          <h2>Scheduling</h2>
+        </div>
+        <a class="btn btn-secondary" href="../social-scheduler/ui/index.html" target="_blank" rel="noopener">Open full screen</a>
+      </div>
+      <section class="panel scheduler-panel">
+        <iframe
+          class="scheduler-frame"
+          title="Family Frequencies social scheduler"
+          src="../social-scheduler/ui/index.html"
+          loading="lazy"
+        ></iframe>
+      </section>
+    </section>
+
+    <section id="tab-stats" class="workspace" hidden>
+      <div class="workspace-header">
+        <div>
+          <p class="eyebrow">Audience</p>
+          <h2>Stats</h2>
+        </div>
+      </div>
+      <section class="panel">
+        <div id="stats-content" class="stats-grid">
+          <p class="empty-state">Open the stats tab to load Kit subscriber counts.</p>
+        </div>
+      </section>
+    </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.108.2/dist/umd/supabase.min.js" crossorigin="anonymous"></script>
+  <script type="module" src="admin.js"></script>
+</body>
+</html>
