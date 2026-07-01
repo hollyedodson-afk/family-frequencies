@@ -6,13 +6,16 @@
         "httpMethod": "POST",
         "path": "ff-delete-post",
         "responseMode": "responseNode",
-        "options": {}
+        "options": {
+          "allowedOrigins": "*"
+        }
       },
       "id": "f7a7b8c9-0007-0007-0007-000000000001",
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
-      "position": [240, 300]
+      "position": [240, 300],
+      "webhookId": "ff-delete-post"
     },
     {
       "parameters": {
@@ -30,7 +33,7 @@
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "id":     "={{ $json.id }}",
+            "id":     "={{ $('Webhook').item.json.body.id }}",
             "status": "deleted"
           },
           "matchingColumns": ["id"],

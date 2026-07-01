@@ -1,0 +1,147 @@
+{
+  "name": "FF Social - 05 Missed Post Alert",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "hours", "hoursInterval": 6 }]
+        }
+      },
+      "id": "e5f6a7b8-0005-0005-0005-000000000001",
+      "name": "Every 6 Hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "1FIrB4lsDqJuGvoOpNTfNhM64xfkg6TkUVNTPhGWvR1g",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Sheet1",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "e5f6a7b8-0005-0005-0005-000000000002",
+      "name": "Read Queue",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "loose" },
+          "conditions": [
+            {
+              "id": "m1",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "scheduled",
+              "operator": { "type": "string", "operation": "equals" }
+            },
+            {
+              "id": "m2",
+              "leftValue": "={{ $json.scheduled_at }}",
+              "rightValue": "={{ $now.minus(1, 'hour').toISO() }}",
+              "operator": { "type": "dateTime", "operation": "before" }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "e5f6a7b8-0005-0005-0005-000000000003",
+      "name": "Filter Missed",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "missed_posts",
+        "options": {}
+      },
+      "id": "e5f6a7b8-0005-0005-0005-000000000004",
+      "name": "Collect All Missed",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "loose" },
+          "conditions": [
+            {
+              "id": "hm1",
+              "leftValue": "={{ $json.missed_posts.length }}",
+              "rightValue": "0",
+              "operator": { "type": "number", "operation": "gt" }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "e5f6a7b8-0005-0005-0005-000000000005",
+      "name": "Any Missed?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "chatId": "8770824903",
+        "text": "=⚠️ *FF Social — Missed posts detected*\n\n{{ $json.missed_posts.map(p => `• [${p.type}] ${p.caption ? p.caption.substring(0, 50) + '…' : '(no caption)'}\\n  Scheduled: ${p.scheduled_at}\\n  ID: ${p.id}`).join('\\n\\n') }}\n\nThese posts were approved + due but haven't posted. Check n8n for errors, then re-approve or mark as failed in the sheet.",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "e5f6a7b8-0005-0005-0005-000000000006",
+      "name": "Telegram Alert",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1340, 180],
+      "credentials": {
+        "telegramApi": {
+          "id": "TELEGRAM_CREDENTIAL_ID",
+          "name": "Telegram Bot - FF Social"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Every 6 Hours": {
+      "main": [[{ "node": "Read Queue", "type": "main", "index": 0 }]]
+    },
+    "Read Queue": {
+      "main": [[{ "node": "Filter Missed", "type": "main", "index": 0 }]]
+    },
+    "Filter Missed": {
+      "main": [[{ "node": "Collect All Missed", "type": "main", "index": 0 }]]
+    },
+    "Collect All Missed": {
+      "main": [[{ "node": "Any Missed?", "type": "main", "index": 0 }]]
+    },
+    "Any Missed?": {
+      "main": [
+        [{ "node": "Telegram Alert", "type": "main", "index": 0 }],
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "instanceId": ""
+  }
+}

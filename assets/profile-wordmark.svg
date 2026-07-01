@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&amp;display=swap');
+      text { font-family: 'Barlow Condensed', Impact, Arial Narrow, sans-serif; font-weight: 700; }
+    </style>
+  </defs>
+  <rect width="400" height="400" fill="#1A2B40"/>
+  <!-- Sun -->
+  <circle cx="200" cy="120" r="36" fill="#F0B840"/>
+  <!-- Wave -->
+  <path d="M55 215 C75 180 105 180 125 215 C145 250 180 250 205 215 C230 180 260 180 280 215 C300 250 330 250 345 215"
+        stroke="#FAF0E0" stroke-width="14" stroke-linecap="round" fill="none"/>
+  <!-- Wordmark -->
+  <text x="200" y="292" text-anchor="middle" font-size="44" fill="#FAF0E0" letter-spacing="2">FAMILY</text>
+  <text x="200" y="344" text-anchor="middle" font-size="44" fill="#F0B840" letter-spacing="2">FREQUENCIES</text>
+</svg>

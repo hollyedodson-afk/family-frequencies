@@ -29,9 +29,28 @@
     }
 
     .app-shell {
+      --rail-width: 248px;
+      --inspector-width: 380px;
       display: grid;
-      grid-template-columns: 248px minmax(0, 1fr) 380px;
+      grid-template-columns: var(--rail-width) minmax(0, 1fr) var(--inspector-width);
       min-height: 100vh;
+      position: relative;
+      transition: grid-template-columns 180ms ease;
+    }
+
+    .app-shell.is-rail-collapsed { --rail-width: 0px; }
+    .app-shell.is-inspector-collapsed { --inspector-width: 0px; }
+
+    .app-shell.is-rail-collapsed .rail,
+    .app-shell.is-inspector-collapsed .inspector {
+      padding-left: 0;
+      padding-right: 0;
+      border: 0;
+    }
+
+    .app-shell.is-rail-collapsed .rail > *,
+    .app-shell.is-inspector-collapsed .inspector > * {
+      display: none;
     }
 
     .rail,
@@ -40,9 +59,9 @@
       color: var(--paper);
     }
 
-    .rail { padding: 22px; }
-    .workspace { min-width: 0; padding: 22px; }
-    .inspector { padding: 14px 12px; overflow-y: auto; }
+    .rail { padding: 22px; overflow: hidden; min-width: 0; transition: padding 180ms ease; }
+    .workspace { min-width: 0; padding: 22px 44px; }
+    .inspector { padding: 14px 12px; overflow-y: auto; min-width: 0; transition: padding 180ms ease; }
     .rail__brand { display: flex; gap: 12px; align-items: center; margin-bottom: 28px; }
     .brand-mark { display: grid; place-items: center; width: 44px; height: 44px; border: 2px solid var(--gold); color: var(--gold); font-weight: 900; }
     .eyebrow { margin: 0 0 4px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--orange); }
@@ -92,8 +111,45 @@
     .button--success { background: #138A4B; color: white; border-color: #138A4B; }
     .button--quiet { background: transparent; color: inherit; }
     .button--danger { background: transparent; color: #c0392b; border-color: #c0392b; }
+    .button:disabled { cursor: wait; opacity: 0.68; }
+    .toggle-bar {
+      position: sticky;
+      top: 22px;
+      height: 0;
+      overflow: visible;
+      z-index: 20;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      pointer-events: none;
+      margin: 0 -44px;
+    }
+    .panel-toggle {
+      pointer-events: all;
+      width: 36px;
+      height: 68px;
+      min-height: 68px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line);
+      background: var(--paper);
+      color: var(--navy);
+      box-shadow: 0 10px 28px rgba(26, 43, 64, 0.14);
+      font-size: 1.25rem;
+      font-weight: 900;
+    }
+    .panel-toggle--rail { transform: translateX(-50%); }
+    .panel-toggle--inspector { transform: translateX(50%); }
     .media-link { display: block; font-size: 0.72rem; font-weight: 800; color: var(--gold); text-decoration: none; margin-top: 4px; opacity: 0.8; text-align: right; }
     .media-link:hover { opacity: 1; }
+    .replace-media {
+      display: grid;
+      place-items: center;
+      margin-top: 8px;
+    }
+    .replace-media input { display: none; }
+    .replace-media__progress { margin: 8px 0 6px; }
 
     .summary-card,
     .queue-card,
@@ -180,6 +236,8 @@
       display: grid;
       gap: 4px;
       line-height: 1.2;
+      border-left: 4px solid var(--event-color, #7f8c8d);
+      padding-left: 6px;
     }
 
     .card-top {
@@ -198,6 +256,14 @@
       font-size: 0.65rem;
       font-weight: 800;
       text-transform: uppercase;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--event-color, #7f8c8d);
+      flex: 0 0 auto;
     }
 
     .card-caption {
@@ -237,7 +303,22 @@
       margin: 18px 0;
     }
 
+    .upload-zone:focus-visible {
+      outline: 3px solid var(--blue);
+      outline-offset: 3px;
+    }
+
     .upload-zone input { display: none; }
+    .drawer-status {
+      margin: -6px 0 14px;
+      min-height: 20px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+    .drawer-status.is-working { color: var(--orange); }
+    .drawer-status.is-ready { color: #138A4B; }
+    .drawer-status.is-error { color: #8f2d2d; }
 
     .prog-bar {
       height: 4px;
@@ -249,14 +330,47 @@
 
     .prog-fill { height: 100%; width: 0%; background: var(--orange); }
 
+    .feed-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; }
+    .feed-cell { position: relative; aspect-ratio: 1; overflow: hidden; cursor: pointer; background: var(--line); }
+    .feed-cell img, .feed-cell video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .feed-cell__overlay { position: absolute; inset: 0; background: rgba(26,43,64,0); transition: background 160ms ease; display: flex; flex-direction: column; justify-content: flex-end; padding: 10px; }
+    .feed-cell:hover .feed-cell__overlay { background: rgba(26,43,64,0.62); }
+    .feed-cell__caption { color: #fff; font-size: 0.72rem; font-weight: 600; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; opacity: 0; transition: opacity 160ms ease; }
+    .feed-cell:hover .feed-cell__caption { opacity: 1; }
+    .feed-cell__badge { position: absolute; top: 8px; right: 8px; font-size: 0.62rem; font-weight: 900; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; letter-spacing: 0.04em; }
+    .feed-cell__badge--scheduled { background: var(--blue); color: #fff; }
+    .feed-cell__badge--draft { background: var(--orange); color: #fff; }
+    .feed-cell__badge--needs_music { background: #7b4ea0; color: #fff; }
+    .feed-cell--selected { outline: 3px solid var(--orange); outline-offset: -3px; }
+    .feed-cell__date { position: absolute; bottom: 8px; right: 8px; font-size: 0.62rem; color: rgba(255,255,255,0.85); font-weight: 700; background: rgba(0,0,0,0.35); padding: 2px 5px; border-radius: 3px; }
+    .cal-layout { display: grid; grid-template-columns: 1fr 200px; gap: 16px; align-items: start; }
+    .unscheduled-panel { background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 14px; }
+    .unscheduled-item { padding: 8px 10px; background: var(--cream); border: 1px solid var(--line); border-radius: 6px; cursor: grab; margin-bottom: 8px; }
+    .unscheduled-item:active { cursor: grabbing; opacity: 0.6; }
+    .unscheduled-item strong { display: block; font-size: 0.72rem; font-weight: 900; text-transform: uppercase; color: var(--navy); }
+    .unscheduled-item span { display: block; font-size: 0.76rem; color: var(--muted); font-weight: 500; margin-top: 2px; }
     @media (max-width: 1080px) {
-      .app-shell { grid-template-columns: 210px minmax(0, 1fr); }
+      .cal-layout { grid-template-columns: 1fr; }
+      .unscheduled-panel { display: none; }
+      .app-shell {
+        --rail-width: 210px;
+        --inspector-width: 0px;
+        grid-template-columns: var(--rail-width) minmax(0, 1fr);
+      }
       .inspector { grid-column: 1 / -1; }
+      .app-shell:not(.is-inspector-collapsed) {
+        --inspector-width: 100%;
+        grid-template-columns: var(--rail-width) minmax(0, 1fr);
+      }
+      .workspace { padding: 18px 40px; }
     }
 
     @media (max-width: 760px) {
       .app-shell { display: block; }
+      .app-shell.is-rail-collapsed .rail,
+      .app-shell.is-inspector-collapsed .inspector { display: none; }
       .rail, .workspace, .inspector { padding: 16px; }
+      .panel-toggle { display: none; }
       .summary-strip { grid-template-columns: repeat(2, 1fr); }
       .queue-card { grid-template-columns: 72px 1fr; }
     }
@@ -277,6 +391,7 @@
         <button class="view-tab is-active" type="button" data-view="inbox">Inbox</button>
         <button class="view-tab" type="button" data-view="calendar">Calendar</button>
         <button class="view-tab" type="button" data-view="library">Library</button>
+        <button class="view-tab" type="button" data-view="grid">Feed</button>
       </nav>
 
       <div class="filter-group" aria-label="Status filters">
@@ -289,6 +404,10 @@
     </aside>
 
     <main class="workspace">
+      <div class="toggle-bar">
+        <button class="button panel-toggle panel-toggle--rail" type="button" data-action="toggle-rail" aria-pressed="false" aria-label="Hide filters" title="Hide filters">&lt;</button>
+        <button class="button panel-toggle panel-toggle--inspector" type="button" data-action="toggle-inspector" aria-pressed="false" aria-label="Hide inspector" title="Hide inspector">&gt;</button>
+      </div>
       <header class="topbar">
         <div>
           <p class="eyebrow">Campaign</p>
@@ -324,11 +443,29 @@
       </section>
 
       <section id="view-calendar" class="view-panel" aria-label="Calendar">
-        <div id="calendar"></div>
+        <div class="cal-layout">
+          <div id="calendar"></div>
+          <aside class="unscheduled-panel">
+            <p class="eyebrow" style="margin:0 0 10px">Unscheduled</p>
+            <p style="font-size:0.72rem;color:var(--muted);margin:0 0 10px;font-weight:600">Drag onto calendar to schedule</p>
+            <div id="unscheduled-items"></div>
+          </aside>
+        </div>
       </section>
 
       <section id="view-library" class="view-panel" aria-label="Library">
         <div id="library-grid" class="library-grid"></div>
+      </section>
+
+      <section id="view-grid" class="view-panel" aria-label="Feed preview">
+        <div class="section-head" style="margin-bottom:16px">
+          <div>
+            <p class="eyebrow">Instagram</p>
+            <h3>Feed preview</h3>
+          </div>
+          <p style="font-size:0.78rem;color:var(--muted);margin:0;align-self:center">Newest top-left · click to inspect</p>
+        </div>
+        <div id="feed-grid" class="feed-grid"></div>
       </section>
     </main>
 
@@ -344,6 +481,12 @@
           <img id="i-media" alt="Selected post media preview" />
         </div>
         <a id="i-media-link" class="media-link" href="#" target="_blank" rel="noopener" hidden>View on Cloudinary ↗</a>
+        <label class="button button--quiet replace-media">
+          Replace media
+          <input type="file" id="i-file-input" accept="image/*,video/*" />
+        </label>
+        <div class="prog-bar replace-media__progress"><div class="prog-fill" id="i-replace-fill"></div></div>
+        <p class="drawer-status" id="i-replace-status" aria-live="polite">Current media is unchanged.</p>
         <div class="inspector-meta">
           <span id="i-status-pill" class="status-pill"></span>
           <span id="i-type-pill" class="type-pill"></span>
@@ -379,8 +522,6 @@
         </label>
         <div class="inspector-actions">
           <button class="button button--danger" type="button" data-action="delete">Delete</button>
-          <button class="button button--quiet" type="button" data-action="reject">Reject</button>
-          <button class="button button--success" type="button" data-action="approve">Approve</button>
           <button class="button button--primary" type="button" data-action="save">Save</button>
         </div>
       </form>
@@ -396,13 +537,14 @@
         </div>
         <button class="button button--quiet" type="button" data-action="close-drawer">Close</button>
       </div>
-      <label class="upload-zone">
+      <label class="upload-zone" id="upload-zone" tabindex="0">
         <input type="file" id="file-input" accept="image/*,video/*" />
         <span id="upload-name">Choose image or video</span>
       </label>
       <div class="prog-bar" id="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
+      <p class="drawer-status" id="drawer-status" aria-live="polite">Ready to build a post.</p>
       <label class="field">Caption <textarea id="new-caption"></textarea></label>
-      <label class="field">Scheduled <input type="datetime-local" id="new-scheduled" /></label>
+      <label class="field">Scheduled <span style="font-weight:400;color:var(--muted);font-size:0.8em">(optional)</span> <input type="datetime-local" id="new-scheduled" /></label>
       <label class="field">Type
         <select id="new-type">
           <option value="feed">Feed</option>
@@ -412,7 +554,7 @@
       </label>
       <label class="check-row"><input type="checkbox" id="new-music" /> Needs music before posting</label>
       <label class="field">Notes <textarea id="new-notes"></textarea></label>
-      <button class="button button--primary" type="button" data-action="submit-new">Add to queue</button>
+      <button class="button button--primary" type="button" data-action="submit-new" id="submit-new">Add to queue</button>
     </div>
   </div>
   <div id="toast"></div>
@@ -421,10 +563,11 @@
   // ── CONFIG ────────────────────────────────────────────────────
   const CLOUD_NAME    = 'dxh9cnlqu';
   const UPLOAD_PRESET = 'ml_default';
-  const SUBMIT_URL    = 'http://localhost:5678/webhook/ff-submit-post';
-  const APPROVE_URL   = 'http://localhost:5678/webhook/ff-approve-post';
-  const UPDATE_URL    = 'http://localhost:5678/webhook/ff-update-post';
-  const DELETE_URL    = 'http://localhost:5678/webhook/ff-delete-post';
+  const N8N_BASE      = 'https://n8n-production-4a398.up.railway.app';
+  const SUBMIT_URL    = `${N8N_BASE}/webhook/ff-submit-post`;
+  const APPROVE_URL   = `${N8N_BASE}/webhook/ff-approve-post`;
+  const UPDATE_URL    = `${N8N_BASE}/webhook/ff-update-post`;
+  const DELETE_URL    = `${N8N_BASE}/webhook/ff-delete-post`;
   const SHEET_ID      = '1FIrB4lsDqJuGvoOpNTfNhM64xfkg6TkUVNTPhGWvR1g';
   // ─────────────────────────────────────────────────────────────
 
@@ -452,16 +595,27 @@
   };
 
   let uploadSessionToken = 0;
+  let replaceUploadSessionToken = 0;
+  let isReplacingMedia = false;
+
+  function normalizeStatus(value) {
+    return String(value || 'draft').trim().toLowerCase().replace(/\s+/g, '_');
+  }
+
+  function statusColor(status) {
+    return STATUS_COLOR[normalizeStatus(status)] || '#7f8c8d';
+  }
 
   function normalizePost(raw) {
+    const status = normalizeStatus(raw.status);
     return {
       id: raw.id || crypto.randomUUID(),
       type: raw.type || 'feed',
       caption: raw.caption || '',
       scheduled_at: raw.scheduled_at || '',
-      needs_music: raw.needs_music === true || raw.needs_music === 'TRUE' || raw.status === 'needs_music',
+      needs_music: raw.needs_music === true || raw.needs_music === 'TRUE' || status === 'needs_music',
       notes: raw.notes || '',
-      status: raw.status || 'draft',
+      status,
       media_url: raw.media_url || '',
     };
   }
@@ -471,6 +625,8 @@
   }
 
   function bindEvents() {
+    document.querySelector('[data-action="toggle-rail"]')?.addEventListener('click', () => togglePanel('rail'));
+    document.querySelector('[data-action="toggle-inspector"]')?.addEventListener('click', () => togglePanel('inspector'));
     document.querySelector('[data-action="refresh"]')?.addEventListener('click', loadPosts);
     document.querySelector('[data-action="new-post"]')?.addEventListener('click', openNewPostDrawer);
     bindDrawerEvents();
@@ -495,9 +651,8 @@
       if (card) selectPost(card.dataset.postId);
     });
     document.querySelector('[data-action="save"]')?.addEventListener('click', saveSelectedPost);
-    document.querySelector('[data-action="approve"]')?.addEventListener('click', () => approveSelectedPost('approve'));
-    document.querySelector('[data-action="reject"]')?.addEventListener('click', () => approveSelectedPost('reject'));
     document.querySelector('[data-action="delete"]')?.addEventListener('click', deleteSelectedPost);
+    document.getElementById('i-file-input')?.addEventListener('change', replaceSelectedMedia);
     document.addEventListener('keydown', event => {
       if (event.key !== 'Enter' && event.key !== ' ') return;
       const card = event.target.closest?.('[data-post-id]');
@@ -505,6 +660,27 @@
       event.preventDefault();
       selectPost(card.dataset.postId);
     });
+  }
+
+  function togglePanel(panel) {
+    const shell = document.querySelector('.app-shell');
+    const className = panel === 'rail' ? 'is-rail-collapsed' : 'is-inspector-collapsed';
+    const collapsed = shell.classList.toggle(className);
+    const button = document.querySelector(`[data-action="toggle-${panel}"]`);
+    if (button) {
+      button.setAttribute('aria-pressed', String(collapsed));
+      const label = collapsed
+        ? (panel === 'rail' ? 'Show filters' : 'Show inspector')
+        : (panel === 'rail' ? 'Hide filters' : 'Hide inspector');
+      button.setAttribute('aria-label', label);
+      button.setAttribute('title', label);
+      button.textContent = panel === 'rail'
+        ? (collapsed ? '>' : '<')
+        : (collapsed ? '<' : '>');
+    }
+    if (appState.view === 'calendar' && cal) {
+      requestAnimationFrame(() => cal.updateSize());
+    }
   }
 
   // ── CSV PARSER ────────────────────────────────────────────────
@@ -617,8 +793,8 @@
   }
 
   function calendarEvents() {
-    return appState.posts.map(post => {
-      const color = STATUS_COLOR[post.status] || '#7f8c8d';
+    return visiblePosts().filter(p => p.scheduled_at).map(post => {
+      const color = statusColor(post.status);
       return {
         id: post.id,
         title: post.caption || post.notes || `[${post.type}]`,
@@ -636,9 +812,11 @@
     const p = arg.event.extendedProps;
     const thumbSrc = mediaPreview(p);
     const caption = esc((p.caption || '').substring(0, 48) || `[${p.type}]`);
+    const color = statusColor(p.status);
     return { html: `
-      <div class="fc-event-card">
+      <div class="fc-event-card" style="--event-color:${esc(color)}">
         <div class="card-top">
+          <span class="status-dot" aria-hidden="true"></span>
           <span class="type-tag">${esc(p.type||'')}</span>
           ${thumbSrc ? `<img src="${thumbSrc}" style="width:14px;height:14px;object-fit:cover;border-radius:2px;flex-shrink:0" onerror="this.remove()" />` : ''}
         </div>
@@ -662,9 +840,52 @@
     `).join('') || '<div class="summary-card">No posts match this filter.</div>';
   }
 
+  function renderFeedGrid() {
+    const grid = document.getElementById('feed-grid');
+    const feedPosts = appState.posts
+      .filter(p => p.status !== 'deleted' && p.type !== 'story')
+      .sort((a, b) => {
+        const ta = a.scheduled_at || a.posted_at || '';
+        const tb = b.scheduled_at || b.posted_at || '';
+        return tb.localeCompare(ta);
+      });
+
+    if (!feedPosts.length) {
+      grid.innerHTML = '<p style="color:var(--muted);grid-column:1/-1;padding:32px 0">No posts yet.</p>';
+      return;
+    }
+
+    grid.innerHTML = feedPosts.map(post => {
+      const isSelected = post.id === appState.selectedId;
+      const preview = mediaPreview(post);
+      const isVideo = (post.media_url || '').match(/\.(mp4|mov|webm)/i);
+      const media = isVideo
+        ? `<video src="${esc(preview)}" muted playsinline loop></video>`
+        : `<img src="${esc(preview)}" alt="">`;
+
+      const badge = post.status !== 'posted'
+        ? `<span class="feed-cell__badge feed-cell__badge--${esc(post.status)}">${esc(post.status.replace('_', ' '))}</span>`
+        : '';
+
+      const dateLabel = post.scheduled_at
+        ? `<span class="feed-cell__date">${esc(formatDateTime(post.scheduled_at))}</span>`
+        : '';
+
+      return `
+        <div class="feed-cell ${isSelected ? 'feed-cell--selected' : ''}" data-post-id="${esc(post.id)}" tabindex="0">
+          ${media}
+          ${badge}
+          <div class="feed-cell__overlay">
+            <p class="feed-cell__caption">${esc(post.caption || post.notes || '')}</p>
+          </div>
+          ${dateLabel}
+        </div>`;
+    }).join('');
+  }
+
   function renderLibrary() {
     const grid = document.getElementById('library-grid');
-    grid.innerHTML = appState.posts.map(post => `
+    grid.innerHTML = visiblePosts().map(post => `
       <article class="library-card ${post.id === appState.selectedId ? 'is-selected' : ''}" data-post-id="${esc(post.id)}" tabindex="0">
         <img src="${esc(mediaPreview(post))}" alt="">
         <strong>${esc(post.type)}</strong>
@@ -682,6 +903,13 @@
     const mediaLink = document.getElementById('i-media-link');
     mediaLink.href = post.media_url || '#';
     mediaLink.hidden = !post.media_url;
+    replaceUploadSessionToken += 1;
+    isReplacingMedia = false;
+    setSaveBusy(false);
+    document.getElementById('i-replace-fill').style.width = '0%';
+    document.getElementById('i-replace-status').className = 'drawer-status';
+    document.getElementById('i-replace-status').textContent = 'Current media is unchanged.';
+    document.getElementById('i-file-input').value = '';
     document.getElementById('i-status-pill').textContent = post.status;
     document.getElementById('i-type-pill').textContent = post.type;
     document.getElementById('i-caption').value = post.caption;
@@ -692,12 +920,27 @@
     document.getElementById('i-notes').value = post.notes;
   }
 
+  function renderUnscheduled() {
+    const container = document.getElementById('unscheduled-items');
+    if (!container) return;
+    const posts = visiblePosts().filter(p => !p.scheduled_at);
+    container.innerHTML = posts.length
+      ? posts.map(p => `
+        <div class="unscheduled-item" data-post-id="${esc(p.id)}"
+             data-event="${esc(JSON.stringify({ id: p.id, title: p.caption || p.notes || p.type, duration: '01:00', extendedProps: p }))}">
+          <strong>${esc(p.type)} · ${esc(p.status)}</strong>
+          <span>${esc((p.caption || p.notes || 'No caption').slice(0, 48))}</span>
+        </div>`).join('')
+      : '<p style="font-size:0.78rem;color:var(--muted);margin:0">None</p>';
+  }
+
   function renderApp() {
     renderTabs();
     renderMetrics();
-    visiblePosts();
     renderQueue();
     renderLibrary();
+    renderFeedGrid();
+    renderUnscheduled();
     renderInspector();
     if (cal) cal.refetchEvents();
   }
@@ -720,8 +963,10 @@
   function initCalendar() {
     cal = new FullCalendar.Calendar(document.getElementById('calendar'), {
       initialView: 'dayGridMonth',
+      timeZone: 'Pacific/Auckland',
       headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek' },
       editable: true,
+      droppable: true,
       eventStartEditable: true,
       eventAllow: () => true,
       firstDay: 1,
@@ -730,8 +975,31 @@
       eventContent: renderCard,
       eventClick: info => selectPost(info.event.id),
       eventDrop: handleDrop,
+      eventReceive: handleExternalDrop,
     });
     cal.render();
+    // wire up external drag from unscheduled panel
+    const panel = document.getElementById('unscheduled-items');
+    if (panel && FullCalendar.Draggable) {
+      new FullCalendar.Draggable(panel, {
+        itemSelector: '.unscheduled-item',
+        eventData: el => JSON.parse(el.dataset.event || '{}'),
+      });
+    }
+  }
+
+  async function handleExternalDrop(info) {
+    const post = info.event.extendedProps;
+    if (!post?.id) { info.revert(); return; }
+    const updated = { ...post, scheduled_at: dtStr(info.event.start) };
+    try {
+      await postJson(UPDATE_URL, updated);
+      showToast('Scheduled ✓');
+      setTimeout(loadPosts, 700);
+    } catch(e) {
+      info.revert();
+      showToast('Schedule failed — check n8n WF06', true);
+    }
   }
 
   // ── CALENDAR INIT ─────────────────────────────────────────────
@@ -772,6 +1040,10 @@
   async function saveSelectedPost() {
     const post = selectedPost();
     if (!post) return;
+    if (isReplacingMedia) {
+      showToast('Wait for the replacement upload to finish, then save.', true);
+      return;
+    }
     const updated = {
       ...post,
       caption: getEl('i-caption').value,
@@ -822,6 +1094,8 @@
   // ── NEW POST DRAWER ───────────────────────────────────────────
   function openNewPostDrawer() {
     document.getElementById('new-post-drawer').hidden = false;
+    setDrawerStatus('Choose a file to start the post.', 'ready');
+    requestAnimationFrame(() => document.getElementById('upload-zone')?.focus());
   }
 
   function closeNewPostDrawer() {
@@ -840,77 +1114,198 @@
     document.getElementById('new-type').value = 'feed';
     document.getElementById('new-music').checked = false;
     document.getElementById('new-notes').value = '';
+    setSubmitBusy(false);
+    setDrawerStatus('Ready to build a post.');
+  }
+
+  function setDrawerStatus(message, tone = '') {
+    const status = document.getElementById('drawer-status');
+    if (!status) return;
+    status.className = `drawer-status${tone ? ` is-${tone}` : ''}`;
+    status.textContent = message;
+  }
+
+  function setSubmitBusy(isBusy) {
+    const button = document.getElementById('submit-new');
+    if (!button) return;
+    button.disabled = isBusy;
+    button.textContent = isBusy ? 'Adding...' : 'Add to queue';
+  }
+
+  function setSaveBusy(isBusy, label = 'Save') {
+    const button = document.querySelector('[data-action="save"]');
+    if (!button) return;
+    button.disabled = isBusy;
+    button.textContent = label;
   }
 
   function bindDrawerEvents() {
     document.querySelector('[data-action="close-drawer"]').addEventListener('click', closeNewPostDrawer);
     document.querySelector('[data-action="submit-new"]').addEventListener('click', submitNewPost);
+
     document.getElementById('file-input').addEventListener('change', event => {
       const file = event.target.files[0];
       if (!file) return;
       document.getElementById('upload-name').textContent = file.name;
+      setDrawerStatus('Uploading media...', 'working');
+      uploadFile(file);
+    });
+
+    const zone = document.getElementById('upload-zone');
+    zone.addEventListener('dragover', e => {
+      e.preventDefault();
+      zone.style.borderColor = 'var(--orange)';
+      zone.style.background  = 'var(--cream)';
+    });
+    zone.addEventListener('dragleave', () => {
+      zone.style.borderColor = '';
+      zone.style.background  = '';
+    });
+    zone.addEventListener('drop', e => {
+      e.preventDefault();
+      zone.style.borderColor = '';
+      zone.style.background  = '';
+      const file = e.dataTransfer.files[0];
+      if (!file) return;
+      document.getElementById('upload-name').textContent = file.name;
+      setDrawerStatus('Uploading media...', 'working');
       uploadFile(file);
     });
   }
 
   async function uploadFile(file) {
     const fill = getEl('prog-fill');
+    const token = ++uploadSessionToken;
+    appState.uploadedUrl = '';
+    await uploadToCloudinary(file, {
+      fill,
+      token,
+      isCurrent: value => value === uploadSessionToken,
+      onSuccess: url => {
+        appState.uploadedUrl = url;
+        setDrawerStatus('Media uploaded. Add a time, then queue it.', 'ready');
+      },
+      onError: () => {
+        setDrawerStatus('Upload failed. Choose the file again.', 'error');
+        showToast('Upload failed', true);
+        fill.style.width = '0%';
+      },
+    });
+  }
+
+  async function uploadToCloudinary(file, { fill, token, isCurrent, onProgress, onSuccess, onError }) {
     fill.style.width = '0%';
     const isVideo = file.type.startsWith('video/');
     const url = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/${isVideo ? 'video' : 'image'}/upload`;
     const fd = new FormData();
     fd.append('upload_preset', UPLOAD_PRESET);
     fd.append('file', file);
-    const token = ++uploadSessionToken;
     try {
-      await new Promise((res, rej) => {
+      const uploadedUrl = await new Promise((res, rej) => {
         const xhr = new XMLHttpRequest();
         xhr.open('POST', url);
         xhr.upload.onprogress = e => {
-          if (token !== uploadSessionToken) return;
-          if (e.lengthComputable) fill.style.width = Math.round(e.loaded/e.total*100) + '%';
+          if (!isCurrent(token)) return;
+          if (e.lengthComputable) {
+            fill.style.width = Math.round(e.loaded/e.total*100) + '%';
+            onProgress?.();
+          }
         };
         xhr.onload = () => {
-          if (token !== uploadSessionToken) return res();
+          if (!isCurrent(token)) return res('');
           if (xhr.status >= 200 && xhr.status < 300) {
-            appState.uploadedUrl = JSON.parse(xhr.responseText).secure_url;
+            const secureUrl = JSON.parse(xhr.responseText).secure_url;
             fill.style.width = '100%';
-            res();
+            res(secureUrl);
           } else rej(new Error('Upload ' + xhr.status));
         };
         xhr.onerror = () => {
-          if (token !== uploadSessionToken) return res();
+          if (!isCurrent(token)) return res('');
           rej(new Error('Network error'));
         };
         xhr.send(fd);
       });
+      if (!uploadedUrl) return '';
+      onSuccess?.(uploadedUrl);
+      return uploadedUrl;
     } catch(e) {
-      if (token !== uploadSessionToken) return;
-      showToast('Upload failed', true);
-      fill.style.width = '0%';
+      if (!isCurrent(token)) return '';
+      onError?.(e);
+      return '';
+    }
+  }
+
+  async function replaceSelectedMedia(event) {
+    const post = selectedPost();
+    const file = event.target.files[0];
+    if (!post || !file) return;
+    const fill = getEl('i-replace-fill');
+    const status = getEl('i-replace-status');
+    status.textContent = 'Uploading replacement media...';
+    status.className = 'drawer-status is-working';
+    const token = ++replaceUploadSessionToken;
+    isReplacingMedia = true;
+    setSaveBusy(true, 'Uploading...');
+
+    const uploadedUrl = await uploadToCloudinary(file, {
+      fill,
+      token,
+      isCurrent: value => value === replaceUploadSessionToken && selectedPost()?.id === post.id,
+      onSuccess: url => {
+        post.media_url = url;
+        getEl('i-media').src = mediaPreview(post);
+        getEl('i-media-link').href = url;
+        getEl('i-media-link').hidden = false;
+        status.textContent = 'Replacement ready. Press Save to update the post.';
+        status.className = 'drawer-status is-ready';
+        isReplacingMedia = false;
+        setSaveBusy(false);
+        renderQueue();
+        renderLibrary();
+        if (cal) cal.refetchEvents();
+      },
+      onError: () => {
+        status.textContent = 'Replacement upload failed. Choose the file again.';
+        status.className = 'drawer-status is-error';
+        fill.style.width = '0%';
+        isReplacingMedia = false;
+        setSaveBusy(false);
+      },
+    });
+
+    if (!uploadedUrl && token === replaceUploadSessionToken) {
+      isReplacingMedia = false;
+      setSaveBusy(false);
     }
   }
 
   async function submitNewPost() {
-    if (!appState.uploadedUrl) { showToast('Upload a file first', true); return; }
+    if (!appState.uploadedUrl) {
+      setDrawerStatus('Upload a file first.', 'error');
+      showToast('Upload a file first', true);
+      return;
+    }
     const scheduled = document.getElementById('new-scheduled').value;
-    if (!scheduled) { showToast('Set a scheduled time', true); return; }
     const payload = {
       type: document.getElementById('new-type').value,
       caption: document.getElementById('new-caption').value,
       media_url: appState.uploadedUrl,
-      scheduled_at: scheduled + ':00',
+      scheduled_at: scheduled ? scheduled + ':00' : '',
       needs_music: document.getElementById('new-music').checked,
       notes: document.getElementById('new-notes').value,
       status: 'draft',
     };
     try {
+      setSubmitBusy(true);
+      setDrawerStatus('Sending post to the queue...', 'working');
       await postJson(SUBMIT_URL, payload);
       appState.posts.unshift(normalizePost(payload));
       closeNewPostDrawer();
       showToast('Added to queue');
       renderApp();
     } catch (error) {
+      setSubmitBusy(false);
+      setDrawerStatus('Submit failed. Check the submit workflow, then try again.', 'error');
       showToast('Submit failed. Check n8n workflow 01.', true);
     }
   }

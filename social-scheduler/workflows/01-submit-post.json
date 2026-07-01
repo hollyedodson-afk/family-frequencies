@@ -1,0 +1,146 @@
+{
+  "name": "FF Social - 01 Submit Post",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ff-submit-post",
+        "responseMode": "responseNode",
+        "options": { "allowedOrigins": "*" }
+      },
+      "id": "a1b2c3d4-0001-0001-0001-000000000001",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "ff-submit-post"
+    },
+    {
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            { "id": "f1",  "name": "id",           "value": "={{ $now.toMillis().toString() }}", "type": "string" },
+            { "id": "f2",  "name": "type",          "value": "={{ $json.body.type }}",            "type": "string" },
+            { "id": "f3",  "name": "caption",       "value": "={{ $json.body.caption }}",         "type": "string" },
+            { "id": "f4",  "name": "media_url",     "value": "={{ $json.body.media_url }}",       "type": "string" },
+            { "id": "f5",  "name": "scheduled_at",  "value": "={{ $json.body.scheduled_at }}",    "type": "string" },
+            { "id": "f6",  "name": "needs_music",   "value": "={{ $json.body.needs_music ? 'true' : 'false' }}", "type": "string" },
+            { "id": "f7",  "name": "status",        "value": "draft",                             "type": "string" },
+            { "id": "f8",  "name": "container_id",  "value": "",                                  "type": "string" },
+            { "id": "f9",  "name": "posted_at",     "value": "",                                  "type": "string" },
+            { "id": "f10", "name": "notes",         "value": "={{ $json.body.notes || '' }}",     "type": "string" },
+            { "id": "f11", "name": "telegram_msg_id", "value": "",                               "type": "string" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a1b2c3d4-0001-0001-0001-000000000002",
+      "name": "Prepare Row",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": { "__rl": true, "value": "1FIrB4lsDqJuGvoOpNTfNhM64xfkg6TkUVNTPhGWvR1g", "mode": "id" },
+        "sheetName": { "__rl": true, "value": "Sheet1", "mode": "name" },
+        "columns": { "mappingMode": "autoMapInputData", "value": {}, "matchingColumns": [], "schema": [] },
+        "options": {}
+      },
+      "id": "a1b2c3d4-0001-0001-0001-000000000003",
+      "name": "Add to Queue",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [680, 300],
+      "credentials": {
+        "googleSheetsOAuth2Api": { "id": "mqPbkP7EiSN6v7BF", "name": "Google Sheets account" }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: true, id: $('Prepare Row').item.json.id }) }}",
+        "options": { "responseHeaders": { "entries": [{ "name": "Access-Control-Allow-Origin", "value": "*" }] } }
+      },
+      "id": "a1b2c3d4-0001-0001-0001-000000000004",
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [900, 180]
+    },
+    {
+      "parameters": {
+        "chatId": "8770824903",
+        "text": "=📝 *New draft!*\n\n*Type:* {{ $('Prepare Row').item.json.type }}\n*Scheduled:* {{ $('Prepare Row').item.json.scheduled_at || 'Not set' }}\n\n{{ $('Prepare Row').item.json.caption || '_(no caption yet)_' }}\n\n_Reply to this message to edit the caption — or reply *APPROVE* to mark it as scheduled._",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "a1b2c3d4-0001-0001-0001-000000000005",
+      "name": "Telegram Draft Notify",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [900, 420],
+      "credentials": {
+        "telegramApi": { "id": "84902e45-0f92-484d-adf6-7c46787f4f51", "name": "Telegram Bot - FF Social" }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            { "id": "tg1", "name": "id",              "value": "={{ $('Prepare Row').item.json.id }}", "type": "string" },
+            { "id": "tg2", "name": "telegram_msg_id", "value": "={{ $json.message_id.toString() }}",   "type": "string" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a1b2c3d4-0001-0001-0001-000000000006",
+      "name": "Set Tg ID",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1120, 420]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": { "__rl": true, "value": "1FIrB4lsDqJuGvoOpNTfNhM64xfkg6TkUVNTPhGWvR1g", "mode": "id" },
+        "sheetName": { "__rl": true, "value": "Sheet1", "mode": "name" },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.id }}",
+            "telegram_msg_id": "={{ $json.telegram_msg_id }}"
+          },
+          "matchingColumns": ["id"],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "a1b2c3d4-0001-0001-0001-000000000007",
+      "name": "Store Tg Msg ID",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [1340, 420],
+      "credentials": {
+        "googleSheetsOAuth2Api": { "id": "mqPbkP7EiSN6v7BF", "name": "Google Sheets account" }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook":    { "main": [[{ "node": "Prepare Row", "type": "main", "index": 0 }]] },
+    "Prepare Row": { "main": [[{ "node": "Add to Queue", "type": "main", "index": 0 }]] },
+    "Add to Queue": {
+      "main": [[
+        { "node": "Respond",               "type": "main", "index": 0 },
+        { "node": "Telegram Draft Notify", "type": "main", "index": 0 }
+      ]]
+    },
+    "Telegram Draft Notify": { "main": [[{ "node": "Set Tg ID",       "type": "main", "index": 0 }]] },
+    "Set Tg ID":             { "main": [[{ "node": "Store Tg Msg ID", "type": "main", "index": 0 }]] }
+  },
+  "active": true,
+  "settings": { "executionOrder": "v1" },
+  "meta": { "instanceId": "" }
+}

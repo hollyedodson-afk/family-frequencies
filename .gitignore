@@ -1,3 +1,19 @@
 .vercel
 .DS_Store
 *.zip
+.env
+
+# Dependencies + worktrees
+node_modules/
+.worktrees/
+*.tmp
+
+# Heavy brand/content assets — keep local, not in the public repo
+brand/export/
+brand/assets/
+brand/Family frequencies content plan/
+brand/family-frequencies-design-system/
+brand/Sponsor Logos Daylight Disco 4:7/
+
+# Duplicate of design_handoff_family_frequencies/
+design_handoff/

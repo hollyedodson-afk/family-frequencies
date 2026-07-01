@@ -1,0 +1,271 @@
+{
+  "name": "FF Social - 08 Telegram Reply Handler",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": ["message"],
+        "additionalFields": {}
+      },
+      "id": "wf08-node-001",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [240, 300],
+      "credentials": {
+        "telegramApi": { "id": "84902e45-0f92-484d-adf6-7c46787f4f51", "name": "Telegram Bot - FF Social" }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "loose" },
+          "conditions": [
+            {
+              "id": "r1",
+              "leftValue": "={{ $json.message.reply_to_message ? 'yes' : 'no' }}",
+              "rightValue": "yes",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "wf08-node-002",
+      "name": "Is Reply?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            { "id": "d1", "name": "telegram_msg_id", "value": "={{ $json.message.reply_to_message.message_id.toString() }}", "type": "string" },
+            { "id": "d2", "name": "reply_text",       "value": "={{ $json.message.text.trim() }}",                           "type": "string" },
+            { "id": "d3", "name": "chat_id",          "value": "={{ $json.message.chat.id.toString() }}",                    "type": "string" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "wf08-node-003",
+      "name": "Extract Reply",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [680, 180]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "loose" },
+          "conditions": [
+            {
+              "id": "a1",
+              "leftValue": "={{ $json.reply_text.toUpperCase() }}",
+              "rightValue": "APPROVE",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "wf08-node-004",
+      "name": "Is Approve?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [900, 180]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": { "__rl": true, "value": "1FIrB4lsDqJuGvoOpNTfNhM64xfkg6TkUVNTPhGWvR1g", "mode": "id" },
+        "sheetName": { "__rl": true, "value": "Sheet1", "mode": "name" },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "telegram_msg_id": "={{ $json.telegram_msg_id }}",
+            "status": "scheduled"
+          },
+          "matchingColumns": ["telegram_msg_id"],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "wf08-node-005",
+      "name": "Mark Scheduled",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [1120, 60],
+      "credentials": {
+        "googleSheetsOAuth2Api": { "id": "mqPbkP7EiSN6v7BF", "name": "Google Sheets account" }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Extract Reply').item.json.chat_id }}",
+        "text": "✅ Approved and scheduled!",
+        "additionalFields": {}
+      },
+      "id": "wf08-node-006",
+      "name": "Confirm Approved",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1340, 60],
+      "credentials": {
+        "telegramApi": { "id": "84902e45-0f92-484d-adf6-7c46787f4f51", "name": "Telegram Bot - FF Social" }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "loose" },
+          "conditions": [
+            {
+              "id": "rs1",
+              "leftValue": "={{ $json.reply_text.toUpperCase().startsWith('RESCHEDULE') }}",
+              "rightValue": true,
+              "operator": { "type": "boolean", "operation": "true" }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "wf08-node-009",
+      "name": "Is Reschedule?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            { "id": "p1", "name": "telegram_msg_id", "value": "={{ $json.telegram_msg_id }}", "type": "string" },
+            { "id": "p2", "name": "chat_id",         "value": "={{ $json.chat_id }}",         "type": "string" },
+            { "id": "p3", "name": "new_time",        "value": "={{ $json.reply_text.split(' ').slice(1).join(' ') + ':00' }}", "type": "string" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "wf08-node-012",
+      "name": "Parse Reschedule",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1340, 240]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": { "__rl": true, "value": "1FIrB4lsDqJuGvoOpNTfNhM64xfkg6TkUVNTPhGWvR1g", "mode": "id" },
+        "sheetName": { "__rl": true, "value": "Sheet1", "mode": "name" },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "telegram_msg_id": "={{ $json.telegram_msg_id }}",
+            "scheduled_at": "={{ $json.new_time }}",
+            "status": "scheduled"
+          },
+          "matchingColumns": ["telegram_msg_id"],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "wf08-node-010",
+      "name": "Update Scheduled At",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [1560, 240],
+      "credentials": {
+        "googleSheetsOAuth2Api": { "id": "mqPbkP7EiSN6v7BF", "name": "Google Sheets account" }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "=📅 Rescheduled to *{{ $('Parse Reschedule').item.json.new_time.slice(0, -3) }}* and marked as scheduled!",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "wf08-node-011",
+      "name": "Confirm Rescheduled",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1780, 240],
+      "credentials": {
+        "telegramApi": { "id": "84902e45-0f92-484d-adf6-7c46787f4f51", "name": "Telegram Bot - FF Social" }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": { "__rl": true, "value": "1FIrB4lsDqJuGvoOpNTfNhM64xfkg6TkUVNTPhGWvR1g", "mode": "id" },
+        "sheetName": { "__rl": true, "value": "Sheet1", "mode": "name" },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "telegram_msg_id": "={{ $json.telegram_msg_id }}",
+            "caption": "={{ $json.reply_text }}"
+          },
+          "matchingColumns": ["telegram_msg_id"],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "wf08-node-007",
+      "name": "Update Caption",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [1340, 420],
+      "credentials": {
+        "googleSheetsOAuth2Api": { "id": "mqPbkP7EiSN6v7BF", "name": "Google Sheets account" }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Extract Reply').item.json.chat_id }}",
+        "text": "✏️ Caption updated!",
+        "additionalFields": {}
+      },
+      "id": "wf08-node-008",
+      "name": "Confirm Edited",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1560, 420],
+      "credentials": {
+        "telegramApi": { "id": "84902e45-0f92-484d-adf6-7c46787f4f51", "name": "Telegram Bot - FF Social" }
+      }
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": { "main": [[{ "node": "Is Reply?", "type": "main", "index": 0 }]] },
+    "Is Reply?": {
+      "main": [
+        [{ "node": "Extract Reply", "type": "main", "index": 0 }],
+        []
+      ]
+    },
+    "Extract Reply": { "main": [[{ "node": "Is Approve?", "type": "main", "index": 0 }]] },
+    "Is Approve?": {
+      "main": [
+        [{ "node": "Mark Scheduled",  "type": "main", "index": 0 }],
+        [{ "node": "Is Reschedule?",  "type": "main", "index": 0 }]
+      ]
+    },
+    "Mark Scheduled":     { "main": [[{ "node": "Confirm Approved",    "type": "main", "index": 0 }]] },
+    "Is Reschedule?": {
+      "main": [
+        [{ "node": "Parse Reschedule",  "type": "main", "index": 0 }],
+        [{ "node": "Update Caption",    "type": "main", "index": 0 }]
+      ]
+    },
+    "Parse Reschedule":    { "main": [[{ "node": "Update Scheduled At",  "type": "main", "index": 0 }]] },
+    "Update Scheduled At": { "main": [[{ "node": "Confirm Rescheduled", "type": "main", "index": 0 }]] },
+    "Update Caption":      { "main": [[{ "node": "Confirm Edited",      "type": "main", "index": 0 }]] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" },
+  "meta": { "instanceId": "" }
+}

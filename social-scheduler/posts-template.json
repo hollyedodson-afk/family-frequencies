@@ -1,0 +1,26 @@
+[
+  {
+    "file": "feed_01.png",
+    "type": "feed",
+    "caption": "Your caption here. #familyfrequencies #ff",
+    "scheduled_at": "",
+    "needs_music": false,
+    "notes": ""
+  },
+  {
+    "file": "reel_01.mp4",
+    "type": "reel",
+    "caption": "Reel caption here. #familyfrequencies",
+    "scheduled_at": "",
+    "needs_music": true,
+    "notes": "Add trending audio"
+  },
+  {
+    "file": "story_01.png",
+    "type": "story",
+    "caption": "",
+    "scheduled_at": "",
+    "needs_music": false,
+    "notes": ""
+  }
+]

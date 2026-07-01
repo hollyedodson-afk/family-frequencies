@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Barlow Condensed', sans-serif; background: #FAF0E0; color: #1A2B40; -webkit-font-smoothing: antialiased; }
+  ::selection { background: #F0B840; color: #1A2B40; }
+  @keyframes ds-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @keyframes ds-bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+  @keyframes ds-spin { to { transform: rotate(360deg); } }
+</style>
+</helmet>
+
+<div style="width:100%; overflow-x:hidden; background:#FAF0E0;">
+
+  <!-- ===== MASTHEAD ===== -->
+  <header style="background:#1A2B40; color:#FAF0E0; position:relative; overflow:hidden;">
+    <div style="position:absolute; top:-120px; right:-60px; width:360px; height:360px; border-radius:50%; background:#F0B840; opacity:0.13; pointer-events:none;"></div>
+    <div style="max-width:1040px; margin:0 auto; padding:46px 32px 50px; position:relative;">
+      <div style="display:flex; align-items:center; gap:14px;">
+        <svg width="44" height="44" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="13.5" r="6.5" fill="#F0B840"></circle><path d="M3 33 C7 25 12 25 16 33 C20 41 28 41 32 33 C36 25 41 25 45 33" stroke="#FAF0E0" stroke-width="4" stroke-linecap="round"></path></svg>
+        <div style="line-height:0.78;">
+          <div style="font-size:18px; font-weight:600; letter-spacing:0.05em; color:#FAF0E0;">FAMILY</div>
+          <div style="font-size:18px; font-weight:800; letter-spacing:0.03em; color:#F0B840;">FREQUENCIES</div>
+        </div>
+      </div>
+      <p style="font-size:13px; font-weight:800; letter-spacing:0.18em; text-transform:uppercase; color:#F0B840; margin-top:34px;">Brand &amp; design system</p>
+      <h1 style="font-size:clamp(44px,8vw,76px); font-weight:900; text-transform:uppercase; letter-spacing:-0.02em; line-height:0.84; margin-top:10px;">The <span style="color:#E88070;">whole</span><br>kit</h1>
+      <p style="font-size:20px; font-weight:500; line-height:1.4; color:#B9C2CF; max-width:46ch; margin-top:18px;">Everything Family Frequencies is built from — the mark, the palette, the type, the pieces, the voice. One source of truth so every flyer, post and page sounds and looks like us.</p>
+    </div>
+  </header>
+
+  <!-- wave divider into cream -->
+  <div style="line-height:0; transform:rotate(180deg);">
+    <svg viewBox="0 0 600 40" width="100%" height="40" preserveAspectRatio="none" style="display:block;"><path d="M0 40 C50 8 100 8 150 40 C200 8 250 8 300 40 C350 8 400 8 450 40 C500 8 550 8 600 40 L600 40 L0 40 Z" fill="#1A2B40"></path></svg>
+  </div>
+
+  <div style="max-width:1040px; margin:0 auto; padding:8px 32px 0;">
+
+    <!-- ===== 01 LOGO ===== -->
+    <section style="padding:44px 0 12px;">
+      <div style="display:flex; align-items:baseline; gap:14px;">
+        <span style="font-size:13px; font-weight:800; letter-spacing:0.18em; color:#C99A2E;">01</span>
+        <h2 style="font-size:clamp(30px,6vw,44px); font-weight:800; text-transform:uppercase; letter-spacing:-0.015em; line-height:0.92;">The mark &amp; lockups</h2>
+      </div>
+      <p style="font-size:18px; font-weight:500; line-height:1.4; color:#3D4A5C; max-width:60ch; margin-top:12px;">A gold sun disc over a navy rolling-wave stroke — the <em style="font-style:italic;">daybreak swell</em>. Sun over a swell: coastal, daytime, and the wave still oscillates like a frequency. The stroke width of 4 (at the 48 viewbox) is the locked proportion — scale the whole SVG, never restroke.</p>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin-top:24px;">
+        <!-- symbol on cream -->
+        <div style="background:#FFFFFF; border:2px solid #ECDCBC; border-radius:20px; padding:34px; display:flex; flex-direction:column; align-items:center; gap:18px;">
+          <svg width="92" height="92" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="13.5" r="6.5" fill="#F0B840"></circle><path d="M3 33 C7 25 12 25 16 33 C20 41 28 41 32 33 C36 25 41 25 45 33" stroke="#1A2B40" stroke-width="4" stroke-linecap="round"></path></svg>
+          <span style="font-size:11px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:#B89A5E;">Symbol · on cream</span>
+        </div>
+        <!-- symbol reversed -->
+        <div style="background:#1A2B40; border:2px solid #1A2B40; border-radius:20px; padding:34px; display:flex; flex-direction:column; align-items:center; gap:18px;">
+          <svg width="92" height="92" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="13.5" r="6.5" fill="#F0B840"></circle><path d="M3 33 C7 25 12 25 16 33 C20 41 28 41 32 33 C36 25 41 25 45 33" stroke="#FAF0E0" stroke-width="4" stroke-linecap="round"></path></svg>
+          <span style="font-size:11px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:#F0B840;">Reversed · on navy</span>
+        </div>
+        <!-- favicon scale -->
+        <div style="background:#FFFFFF; border:2px solid #ECDCBC; border-radius:20px; padding:34px; display:flex; flex-direction:column; align-items:center; gap:18px;">
+          <div style="display:flex; align-items:flex-end; gap:18px; min-height:48px;">
+            <svg width="32" height="32" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="13.5" r="6.5" fill="#F0B840"></circle><path d="M3 33 C7 25 12 25 16 33 C20 41 28 41 32 33 C36 25 41 25 45 33" stroke="#1A2B40" stroke-width="4" stroke-linecap="round"></path></svg>
+            <svg width="20" height="20" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="13.5" r="7" fill="#F0B840"></circle><path d="M3 33 C7 25 12 25 16 33 C20 41 28 41 32 33 C36 25 41 25 45 33" stroke="#1A2B40" stroke-width="4.5" stroke-linecap="round"></path></svg>
+          </div>
+          <span style="font-size:11px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:#B89A5E;">Favicon · 32 · 20px</span>
+        </div>
+      </div>
+
+      <!-- horizontal lockups -->
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; margin-top:16px;">
+        <div style="background:#FAF0E0; border:2px solid #ECDCBC; border-radius:20px; padding:30px 32px; display:flex; align-items:center; gap:16px;">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="13.5" r="6.5" fill="#F0B840"></circle><path d="M3 33 C7 25 12 25 16 33 C20 41 28 41 32 33 C36 25 41 25 45 33" stroke="#1A2B40" stroke-width="4" stroke-linecap="round"></path></svg>
+          <div style="line-height:0.78;">
+            <div style="font-size:26px; font-weight:600; letter-spacing:0.05em; color:#1A2B40;">FAMILY</div>
+            <div style="font-size:26px; font-weight:800; letter-spacing:0.03em; color:#1A2B40;">FREQUENCIES</div>
+          </div>
+        </div>
+        <div style="background:#1A2B40; border:2px solid #1A2B40; border-radius:20px; padding:30px 32px; display:flex; align-items:center; gap:16px;">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="13.5" r="6.5" fill="#F0B840"></circle><path d="M3 33 C7 25 12 25 16 33 C20 41 28 41 32 33 C36 25 41 25 45 33" stroke="#FAF0E0" stroke-width="4" stroke-linecap="round"></path></svg>
+          <div style="line-height:0.78;">
+            <div style="font-size:26px; font-weight:600; letter-spacing:0.05em; color:#FAF0E0;">FAMILY</div>
+            <div style="font-size:26px; font-weight:800; letter-spacing:0.03em; color:#F0B840;">FREQUENCIES</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 02 COLOR ===== -->
+    <section style="padding:40px 0 12px;">
+      <div style="display:flex; align-items:baseline; gap:14px;">
+        <span style="font-size:13px; font-weight:800; letter-spacing:0.18em; color:#C99A2E;">02</span>
+        <h2 style="font-size:clamp(30px,6vw,44px); font-weight:800; text-transform:uppercase; letter-spacing:-0.015em; line-height:0.92;">Palette · Pacific Dusk</h2>
+      </div>
+      <p style="font-size:18px; font-weight:500; line-height:1.4; color:#3D4A5C; max-width:60ch; margin-top:12px;">Four core tones do the heavy lifting; the rest are supporting text and dividers. Navy and cream carry structure, gold is the accent and CTA, rose is the warm pop for tickers and signups. Sections alternate cream → navy → cream → rose, joined by wave dividers.</p>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; margin-top:24px;">
+        <div style="border-radius:16px; overflow:hidden; border:2px solid #ECDCBC;">
+          <div style="background:#1A2B40; height:96px;"></div>
+          <div style="padding:12px 14px; background:#FFF;"><div style="font-size:17px; font-weight:800; text-transform:uppercase;">Navy</div><div style="font-size:13px; font-weight:600; color:#3D4A5C; letter-spacing:0.04em;">#1A2B40</div><div style="font-size:11px; font-weight:600; color:#B89A5E; margin-top:3px;">Brand · text · borders</div></div>
+        </div>
+        <div style="border-radius:16px; overflow:hidden; border:2px solid #ECDCBC;">
+          <div style="background:#FAF0E0; height:96px;"></div>
+          <div style="padding:12px 14px; background:#FFF;"><div style="font-size:17px; font-weight:800; text-transform:uppercase;">Cream</div><div style="font-size:13px; font-weight:600; color:#3D4A5C; letter-spacing:0.04em;">#FAF0E0</div><div style="font-size:11px; font-weight:600; color:#B89A5E; margin-top:3px;">App background</div></div>
+        </div>
+        <div style="border-radius:16px; overflow:hidden; border:2px solid #ECDCBC;">
+          <div style="background:#F0B840; height:96px;"></div>
+          <div style="padding:12px 14px; background:#FFF;"><div style="font-size:17px; font-weight:800; text-transform:uppercase;">Gold</div><div style="font-size:13px; font-weight:600; color:#3D4A5C; letter-spacing:0.04em;">#F0B840</div><div style="font-size:11px; font-weight:600; color:#B89A5E; margin-top:3px;">Accent · CTA · sun</div></div>
+        </div>
+        <div style="border-radius:16px; overflow:hidden; border:2px solid #ECDCBC;">
+          <div style="background:#E88070; height:96px;"></div>
+          <div style="padding:12px 14px; background:#FFF;"><div style="font-size:17px; font-weight:800; text-transform:uppercase;">Rose</div><div style="font-size:13px; font-weight:600; color:#3D4A5C; letter-spacing:0.04em;">#E88070</div><div style="font-size:11px; font-weight:600; color:#B89A5E; margin-top:3px;">Ticker · signup · pops</div></div>
+        </div>
+      </div>
+
+      <!-- supporting swatches -->
+      <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:14px;">
+        <div style="display:flex; align-items:center; gap:9px; background:#FFF; border:2px solid #ECDCBC; border-radius:12px; padding:9px 13px;"><span style="width:20px; height:20px; border-radius:6px; background:#0E1A2A; border:1px solid rgba(0,0,0,0.1);"></span><span style="font-size:13px; font-weight:700;">Navy-deep <span style="color:#B89A5E;">#0E1A2A</span></span></div>
+        <div style="display:flex; align-items:center; gap:9px; background:#FFF; border:2px solid #ECDCBC; border-radius:12px; padding:9px 13px;"><span style="width:20px; height:20px; border-radius:6px; background:#FFC85A;"></span><span style="font-size:13px; font-weight:700;">Gold-bright <span style="color:#B89A5E;">#FFC85A</span></span></div>
+        <div style="display:flex; align-items:center; gap:9px; background:#FFF; border:2px solid #ECDCBC; border-radius:12px; padding:9px 13px;"><span style="width:20px; height:20px; border-radius:6px; background:#3D4A5C;"></span><span style="font-size:13px; font-weight:700;">Body text <span style="color:#B89A5E;">#3D4A5C</span></span></div>
+        <div style="display:flex; align-items:center; gap:9px; background:#FFF; border:2px solid #ECDCBC; border-radius:12px; padding:9px 13px;"><span style="width:20px; height:20px; border-radius:6px; background:#C99A2E;"></span><span style="font-size:13px; font-weight:700;">Eyebrow <span style="color:#B89A5E;">#C99A2E</span></span></div>
+        <div style="display:flex; align-items:center; gap:9px; background:#FFF; border:2px solid #ECDCBC; border-radius:12px; padding:9px 13px;"><span style="width:20px; height:20px; border-radius:6px; background:#E7D8BC;"></span><span style="font-size:13px; font-weight:700;">Divider <span style="color:#B89A5E;">#E7D8BC</span></span></div>
+        <div style="display:flex; align-items:center; gap:9px; background:#FFF; border:2px solid #ECDCBC; border-radius:12px; padding:9px 13px;"><span style="width:20px; height:20px; border-radius:6px; background:#7C8799;"></span><span style="font-size:13px; font-weight:700;">Footer muted <span style="color:#B89A5E;">#7C8799</span></span></div>
+      </div>
+    </section>
+
+    <!-- ===== 03 TYPE ===== -->
+    <section style="padding:40px 0 12px;">
+      <div style="display:flex; align-items:baseline; gap:14px;">
+        <span style="font-size:13px; font-weight:800; letter-spacing:0.18em; color:#C99A2E;">03</span>
+        <h2 style="font-size:clamp(30px,6vw,44px); font-weight:800; text-transform:uppercase; letter-spacing:-0.015em; line-height:0.92;">Type · Barlow Condensed</h2>
+      </div>
+      <p style="font-size:18px; font-weight:500; line-height:1.4; color:#3D4A5C; max-width:60ch; margin-top:12px;">One typeface for the whole brand. Headlines run heavy (800–900), uppercase, tight tracking and line-height. Accent words inside a headline go <span style="color:#E88070;">rose</span>. Body is weight 500. Eyebrow labels are tiny, wide-tracked uppercase.</p>
+
+      <div style="background:#FFF; border:2px solid #ECDCBC; border-radius:20px; padding:30px 32px; margin-top:24px;">
+        <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:10px 16px;"><span style="font-size:11px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:#B89A5E; width:120px;">Hero H1 · 900</span><span style="font-size:64px; font-weight:900; text-transform:uppercase; letter-spacing:-0.02em; line-height:0.82;">Daylight <span style="color:#E88070;">Disco</span></span></div>
+        <div style="height:2px; background:#E7D8BC; margin:22px 0;"></div>
+        <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:10px 16px;"><span style="font-size:11px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:#B89A5E; width:120px;">Section H2 · 800</span><span style="font-size:42px; font-weight:800; text-transform:uppercase; letter-spacing:-0.015em; line-height:0.92;">The programme</span></div>
+        <div style="height:2px; background:#E7D8BC; margin:22px 0;"></div>
+        <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:10px 16px;"><span style="font-size:11px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:#B89A5E; width:120px;">Body · 500</span><span style="font-size:20px; font-weight:500; line-height:1.4; color:#3D4A5C; max-width:42ch;">Daytime club culture for families. We throw parties for people with small humans in tow.</span></div>
+        <div style="height:2px; background:#E7D8BC; margin:22px 0;"></div>
+        <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:10px 16px;"><span style="font-size:11px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:#B89A5E; width:120px;">Eyebrow · 800</span><span style="font-size:13px; font-weight:800; letter-spacing:0.18em; text-transform:uppercase; color:#C99A2E;">Family Frequencies presents</span></div>
+      </div>
+    </section>
+
+    <!-- ===== 04 COMPONENTS ===== -->
+    <section style="padding:40px 0 12px;">
+      <div style="display:flex; align-items:baseline; gap:14px;">
+        <span style="font-size:13px; font-weight:800; letter-spacing:0.18em; color:#C99A2E;">04</span>
+        <h2 style="font-size:clamp(30px,6vw,44px); font-weight:800; text-transform:uppercase; letter-spacing:-0.015em; line-height:0.92;">The pieces</h2>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:16px; margin-top:24px;">
+
+        <!-- buttons & pills -->
+        <div style="background:#FFF; border:2px solid #ECDCBC; border-radius:20px; padding:24px;">
+          <p style="font-size:11px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:#B89A5E; margin-bottom:16px;">Buttons &amp; pills</p>
+          <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
+            <span style="background:#F0B840; color:#1A2B40; font-size:13px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; padding:13px 22px; border-radius:9999px;">See what's on →</span>
+            <span style="background:#1A2B40; color:#FAF0E0; font-size:13px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; padding:13px 22px; border-radius:12px;">Keep me posted</span>
+          </div>
+          <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:14px;">
+            <span style="font-size:12px; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; color:#1A2B40; background:#F0B840; padding:8px 14px; border-radius:9999px;">Join the club</span>
+            <span style="font-size:12px; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; color:#1A2B40; background:#FAF0E0; border:2px solid #1A2B40; padding:7px 14px; border-radius:9999px;">Free entry</span>
+            <span style="font-size:12px; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; color:#1A2B40; background:#FAF0E0; border:2px solid #1A2B40; padding:7px 14px; border-radius:9999px;">All ages</span>
+          </div>
+        </div>
+
+        <!-- vibe pills -->
+        <div style="background:#1A2B40; border:2px solid #1A2B40; border-radius:20px; padding:24px;">
+          <p style="font-size:11px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:#F0B840; margin-bottom:16px;">Vibe pills</p>
+          <div style="display:flex; flex-wrap:wrap; gap:9px;">
+            <span style="font-size:16px; font-weight:700; padding:9px 16px; border-radius:9999px; background:rgba(250,240,224,0.08); border:1.5px solid rgba(250,240,224,0.2); color:#FAF0E0;">Jazz house</span>
+            <span style="font-size:16px; font-weight:700; padding:9px 16px; border-radius:9999px; background:rgba(250,240,224,0.08); border:1.5px solid rgba(250,240,224,0.2); color:#FAF0E0;">Kids boogie songs</span>
+            <span style="font-size:16px; font-weight:700; padding:9px 16px; border-radius:9999px; background:#F0B840; color:#1A2B40;">Face painting</span>
+            <span style="font-size:16px; font-weight:700; padding:9px 16px; border-radius:9999px; background:rgba(250,240,224,0.08); border:1.5px solid rgba(250,240,224,0.2); color:#FAF0E0;">Toys</span>
+            <span style="font-size:16px; font-weight:700; padding:9px 16px; border-radius:9999px; background:#E88070; color:#1A2B40;">Good times</span>
+          </div>
+        </div>
+
+        <!-- fact row -->
+        <div style="background:#FFF; border:2px solid #ECDCBC; border-radius:20px; padding:24px;">
+          <p style="font-size:11px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:#B89A5E; margin-bottom:8px;">Fact rows</p>
+          <div style="display:flex; align-items:center; gap:14px; padding:13px 2px; border-bottom:2px solid #E7D8BC;">
+            <span style="flex:none; width:44px; height:44px; border-radius:50%; background:rgba(240,184,64,0.24); display:flex; align-items:center; justify-content:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1A2B40" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 9h18M8 3v4M16 3v4"></path></svg></span>
+            <div><div style="font-size:11px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:#B89A5E;">When</div><div style="font-size:21px; font-weight:600; margin-top:3px; line-height:1;">Sat 4 July · 12–6pm</div></div>
+          </div>
+          <div style="display:flex; align-items:center; gap:14px; padding:13px 2px;">
+            <span style="flex:none; width:44px; height:44px; border-radius:50%; background:rgba(232,128,112,0.22); display:flex; align-items:center; justify-content:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1A2B40" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z"></path><circle cx="12" cy="10" r="2.5"></circle></svg></span>
+            <div><div style="font-size:11px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:#B89A5E;">Where</div><div style="font-size:21px; font-weight:600; margin-top:3px; line-height:1;">Hide, Mt Maunganui</div></div>
+          </div>
+        </div>
+
+        <!-- programme row + event stamp -->
+        <div style="background:#FFF; border:2px solid #ECDCBC; border-radius:20px; padding:24px; position:relative; overflow:hidden;">
+          <p style="font-size:11px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:#B89A5E; margin-bottom:16px;">Programme row &amp; stamp</p>
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:14px; background:#FFFFFF; border:2px solid #ECDCBC; border-radius:16px; padding:16px 18px;">
+            <span style="font-size:22px; font-weight:800; text-transform:uppercase;">First Aid Courses</span>
+            <span style="flex:none; font-size:11px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:#B89A5E;">Soon</span>
+          </div>
+          <div style="display:flex; justify-content:center; margin-top:18px;">
+            <div style="position:relative; width:104px; height:104px;">
+              <svg viewBox="0 0 104 104" width="104" height="104" style="position:absolute; inset:0; animation:ds-spin 18s linear infinite;"><defs><path id="ds-stamp-path" d="M52 8 a44 44 0 1 1 -0.1 0" fill="none"></path></defs><text font-family="Barlow Condensed" font-size="15.5" font-weight="800" letter-spacing="3.2" fill="#1A2B40"><textPath href="#ds-stamp-path" startOffset="0">FREE · WALK IN · ALL AGES · GOOD TIMES · </textPath></text></svg>
+              <div style="position:absolute; inset:26px; border-radius:50%; background:#F0B840; border:2px solid #1A2B40; display:flex; flex-direction:column; align-items:center; justify-content:center; line-height:0.9;"><span style="font-size:21px; font-weight:900;">12–6</span><span style="font-size:10px; font-weight:800;">PM</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ticker full width -->
+      <div style="margin-top:16px;">
+        <p style="font-size:11px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:#B89A5E; margin-bottom:10px;">Ticker / marquee</p>
+        <div style="background:#E88070; overflow:hidden; border-top:3px solid #1A2B40; border-bottom:3px solid #1A2B40; border-radius:4px;">
+          <div style="display:flex; width:max-content; animation:ds-marquee 24s linear infinite;">
+            <div style="display:flex; align-items:center; gap:18px; padding:10px 0; flex:none;">
+              <span style="font-size:15px; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; color:#1A2B40; padding-left:18px;">Daytime Club Culture</span><span style="color:#FAF0E0;">●</span><span style="font-size:15px; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; color:#1A2B40;">For Families</span><span style="color:#FAF0E0;">●</span><span style="font-size:15px; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; color:#1A2B40;">Bay Of Plenty</span><span style="color:#FAF0E0;">●</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:18px; padding:10px 0; flex:none;" aria-hidden="true">
+              <span style="font-size:15px; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; color:#1A2B40; padding-left:18px;">Daytime Club Culture</span><span style="color:#FAF0E0;">●</span><span style="font-size:15px; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; color:#1A2B40;">For Families</span><span style="color:#FAF0E0;">●</span><span style="font-size:15px; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; color:#1A2B40;">Bay Of Plenty</span><span style="color:#FAF0E0;">●</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 05 ICONS ===== -->
+    <section style="padding:40px 0 12px;">
+      <div style="display:flex; align-items:baseline; gap:14px;">
+        <span style="font-size:13px; font-weight:800; letter-spacing:0.18em; color:#C99A2E;">05</span>
+        <h2 style="font-size:clamp(30px,6vw,44px); font-weight:800; text-transform:uppercase; letter-spacing:-0.015em; line-height:0.92;">Iconography</h2>
+      </div>
+      <p style="font-size:18px; font-weight:500; line-height:1.4; color:#3D4A5C; max-width:60ch; margin-top:12px;">Hand-rolled stroke icons — 24×24 viewbox, navy, 2px stroke, round caps and joins (Lucide is the substitute family for anything new). Each sits in a 44px tinted round badge.</p>
+      <div style="display:flex; flex-wrap:wrap; gap:12px; margin-top:24px;">
+        <div style="background:#FFF; border:2px solid #ECDCBC; border-radius:16px; padding:18px 22px; display:flex; flex-direction:column; align-items:center; gap:10px; width:120px;"><span style="width:44px; height:44px; border-radius:50%; background:rgba(240,184,64,0.24); display:flex; align-items:center; justify-content:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1A2B40" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 9h18M8 3v4M16 3v4"></path></svg></span><span style="font-size:12px; font-weight:700; color:#3D4A5C;">Calendar</span></div>
+        <div style="background:#FFF; border:2px solid #ECDCBC; border-radius:16px; padding:18px 22px; display:flex; flex-direction:column; align-items:center; gap:10px; width:120px;"><span style="width:44px; height:44px; border-radius:50%; background:rgba(232,128,112,0.22); display:flex; align-items:center; justify-content:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1A2B40" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z"></path><circle cx="12" cy="10" r="2.5"></circle></svg></span><span style="font-size:12px; font-weight:700; color:#3D4A5C;">Pin</span></div>
+        <div style="background:#FFF; border:2px solid #ECDCBC; border-radius:16px; padding:18px 22px; display:flex; flex-direction:column; align-items:center; gap:10px; width:120px;"><span style="width:44px; height:44px; border-radius:50%; background:rgba(240,184,64,0.24); display:flex; align-items:center; justify-content:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1A2B40" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2 2 2 0 0 0 0 4 2 2 0 0 1-2 2H5a2 2 0 0 1-2-2 2 2 0 0 0 0-4Z"></path><path d="M13 7v10" stroke-dasharray="2 3"></path></svg></span><span style="font-size:12px; font-weight:700; color:#3D4A5C;">Ticket</span></div>
+      </div>
+    </section>
+
+    <!-- ===== 06 VOICE ===== -->
+    <section style="padding:40px 0 56px;">
+      <div style="display:flex; align-items:baseline; gap:14px;">
+        <span style="font-size:13px; font-weight:800; letter-spacing:0.18em; color:#C99A2E;">06</span>
+        <h2 style="font-size:clamp(30px,6vw,44px); font-weight:800; text-transform:uppercase; letter-spacing:-0.015em; line-height:0.92;">Voice</h2>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; margin-top:24px;">
+        <div style="background:#FFF; border:2px solid #ECDCBC; border-radius:20px; padding:24px;">
+          <p style="font-size:11px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:#B89A5E; margin-bottom:14px;">We sound like</p>
+          <ul style="list-style:none; display:flex; flex-direction:column; gap:12px;">
+            <li style="display:flex; gap:10px; font-size:17px; font-weight:500; line-height:1.35; color:#3D4A5C;"><span style="color:#E88070; margin-top:5px;">●</span>Warm, plain-spoken, never corporate. Talk to a parent like a mate who's got the good intel.</li>
+            <li style="display:flex; gap:10px; font-size:17px; font-weight:500; line-height:1.35; color:#3D4A5C;"><span style="color:#E88070; margin-top:5px;">●</span>Short and confident. "Free entry. Bring the kids." Say less, mean it.</li>
+            <li style="display:flex; gap:10px; font-size:17px; font-weight:500; line-height:1.35; color:#3D4A5C;"><span style="color:#E88070; margin-top:5px;">●</span>NZ to the core — Bay of Plenty, Aotearoa, no spam, no nonsense.</li>
+          </ul>
+        </div>
+        <div style="background:#E88070; border:2px solid #1A2B40; border-radius:20px; padding:24px;">
+          <p style="font-size:11px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:#5A2B25; margin-bottom:14px;">In their words</p>
+          <p style="font-size:24px; font-weight:700; line-height:1.15; color:#1A2B40;">"Daytime club culture for families. We throw parties for people with small humans in tow."</p>
+          <p style="font-size:16px; font-weight:600; line-height:1.4; color:#5A2B25; margin-top:16px;">"We'll only email when there's something on. No spam, no newsletters about nothing."</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer style="background:#1A2B40;">
+    <div style="max-width:1040px; margin:0 auto; padding:40px 32px 46px; display:flex; flex-direction:column; align-items:center; gap:14px; text-align:center;">
+      <svg width="42" height="42" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="13.5" r="6.5" fill="#F0B840"></circle><path d="M3 33 C7 25 12 25 16 33 C20 41 28 41 32 33 C36 25 41 25 45 33" stroke="#FAF0E0" stroke-width="4.5" stroke-linecap="round"></path></svg>
+      <div style="font-size:14px; font-weight:600; letter-spacing:0.04em; color:#7C8799;">Family Frequencies · Brand system v1 · Mt Maunganui, Aotearoa</div>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+</body>
+</html>

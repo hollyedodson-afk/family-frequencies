@@ -1,0 +1,90 @@
+{
+  "name": "FF Social - 06 Update Post",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ff-update-post",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "id": "f6a7b8c9-0006-0006-0006-000000000001",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1FIrB4lsDqJuGvoOpNTfNhM64xfkg6TkUVNTPhGWvR1g",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Sheet1",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id":           "={{ $('Webhook').item.json.body.id }}",
+            "type":         "={{ $('Webhook').item.json.body.type }}",
+            "caption":      "={{ $('Webhook').item.json.body.caption }}",
+            "scheduled_at": "={{ $('Webhook').item.json.body.scheduled_at }}",
+            "needs_music":  "={{ $('Webhook').item.json.body.needs_music }}",
+            "status":       "={{ $('Webhook').item.json.body.status }}",
+            "notes":        "={{ $('Webhook').item.json.body.notes }}",
+            "media_url":    "={{ $('Webhook').item.json.body.media_url }}"
+          },
+          "matchingColumns": ["id"],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "f6a7b8c9-0006-0006-0006-000000000002",
+      "name": "Update Row",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [460, 300],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "mqPbkP7EiSN6v7BF",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: true, id: $('Webhook').item.json.body.id }) }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "id": "f6a7b8c9-0006-0006-0006-000000000003",
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [680, 300]
+    }
+  ],
+  "connections": {
+    "Webhook":    { "main": [[{ "node": "Update Row", "type": "main", "index": 0 }]] },
+    "Update Row": { "main": [[{ "node": "Respond",    "type": "main", "index": 0 }]] }
+  },
+  "active": true,
+  "settings": { "executionOrder": "v1" },
+  "meta": { "instanceId": "" }
+}
