@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en-NZ">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Event | Family Frequencies</title>
+  <meta name="description" content="A Family Frequencies event in the Bay of Plenty.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/site.css">
+  <link rel="stylesheet" href="/css/pages.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand-lockup" href="/" aria-label="Family Frequencies home">
+        <svg class="brand-lockup__mark" viewBox="0 0 48 48" fill="none" aria-hidden="true"><circle cx="24" cy="13.5" r="6.5" fill="#F0B840"/><path d="M3 33 C7 25 12 25 16 33 C20 41 28 41 32 33 C36 25 41 25 45 33" stroke="#FAF0E0" stroke-width="4" stroke-linecap="round"/></svg>
+        <span class="brand-lockup__words"><span>Family</span><span>Frequencies</span></span>
+      </a>
+      <nav class="site-nav" aria-label="Main">
+        <a class="site-nav__link" href="/events">Events</a>
+      </nav>
+      <a class="pill-button" href="/join">Join the club</a>
+    </div>
+  </header>
+
+  <main id="main">
+    <div id="event-loading" class="ep-status"><div class="container"><p>Loading event…</p></div></div>
+    <div id="event-content" hidden></div>
+    <div id="event-error" class="ep-status" hidden>
+      <div class="container">
+        <p>We couldn't find that event. <a href="/events">See what's on →</a></p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <svg class="site-footer__mark" viewBox="0 0 48 48" fill="none" aria-hidden="true"><circle cx="24" cy="13.5" r="6.5" fill="#F0B840"/><path d="M3 33 C7 25 12 25 16 33 C20 41 28 41 32 33 C36 25 41 25 45 33" stroke="#FAF0E0" stroke-width="4.5" stroke-linecap="round"/></svg>
+      <div class="site-footer__event-label">A Family Frequencies Event</div>
+      <nav class="site-footer__nav" aria-label="Footer">
+        <a class="site-footer__nav-link" href="/">Home</a>
+        <a class="site-footer__nav-link" href="/events">Events</a>
+        <a class="site-footer__nav-link" href="/join">Get on the list</a>
+      </nav>
+      <nav class="footer-legal" aria-label="Legal">
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
+        <a href="/waiver">Waiver</a>
+      </nav>
+      <div class="site-footer__location">Mt Maunganui · Aotearoa New Zealand</div>
+      <a class="site-footer__social" href="https://www.instagram.com/familyfrequencies" target="_blank" rel="noopener">@familyfrequencies</a>
+    </div>
+  </footer>
+
+  <script>
+  (function () {
+    var loadingEl = document.getElementById('event-loading');
+    var contentEl = document.getElementById('event-content');
+    var errorEl = document.getElementById('event-error');
+
+    var slug = window.location.pathname.replace(/^\/event\//, '').replace(/\/$/, '');
+    if (!slug || !/^[a-z0-9-]+$/.test(slug)) return showError();
+
+    function showError() {
+      loadingEl.hidden = true;
+      contentEl.hidden = true;
+      errorEl.hidden = false;
+    }
+
+    function esc(value) {
+      return String(value == null ? '' : value)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    }
+
+    function formatDate(dateStr) {
+      var p = String(dateStr).split('-').map(Number);
+      return new Date(p[0], p[1] - 1, p[2]).toLocaleDateString('en-NZ', {
+        weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+      });
+    }
+
+    function formatTime(t) {
+      if (!t) return '';
+      var parts = String(t).split(':');
+      var h = parseInt(parts[0], 10);
+      var m = parseInt(parts[1], 10);
+      var period = h >= 12 ? 'pm' : 'am';
+      var hour = h > 12 ? h - 12 : (h === 0 ? 12 : h);
+      return hour + (m ? ':' + String(m).padStart(2, '0') : '') + period;
+    }
+
+    function formatPrice(cents) {
+      var amount = Number(cents || 0) / 100;
+      return '$' + (amount % 1 === 0 ? amount.toFixed(0) : amount.toFixed(2));
+    }
+
+    function remainingSpots(event) {
+      if (event.capacity == null) return null;
+      return Math.max(0, Number(event.capacity) - Number(event.tickets_sold || 0));
+    }
+
+    function ticketBlock(event) {
+      if (!event.is_ticketed) {
+        return '<div class="chip-row"><span class="chip">Free entry</span><span class="chip">Just turn up</span></div>';
+      }
+
+      var saleOpens = event.ticket_sale_opens ? new Date(event.ticket_sale_opens) : null;
+      if (saleOpens && saleOpens > new Date()) {
+        return '<p class="ep-notice">Tickets open ' + esc(saleOpens.toLocaleDateString('en-NZ', { weekday: 'long', day: 'numeric', month: 'long' })) + ' — get on <a href="/join">the list</a> and we\'ll remind you.</p>';
+      }
+
+      var remaining = remainingSpots(event);
+      if (remaining !== null && remaining <= 0) {
+        return '<p class="ep-soldout">Sold out</p><p class="ep-notice">Get on <a href="/join">the list</a> to hear about the next one first.</p>';
+      }
+
+      var maxQty = Math.min(remaining === null ? 6 : remaining, 6);
+      var options = '';
+      for (var i = 1; i <= maxQty; i++) {
+        options += '<option value="' + i + '">' + i + '</option>';
+      }
+
+      return '<div class="ep-ticket-box">'
+        + '<div class="ep-ticket-head"><strong>' + esc(formatPrice(event.price_cents)) + '</strong><span> per spot</span>'
+        + (remaining !== null ? '<span class="ep-spots">' + remaining + ' spot' + (remaining === 1 ? '' : 's') + ' left</span>' : '')
+        + '</div>'
+        + '<form id="reserve-form" class="ep-form">'
+        + '<label>Name<input name="buyer_name" type="text" required autocomplete="name" placeholder="Your name"></label>'
+        + '<label>Email<input name="buyer_email" type="email" required autocomplete="email" placeholder="your@email.co.nz"></label>'
+        + '<label>Spots<select name="quantity">' + options + '</select></label>'
+        + '<button class="ep-reserve-btn" type="submit">Reserve — pay by bank transfer</button>'
+        + '<p class="ep-form-note">No card needed. We hold your spot and email you once your transfer arrives.</p>'
+        + '<p class="ep-form-error" id="reserve-error" aria-live="polite"></p>'
+        + '</form>'
+        + '</div>';
+    }
+
+    function confirmationBlock(data, buyerEmail) {
+      return '<div class="ep-confirmed" role="status">'
+        + '<h2>Spot reserved!</h2>'
+        + '<p>Pay <strong>' + esc(formatPrice(data.amount_due_cents)) + '</strong> by bank transfer to confirm.</p>'
+        + '<div class="ep-reference"><span>Payment reference</span><strong>' + esc(data.payment_reference) + '</strong></div>'
+        + '<p class="ep-instructions">' + esc(data.instructions) + '</p>'
+        + '<p>We\'ll email <strong>' + esc(buyerEmail) + '</strong> once your payment is matched. Questions? <a href="mailto:hello@familyfrequencies.com">hello@familyfrequencies.com</a></p>'
+        + '</div>';
+    }
+
+    fetch('/api/events/' + slug)
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (event) {
+        document.title = event.title + ' | Family Frequencies';
+
+        var timeStr = event.time_start
+          ? formatTime(event.time_start) + (event.time_end ? '–' + formatTime(event.time_end) : '')
+          : '';
+        var chipsHtml = (event.chips || []).map(function (c) {
+          return '<span class="chip">' + esc(c) + '</span>';
+        }).join('');
+
+        contentEl.innerHTML =
+          '<section class="ep-hero">'
+          + '<div class="container ep-hero__inner">'
+          + '<p class="eyebrow">' + (event.event_date ? esc(formatDate(event.event_date)) : 'Family Frequencies presents') + '</p>'
+          + '<h1>' + esc(event.title) + '</h1>'
+          + '<p class="ep-meta">' + (timeStr ? esc(timeStr) + ' · ' : '') + esc(event.venue || '') + '</p>'
+          + (chipsHtml ? '<div class="chip-row ep-chips">' + chipsHtml + '</div>' : '')
+          + '</div>'
+          + '</section>'
+          + '<div class="wave-divider wave-divider--flip" aria-hidden="true"><svg viewBox="0 0 600 40" preserveAspectRatio="none"><path d="M0 40 C33 8 67 8 100 40 C133 8 167 8 200 40 C233 8 267 8 300 40 C333 8 367 8 400 40 C433 8 467 8 500 40 C533 8 567 8 600 40 L600 40 L0 40 Z" fill="#1A2B40"/></svg></div>'
+          + '<section class="section"><div class="container ep-body">'
+          + (event.image_url ? '<div class="framed-poster ep-poster"><img src="' + esc(event.image_url) + '" alt="" loading="lazy"></div>' : '')
+          + (event.description ? '<p class="ep-description">' + esc(event.description).replace(/\n/g, '<br>') + '</p>' : '')
+          + '<div id="ticket-area">' + ticketBlock(event) + '</div>'
+          + '</div></section>';
+
+        loadingEl.hidden = true;
+        contentEl.hidden = false;
+
+        var form = document.getElementById('reserve-form');
+        if (form) {
+          form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            var errEl = document.getElementById('reserve-error');
+            var button = form.querySelector('button[type="submit"]');
+            var buyerEmail = form.elements.buyer_email.value.trim();
+            errEl.textContent = '';
+            button.disabled = true;
+            button.textContent = 'Reserving…';
+
+            fetch('/api/checkout', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                event_id: event.id,
+                quantity: Number(form.elements.quantity.value),
+                buyer_name: form.elements.buyer_name.value.trim(),
+                buyer_email: buyerEmail,
+              }),
+            })
+            .then(function (r) { return r.json().then(function (data) { return { ok: r.ok, data: data }; }); })
+            .then(function (result) {
+              if (result.ok) {
+                document.getElementById('ticket-area').innerHTML = confirmationBlock(result.data, buyerEmail);
+                document.getElementById('ticket-area').scrollIntoView({ block: 'nearest' });
+              } else {
+                errEl.textContent = result.data.error || 'Something went wrong — please try again.';
+                button.disabled = false;
+                button.textContent = 'Reserve — pay by bank transfer';
+              }
+            })
+            .catch(function () {
+              errEl.textContent = 'Something went wrong — please try again.';
+              button.disabled = false;
+              button.textContent = 'Reserve — pay by bank transfer';
+            });
+          });
+        }
+      })
+      .catch(showError);
+  })();
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

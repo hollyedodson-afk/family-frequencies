@@ -1,0 +1,393 @@
+/* Styles for the dynamic event template (/event/:slug) and legal pages.
+   Kept out of site.css so the ticketing branch merges cleanly. */
+
+/* Same rule exists in main's site.css since 2026-07-02; duplicated here so
+   these pages work before the branches merge. Dedupe after merge. */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 16px;
+  z-index: 40;
+  border-radius: 9999px;
+  background: var(--gold);
+  color: var(--navy);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 10px 18px;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: top 0.14s ease;
+}
+
+.skip-link:focus {
+  top: 12px;
+}
+
+/* ── Event template ── */
+.ep-status {
+  padding: 64px 0;
+  color: var(--navy);
+  font-size: 19px;
+  font-weight: 600;
+}
+
+.ep-status a {
+  color: var(--navy);
+  font-weight: 800;
+}
+
+.ep-hero {
+  background: var(--navy);
+  color: var(--cream);
+}
+
+.ep-hero__inner {
+  padding-block: 44px 40px;
+}
+
+.ep-hero .eyebrow {
+  color: var(--gold);
+}
+
+.ep-hero h1 {
+  margin: 10px 0 0;
+  font-size: clamp(44px, 13vw, 84px);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 0.87;
+  text-transform: uppercase;
+}
+
+.ep-meta {
+  margin: 14px 0 0;
+  color: #b9c2cf;
+  font-size: 19px;
+  font-weight: 600;
+}
+
+.ep-chips {
+  margin-top: 18px;
+}
+
+.ep-hero .chip {
+  background: transparent;
+  border-color: rgb(250 240 224 / 35%);
+  color: var(--cream);
+}
+
+.ep-body {
+  padding-block: 36px 56px;
+}
+
+.ep-poster {
+  margin-bottom: 28px;
+}
+
+.ep-poster img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+.ep-description {
+  max-width: 44ch;
+  margin: 0 0 28px;
+  color: var(--body);
+  font-size: 19px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.ep-notice {
+  margin: 0;
+  color: var(--body);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.ep-notice a {
+  color: var(--navy);
+  font-weight: 800;
+}
+
+.ep-soldout {
+  display: inline-block;
+  margin: 0 0 10px;
+  border-radius: 9999px;
+  background: var(--navy);
+  color: var(--cream);
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  padding: 10px 20px;
+  text-transform: uppercase;
+}
+
+.ep-ticket-box {
+  border: 3px solid var(--navy);
+  border-radius: 20px;
+  background: white;
+  box-shadow: 6px 6px 0 var(--gold);
+  padding: 22px 20px;
+}
+
+.ep-ticket-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.ep-ticket-head strong {
+  font-size: 34px;
+  font-weight: 900;
+  color: var(--navy);
+}
+
+.ep-ticket-head span {
+  color: var(--body);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.ep-spots {
+  margin-left: auto;
+  border-radius: 9999px;
+  background: rgb(240 184 64 / 25%);
+  color: var(--navy);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  padding: 6px 12px;
+  text-transform: uppercase;
+}
+
+.ep-form {
+  display: grid;
+  gap: 12px;
+}
+
+.ep-form label {
+  display: grid;
+  gap: 5px;
+  color: var(--navy);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ep-form input,
+.ep-form select {
+  border: 2px solid var(--navy);
+  border-radius: 12px;
+  background: var(--cream);
+  color: var(--navy);
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 500;
+  padding: 12px 14px;
+}
+
+.ep-reserve-btn {
+  border: 2px solid var(--navy);
+  border-radius: 12px;
+  background: var(--navy);
+  color: var(--cream);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  padding: 14px 22px;
+  text-transform: uppercase;
+  transition: background 0.14s ease, transform 0.14s ease;
+}
+
+.ep-reserve-btn:hover {
+  background: var(--navy-deep);
+}
+
+.ep-reserve-btn:active {
+  transform: scale(0.98);
+}
+
+.ep-reserve-btn:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+.ep-form-note {
+  margin: 0;
+  color: var(--body);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.ep-form-error {
+  min-height: 18px;
+  margin: 0;
+  color: #b3261e;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.ep-confirmed {
+  border: 3px solid var(--navy);
+  border-radius: 20px;
+  background: white;
+  box-shadow: 6px 6px 0 var(--gold);
+  padding: 26px 22px;
+}
+
+.ep-confirmed h2 {
+  margin: 0 0 10px;
+  color: var(--navy);
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.ep-confirmed p {
+  margin: 0 0 14px;
+  color: var(--body);
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.ep-confirmed a {
+  color: var(--navy);
+  font-weight: 700;
+}
+
+.ep-reference {
+  display: grid;
+  gap: 2px;
+  margin: 0 0 14px;
+  border: 2px dashed var(--navy);
+  border-radius: 12px;
+  background: rgb(240 184 64 / 15%);
+  padding: 12px 16px;
+}
+
+.ep-reference span {
+  color: var(--body);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.ep-reference strong {
+  color: var(--navy);
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
+
+.ep-instructions {
+  white-space: pre-line;
+}
+
+/* ── Legal pages ── */
+.legal-doc {
+  max-width: 640px;
+  padding-block: 44px 72px;
+}
+
+.legal-doc h1 {
+  margin: 0 0 8px;
+  color: var(--navy);
+  font-size: clamp(36px, 8vw, 56px);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.legal-date {
+  margin: 0 0 32px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.legal-doc h2 {
+  margin: 32px 0 10px;
+  color: var(--navy);
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.legal-doc p,
+.legal-doc li {
+  color: var(--body);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.65;
+}
+
+.legal-doc ul {
+  margin: 0 0 16px;
+  padding-left: 20px;
+}
+
+.legal-doc li {
+  margin-bottom: 8px;
+}
+
+.legal-doc a {
+  color: var(--navy);
+  font-weight: 700;
+}
+
+.waiver-notice {
+  margin-bottom: 28px;
+  border-left: 4px solid var(--gold);
+  border-radius: 0 8px 8px 0;
+  background: rgb(240 184 64 / 18%);
+  padding: 16px 20px;
+}
+
+.waiver-notice p {
+  margin: 0 0 8px;
+}
+
+.waiver-notice p:last-child {
+  margin: 0;
+}
+
+.legal-note {
+  margin-top: 36px;
+  color: var(--muted);
+  font-size: 14px;
+  font-style: italic;
+}
+
+/* Legal links row inside the standard site footer */
+.footer-legal {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px;
+}
+
+.footer-legal a {
+  color: var(--cream);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 4px 10px;
+  text-decoration: none;
+  text-transform: uppercase;
+  opacity: 0.45;
+  transition: opacity 0.14s ease;
+}
+
+.footer-legal a:hover {
+  opacity: 0.9;
+}
