@@ -1,6 +1,6 @@
 {
   "type": "module",
   "scripts": {
-    "test:admin": "node --test admin/admin.logic.test.mjs api/admin-auth.test.mjs api/bank-transfer-flow.test.mjs"
+    "test:admin": "node --test admin/admin.logic.test.mjs tests/admin-auth.test.mjs tests/bank-transfer-flow.test.mjs"
   }
 }

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { isAdminEmail, parseAdminEmails } from './admin-auth.js';
+import { isAdminEmail, parseAdminEmails } from '../lib/admin-auth.js';
 
 test('parseAdminEmails normalises comma-separated allowlist values', () => {
   assert.deepEqual(parseAdminEmails(' Holly@Example.com, toby@example.com , '), [

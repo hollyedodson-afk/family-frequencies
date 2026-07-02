@@ -1,4 +1,4 @@
-import { parseAdminEmails, requireAdmin } from './admin-auth.js';
+import { parseAdminEmails, requireAdmin } from '../lib/admin-auth.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
