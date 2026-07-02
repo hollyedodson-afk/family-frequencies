@@ -1,4 +1,5 @@
 import { parseAdminEmails, requireAdmin } from '../lib/admin-auth.js';
+import { sendEmail } from '../lib/notify.js';
 
 const ALLOWED_STATUSES = new Set(['pending', 'paid', 'cancelled', 'refunded']);
 
@@ -47,7 +48,48 @@ export default async function handler(req, res) {
     return res.status(502).json({ error: 'Could not update ticket' });
   }
 
+  if (payment_status === 'paid') {
+    await sendPaidEmail(supabaseUrl, serviceKey, ticket_id);
+  }
+
   return res.status(200).json({ ok: true });
+}
+
+// Best-effort "payment received" email — never fails the status update.
+async function sendPaidEmail(supabaseUrl, serviceKey, ticketId) {
+  if (!process.env.RESEND_API_KEY) return;
+
+  try {
+    const response = await fetch(
+      `${supabaseUrl}/rest/v1/ff_tickets?id=eq.${encodeURIComponent(ticketId)}&select=buyer_name,buyer_email,quantity,ff_events(title,event_date,time_start,venue)&limit=1`,
+      { headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` } }
+    );
+    if (!response.ok) return;
+
+    const [ticket] = await response.json();
+    if (!ticket?.buyer_email) return;
+
+    const event = ticket.ff_events || {};
+    await sendEmail({
+      to: ticket.buyer_email,
+      subject: `You're in — ${event.title || 'Family Frequencies'}`,
+      text: [
+        `Kia ora ${ticket.buyer_name},`,
+        '',
+        `Payment received — your ${ticket.quantity > 1 ? `${ticket.quantity} spots are` : 'spot is'} confirmed for ${event.title || 'the event'}.`,
+        event.event_date ? `When: ${event.event_date}${event.time_start ? ` from ${event.time_start}` : ''}` : '',
+        event.venue ? `Where: ${event.venue}` : '',
+        '',
+        'Just turn up — no printed ticket needed, we have your name at the door.',
+        '',
+        'See you out there,',
+        'Family Frequencies',
+        'https://familyfrequencies.com',
+      ].filter((line) => line !== null).join('\n'),
+    });
+  } catch (err) {
+    console.error('Paid email error:', err);
+  }
 }
 
 function isUuid(value) {
