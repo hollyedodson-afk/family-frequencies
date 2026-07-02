@@ -36,6 +36,9 @@ const els = {
   paymentStatus: document.getElementById('payment-status'),
   formError: document.getElementById('form-error'),
   formSuccess: document.getElementById('form-success'),
+  sponsorFile: document.getElementById('sponsor-file'),
+  uploadSponsor: document.getElementById('btn-upload-sponsor'),
+  sponsorStatus: document.getElementById('sponsor-upload-status'),
   attendeeEventList: document.getElementById('attendee-event-list'),
   attendeesDetail: document.getElementById('attendees-detail'),
   exportCsv: document.getElementById('btn-export-csv'),
@@ -82,6 +85,8 @@ function bindEvents() {
   els.eventForm.elements.title.addEventListener('input', handleTitleInput);
   els.eventForm.elements.is_ticketed.addEventListener('change', updateTicketingVisibility);
   els.exportCsv.addEventListener('click', exportAttendeesCsv);
+  els.uploadSponsor.addEventListener('click', () => els.sponsorFile.click());
+  els.sponsorFile.addEventListener('change', handleSponsorUpload);
 
   document.querySelectorAll('.tab').forEach((tab) => {
     tab.addEventListener('click', () => activateTab(tab.dataset.tab));
@@ -208,6 +213,7 @@ function openForm(event) {
     els.eventForm.elements.image_url.value = event.image_url || '';
     els.eventForm.elements.detail_url.value = event.detail_url || '';
     els.eventForm.elements.chips.value = (event.chips || []).join(', ');
+    els.eventForm.elements.sponsor_logos.value = (event.sponsor_logos || []).join('\n');
     els.eventForm.elements.is_ticketed.checked = Boolean(event.is_ticketed);
     els.eventForm.elements.price_nzd.value = event.price_cents ? String(event.price_cents / 100) : '';
     els.eventForm.elements.capacity.value = event.capacity || '';
@@ -235,6 +241,40 @@ function handleTitleInput(event) {
 
 function updateTicketingVisibility() {
   els.ticketFields.hidden = !els.eventForm.elements.is_ticketed.checked;
+}
+
+// Same Cloudinary cloud + unsigned preset the social scheduler uses.
+const CLOUDINARY_CLOUD = 'dxh9cnlqu';
+const CLOUDINARY_PRESET = 'ml_default';
+
+async function handleSponsorUpload() {
+  const file = els.sponsorFile.files[0];
+  if (!file) return;
+
+  els.uploadSponsor.disabled = true;
+  els.sponsorStatus.textContent = 'Uploading...';
+
+  try {
+    const fd = new FormData();
+    fd.append('upload_preset', CLOUDINARY_PRESET);
+    fd.append('file', file);
+    const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, {
+      method: 'POST',
+      body: fd,
+    });
+    if (!response.ok) throw new Error('Upload failed');
+    const data = await response.json();
+
+    const field = els.eventForm.elements.sponsor_logos;
+    field.value = [field.value.trim(), data.secure_url].filter(Boolean).join('\n');
+    els.sponsorStatus.textContent = 'Logo added — save the event to keep it.';
+  } catch (err) {
+    console.error(err);
+    els.sponsorStatus.textContent = 'Upload failed — try again or paste a URL.';
+  } finally {
+    els.uploadSponsor.disabled = false;
+    els.sponsorFile.value = '';
+  }
 }
 
 async function handleSaveEvent(event) {

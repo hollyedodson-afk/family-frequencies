@@ -138,6 +138,46 @@
         + '</div>';
     }
 
+    function sponsorBlock(event) {
+      var logos = event.sponsor_logos || [];
+      if (!logos.length) return '';
+      return '<div class="ep-sponsors">'
+        + '<span class="ep-sponsors__label">Supported by</span>'
+        + '<div class="ep-sponsors__logos">'
+        + logos.map(function (u) { return '<img src="' + esc(u) + '" alt="Event sponsor logo" loading="lazy">'; }).join('')
+        + '</div></div>';
+    }
+
+    function actionLinks(event) {
+      var links = [];
+      if (event.event_date) {
+        var d = event.event_date.replace(/-/g, '');
+        var dates;
+        if (event.time_start) {
+          var start = d + 'T' + event.time_start.replace(':', '').slice(0, 4) + '00';
+          var endTime = event.time_end || event.time_start;
+          var end = d + 'T' + endTime.replace(':', '').slice(0, 4) + '00';
+          dates = start + '/' + end;
+        } else {
+          var p = event.event_date.split('-').map(Number);
+          var next = new Date(p[0], p[1] - 1, p[2] + 1);
+          dates = d + '/' + next.getFullYear() + String(next.getMonth() + 1).padStart(2, '0') + String(next.getDate()).padStart(2, '0');
+        }
+        var gcal = 'https://calendar.google.com/calendar/render?action=TEMPLATE'
+          + '&text=' + encodeURIComponent(event.title)
+          + '&dates=' + dates
+          + '&ctz=Pacific/Auckland'
+          + '&location=' + encodeURIComponent(event.venue || '')
+          + '&details=' + encodeURIComponent('https://familyfrequencies.com/event/' + event.slug);
+        links.push('<a class="event-link" href="' + esc(gcal) + '" target="_blank" rel="noopener">Add to calendar</a>');
+      }
+      if (event.venue) {
+        var maps = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(event.venue + ', New Zealand');
+        links.push('<a class="event-link" href="' + esc(maps) + '" target="_blank" rel="noopener">Get directions</a>');
+      }
+      return links.length ? '<div class="event-links">' + links.join('') + '</div>' : '';
+    }
+
     function confirmationBlock(data, buyerEmail) {
       return '<div class="ep-confirmed" role="status">'
         + '<h2>Spot reserved!</h2>'
@@ -167,6 +207,7 @@
           + '<h1>' + esc(event.title) + '</h1>'
           + '<p class="ep-meta">' + (timeStr ? esc(timeStr) + ' · ' : '') + esc(event.venue || '') + '</p>'
           + (chipsHtml ? '<div class="chip-row ep-chips">' + chipsHtml + '</div>' : '')
+          + actionLinks(event)
           + '</div>'
           + '</section>'
           + '<div class="wave-divider wave-divider--flip" aria-hidden="true"><svg viewBox="0 0 600 40" preserveAspectRatio="none"><path d="M0 40 C33 8 67 8 100 40 C133 8 167 8 200 40 C233 8 267 8 300 40 C333 8 367 8 400 40 C433 8 467 8 500 40 C533 8 567 8 600 40 L600 40 L0 40 Z" fill="#1A2B40"/></svg></div>'
@@ -174,6 +215,7 @@
           + (event.image_url ? '<div class="framed-poster ep-poster"><img src="' + esc(event.image_url) + '" alt="" loading="lazy"></div>' : '')
           + (event.description ? '<p class="ep-description">' + esc(event.description).replace(/\n/g, '<br>') + '</p>' : '')
           + '<div id="ticket-area">' + ticketBlock(event) + '</div>'
+          + sponsorBlock(event)
           + '</div></section>';
 
         loadingEl.hidden = true;

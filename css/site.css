@@ -1031,6 +1031,55 @@ svg {
   width: auto;
 }
 
+.event-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.event-link {
+  display: inline-flex;
+  align-items: center;
+  border: 2px solid var(--navy);
+  border-radius: 9999px;
+  color: var(--navy);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 9px 16px;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: background 0.14s ease;
+}
+
+.event-link:hover {
+  background: rgb(240 184 64 / 30%);
+}
+
+.footer-legal {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px;
+}
+
+.footer-legal a {
+  color: var(--cream);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 4px 10px;
+  text-decoration: none;
+  text-transform: uppercase;
+  opacity: 0.45;
+  transition: opacity 0.14s ease;
+}
+
+.footer-legal a:hover {
+  opacity: 0.9;
+}
+
 @keyframes deco-spin {
   to { transform: rotate(360deg); }
 }

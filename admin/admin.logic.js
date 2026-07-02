@@ -19,6 +19,7 @@ export function buildEventPayload(fields, now = new Date().toISOString()) {
     image_url: cleanOptional(fields.image_url),
     detail_url: cleanOptional(fields.detail_url),
     chips: parseChips(fields.chips),
+    sponsor_logos: parseSponsorLogos(fields.sponsor_logos),
     status: fields.status || 'draft',
     is_ticketed: isTicketed,
     price_cents: isTicketed ? parsePriceCents(fields.price_nzd) : null,
@@ -87,6 +88,13 @@ function parseChips(value) {
     .split(',')
     .map((chip) => chip.trim())
     .filter(Boolean);
+}
+
+function parseSponsorLogos(value) {
+  return String(value || '')
+    .split(/[\n,]/)
+    .map((url) => url.trim())
+    .filter((url) => /^(https?:\/\/|\/)/.test(url));
 }
 
 function parsePriceCents(value) {
