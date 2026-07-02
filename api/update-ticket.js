@@ -1,4 +1,4 @@
-import { parseAdminEmails, requireAdmin } from './admin-auth.js';
+import { parseAdminEmails, requireAdmin } from '../lib/admin-auth.js';
 
 const ALLOWED_STATUSES = new Set(['pending', 'paid', 'cancelled', 'refunded']);
 

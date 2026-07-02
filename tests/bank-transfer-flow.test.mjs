@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import checkoutHandler from './checkout.js';
-import publishHandler from './publish-event.js';
-import updateTicketHandler from './update-ticket.js';
+import checkoutHandler from '../api/checkout.js';
+import publishHandler from '../api/publish-event.js';
+import updateTicketHandler from '../api/update-ticket.js';
 
 function createResponse() {
   return {
