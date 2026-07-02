@@ -14,68 +14,6 @@
   font-weight: 800;
 }
 
-.ep-hero {
-  background: var(--navy);
-  color: var(--cream);
-}
-
-.ep-hero__inner {
-  padding-block: 44px 40px;
-}
-
-.ep-hero .eyebrow {
-  color: var(--gold);
-}
-
-.ep-hero h1 {
-  margin: 10px 0 0;
-  font-size: clamp(44px, 13vw, 84px);
-  font-weight: 900;
-  letter-spacing: -0.02em;
-  line-height: 0.87;
-  text-transform: uppercase;
-}
-
-.ep-meta {
-  margin: 14px 0 0;
-  color: #b9c2cf;
-  font-size: 19px;
-  font-weight: 600;
-}
-
-.ep-chips {
-  margin-top: 18px;
-}
-
-.ep-hero .chip {
-  background: transparent;
-  border-color: rgb(250 240 224 / 35%);
-  color: var(--cream);
-}
-
-.ep-body {
-  padding-block: 36px 56px;
-}
-
-.ep-poster {
-  margin-bottom: 28px;
-}
-
-.ep-poster img {
-  width: 100%;
-  height: auto;
-  border-radius: 10px;
-}
-
-.ep-description {
-  max-width: 44ch;
-  margin: 0 0 28px;
-  color: var(--body);
-  font-size: 19px;
-  font-weight: 500;
-  line-height: 1.5;
-}
-
 .ep-notice {
   margin: 0;
   color: var(--body);
@@ -345,44 +283,36 @@
   font-style: italic;
 }
 
-/* Sponsor strip on the event template */
-.ep-sponsors {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 16px;
-  margin-top: 32px;
-  border-top: 2px solid var(--divider);
-  padding-top: 20px;
+
+/* Ticket section sits on the navy day-section band */
+.ep-ticket-wrap {
+  margin-top: 26px;
 }
 
-.ep-sponsors__label {
+.day-section .ep-notice {
+  color: #b9c2cf;
+}
+
+.day-section .ep-notice a {
+  color: var(--gold);
+}
+
+.day-section .ep-soldout {
+  background: var(--gold);
   color: var(--navy);
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  opacity: 0.45;
 }
 
-.ep-sponsors__logos {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 18px;
+/* "More on the way" rows that link to other events */
+a.programme-row--link {
+  color: var(--navy);
+  text-decoration: none;
+  transition: border-color 0.14s ease;
 }
 
-.ep-sponsors__logos img {
-  height: 34px;
-  width: auto;
+a.programme-row--link:hover {
+  border-color: var(--navy);
 }
 
-/* Action links sit on the navy hero on the template page */
-.ep-hero .event-link {
-  border-color: rgb(250 240 224 / 45%);
-  color: var(--cream);
-}
-
-.ep-hero .event-link:hover {
-  background: rgb(250 240 224 / 12%);
+a.programme-row--link .programme-row__tag {
+  color: var(--eyebrow);
 }

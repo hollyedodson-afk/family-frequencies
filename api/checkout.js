@@ -1,3 +1,5 @@
+import { addToMailingList, formatNzd, sendEmail } from '../lib/notify.js';
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -102,13 +104,40 @@ export default async function handler(req, res) {
     }
 
     const ticketId = await response.json();
+    const amountDueCents = Number(event.price_cents || 0) * qty;
+    const instructions = buildBankTransferInstructions(reference);
+
+    // Both are no-ops without their env keys and never fail the reservation.
+    await Promise.allSettled([
+      addToMailingList(buyerEmail),
+      sendEmail({
+        to: buyerEmail,
+        subject: `Spot reserved — ${event.title}`,
+        text: [
+          `Kia ora ${buyerName},`,
+          '',
+          `Your spot at ${event.title} is reserved (${qty} ${qty === 1 ? 'spot' : 'spots'}).`,
+          '',
+          `To confirm, pay ${formatNzd(amountDueCents)} by bank transfer:`,
+          instructions,
+          '',
+          `Payment reference: ${reference}`,
+          '',
+          "We'll email you again once your payment is matched. If anything changes, reply to this email or contact hello@familyfrequencies.com.",
+          '',
+          'Family Frequencies',
+          'https://familyfrequencies.com',
+        ].join('\n'),
+      }),
+    ]);
+
     return res.status(200).json({
       payment_method: 'bank_transfer',
       payment_status: 'pending',
       ticket_id: ticketId,
       payment_reference: reference,
-      amount_due_cents: Number(event.price_cents || 0) * qty,
-      instructions: buildBankTransferInstructions(reference),
+      amount_due_cents: amountDueCents,
+      instructions,
     });
   } catch (err) {
     console.error('Checkout error:', err);

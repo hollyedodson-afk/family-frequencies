@@ -39,6 +39,9 @@ const els = {
   sponsorFile: document.getElementById('sponsor-file'),
   uploadSponsor: document.getElementById('btn-upload-sponsor'),
   sponsorStatus: document.getElementById('sponsor-upload-status'),
+  eventImageFile: document.getElementById('event-image-file'),
+  uploadEventImage: document.getElementById('btn-upload-event-image'),
+  eventImageStatus: document.getElementById('event-image-status'),
   attendeeEventList: document.getElementById('attendee-event-list'),
   attendeesDetail: document.getElementById('attendees-detail'),
   exportCsv: document.getElementById('btn-export-csv'),
@@ -87,6 +90,8 @@ function bindEvents() {
   els.exportCsv.addEventListener('click', exportAttendeesCsv);
   els.uploadSponsor.addEventListener('click', () => els.sponsorFile.click());
   els.sponsorFile.addEventListener('change', handleSponsorUpload);
+  els.uploadEventImage.addEventListener('click', () => els.eventImageFile.click());
+  els.eventImageFile.addEventListener('change', handleEventImageUpload);
 
   document.querySelectorAll('.tab').forEach((tab) => {
     tab.addEventListener('click', () => activateTab(tab.dataset.tab));
@@ -247,6 +252,19 @@ function updateTicketingVisibility() {
 const CLOUDINARY_CLOUD = 'dxh9cnlqu';
 const CLOUDINARY_PRESET = 'ml_default';
 
+async function uploadImageToCloudinary(file) {
+  const fd = new FormData();
+  fd.append('upload_preset', CLOUDINARY_PRESET);
+  fd.append('file', file);
+  const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, {
+    method: 'POST',
+    body: fd,
+  });
+  if (!response.ok) throw new Error('Upload failed');
+  const data = await response.json();
+  return data.secure_url;
+}
+
 async function handleSponsorUpload() {
   const file = els.sponsorFile.files[0];
   if (!file) return;
@@ -255,18 +273,9 @@ async function handleSponsorUpload() {
   els.sponsorStatus.textContent = 'Uploading...';
 
   try {
-    const fd = new FormData();
-    fd.append('upload_preset', CLOUDINARY_PRESET);
-    fd.append('file', file);
-    const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, {
-      method: 'POST',
-      body: fd,
-    });
-    if (!response.ok) throw new Error('Upload failed');
-    const data = await response.json();
-
+    const url = await uploadImageToCloudinary(file);
     const field = els.eventForm.elements.sponsor_logos;
-    field.value = [field.value.trim(), data.secure_url].filter(Boolean).join('\n');
+    field.value = [field.value.trim(), url].filter(Boolean).join('\n');
     els.sponsorStatus.textContent = 'Logo added — save the event to keep it.';
   } catch (err) {
     console.error(err);
@@ -274,6 +283,25 @@ async function handleSponsorUpload() {
   } finally {
     els.uploadSponsor.disabled = false;
     els.sponsorFile.value = '';
+  }
+}
+
+async function handleEventImageUpload() {
+  const file = els.eventImageFile.files[0];
+  if (!file) return;
+
+  els.uploadEventImage.disabled = true;
+  els.eventImageStatus.textContent = 'Uploading...';
+
+  try {
+    els.eventForm.elements.image_url.value = await uploadImageToCloudinary(file);
+    els.eventImageStatus.textContent = 'Image added — save the event to keep it.';
+  } catch (err) {
+    console.error(err);
+    els.eventImageStatus.textContent = 'Upload failed — try again or paste a URL.';
+  } finally {
+    els.uploadEventImage.disabled = false;
+    els.eventImageFile.value = '';
   }
 }
 
