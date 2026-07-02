@@ -9,6 +9,7 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/css/site.css">
   <link rel="stylesheet" href="/css/pages.css">
+  <script src="/js/site.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -25,6 +26,13 @@
     </div>
   </header>
 
+  <div class="ticker" aria-label="Daytime club culture for families in the Bay of Plenty">
+    <div class="ticker__track">
+      <div class="ticker__set"><span>Daytime Club Culture</span><span class="ticker__dot">●</span><span>For Families</span><span class="ticker__dot">●</span><span>Bay of Plenty</span><span class="ticker__dot">●</span></div>
+      <div class="ticker__set" aria-hidden="true"><span>Daytime Club Culture</span><span class="ticker__dot">●</span><span>For Families</span><span class="ticker__dot">●</span><span>Bay of Plenty</span><span class="ticker__dot">●</span></div>
+    </div>
+  </div>
+
   <main id="main">
     <div id="event-loading" class="ep-status"><div class="container"><p>Loading event…</p></div></div>
     <div id="event-content" hidden></div>
@@ -33,7 +41,22 @@
         <p>We couldn't find that event. <a href="/events">See what's on →</a></p>
       </div>
     </div>
+
+    <section class="signup" id="signup">
+      <div class="container signup__inner">
+        <h2>Don't miss<br>the next one</h2>
+        <p class="signup__copy">We'll only email when there's something on. No spam, no newsletters about nothing.</p>
+        <form class="signup__form" data-signup-form>
+          <label for="event-email">Email address</label>
+          <input id="event-email" type="email" name="email" autocomplete="email" required placeholder="your@email.co.nz">
+          <button type="submit">Keep me posted</button>
+        </form>
+        <p class="signup__note" data-signup-note aria-live="polite"></p>
+      </div>
+    </section>
   </main>
+
+  <div id="sponsor-root"></div>
 
   <footer class="site-footer">
     <div class="container site-footer__inner">
@@ -301,8 +324,8 @@
 
         contentEl.innerHTML = heroSection(event)
           + ticketSection(event)
-          + moreSection()
-          + sponsorStrip(event);
+          + moreSection();
+        document.getElementById('sponsor-root').innerHTML = sponsorStrip(event);
 
         loadingEl.hidden = true;
         contentEl.hidden = false;
