@@ -3,6 +3,9 @@
   "rewrites": [
     { "source": "/event/:slug", "destination": "/event" }
   ],
+  "crons": [
+    { "path": "/api/cron/archive-past-events", "schedule": "0 14 * * *" }
+  ],
   "headers": [
     {
       "source": "/(.*)",

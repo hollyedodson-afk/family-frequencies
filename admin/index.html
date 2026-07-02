@@ -119,6 +119,14 @@
             <label>Chips
               <input name="chips" type="text" placeholder="Ticketed, All ages, Workshop">
             </label>
+            <label>Sponsor logos
+              <textarea name="sponsor_logos" rows="2" placeholder="Logo image URLs, one per line — or use Upload"></textarea>
+            </label>
+            <div class="sponsor-upload">
+              <input id="sponsor-file" type="file" accept="image/png,image/jpeg,image/svg+xml,image/webp" hidden>
+              <button id="btn-upload-sponsor" class="btn btn-secondary" type="button">Upload sponsor logo</button>
+              <span id="sponsor-upload-status" class="hint" aria-live="polite"></span>
+            </div>
 
             <fieldset class="ticket-box">
               <label class="check-row">

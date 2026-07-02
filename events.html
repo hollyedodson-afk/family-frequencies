@@ -306,6 +306,14 @@
     </section>
     -->
 
+    <section class="past-events" id="past-events" hidden>
+      <div class="container past-events__inner">
+        <p class="eyebrow eyebrow--muted">Past events</p>
+        <h2 class="section-title">Previously</h2>
+        <div id="past-events-list"></div>
+      </div>
+    </section>
+
     <!-- Signup -->
     <section class="signup" id="signup">
       <div class="container signup__inner">
@@ -331,11 +339,95 @@
         <a class="site-footer__nav-link" href="/events" aria-current="page">Events</a>
         <a class="site-footer__nav-link" href="/join">Get on the list</a>
       </nav>
+      <nav class="footer-legal" aria-label="Legal">
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
+        <a href="/waiver">Waiver</a>
+      </nav>
       <div class="site-footer__location">Mt Maunganui · Aotearoa New Zealand</div>
       <a class="site-footer__social" href="https://www.instagram.com/familyfrequencies" target="_blank" rel="noopener">@familyfrequencies</a>
     </div>
   </footer>
 
+  <script>
+  // Render the events list from the database; the static markup stays as a
+  // fallback when the API is unreachable.
+  (function () {
+    function esc(v) {
+      return String(v == null ? '' : v)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    }
+    function fmtTime(t) {
+      if (!t) return '';
+      var p = String(t).split(':');
+      var h = parseInt(p[0], 10), m = parseInt(p[1], 10);
+      var period = h >= 12 ? 'pm' : 'am';
+      var hour = h > 12 ? h - 12 : (h === 0 ? 12 : h);
+      return hour + (m ? ':' + String(m).padStart(2, '0') : '') + period;
+    }
+    function toDate(str) {
+      var p = String(str).split('-').map(Number);
+      return new Date(p[0], p[1] - 1, p[2]);
+    }
+    function fmtDate(str, opts) {
+      return toDate(str).toLocaleDateString('en-NZ', opts).replace(',', '');
+    }
+    function eventHref(e) {
+      if (e.detail_url) return e.detail_url.charAt(0) === '/' ? e.detail_url : '/' + e.detail_url;
+      return '/event/' + e.slug;
+    }
+    function statusLabel(dateStr, todayStr) {
+      if (dateStr === todayStr) return 'On today';
+      var diff = (toDate(dateStr) - toDate(todayStr)) / 86400000;
+      if (diff > 0 && diff < 7) return 'This ' + toDate(dateStr).toLocaleDateString('en-NZ', { weekday: 'short' });
+      return fmtDate(dateStr, { day: 'numeric', month: 'short' });
+    }
+    function card(e, todayStr) {
+      var meta = fmtDate(e.event_date, { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' });
+      if (e.time_start) meta += ' · ' + fmtTime(e.time_start) + (e.time_end ? '–' + fmtTime(e.time_end) : '');
+      if (e.venue) meta += ' · ' + e.venue;
+      var chips = (e.chips || []).slice();
+      if (e.is_ticketed && e.price_cents) chips.push('$' + (e.price_cents / 100).toFixed(2).replace(/\.00$/, ''));
+      var soldOut = e.is_ticketed && e.capacity != null && (e.capacity - (e.tickets_sold || 0)) <= 0;
+      return '<a class="event-card" href="' + esc(eventHref(e)) + '">'
+        + (e.image_url
+          ? '<div class="event-card__image"><img src="' + esc(e.image_url) + '" alt="" loading="lazy">'
+            + '<span class="status-tag">' + esc(soldOut ? 'Sold out' : statusLabel(e.event_date, todayStr)) + '</span></div>'
+          : '')
+        + '<div class="event-card__body"><h3>' + esc(e.title) + '</h3>'
+        + '<p class="event-card__meta">' + esc(meta) + '</p>'
+        + (chips.length ? '<div class="chip-row">' + chips.map(function (c) { return '<span class="chip">' + esc(c) + '</span>'; }).join('') + '</div>' : '')
+        + '</div>'
+        + '<div class="event-card__footer"><span>View event</span><span class="event-card__arrow">→</span></div>'
+        + '</a>';
+    }
+
+    fetch('/api/events')
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (events) {
+        var today = new Date().toLocaleDateString('en-CA', { timeZone: 'Pacific/Auckland' });
+        var upcoming = events.filter(function (e) { return e.status === 'published' && e.event_date >= today; });
+        var past = events.filter(function (e) { return e.status === 'past' || (e.status === 'published' && e.event_date < today); }).reverse();
+
+        var list = document.querySelector('.event-list');
+        list.innerHTML = upcoming.length
+          ? upcoming.map(function (e) { return card(e, today); }).join('')
+          : '<div class="no-events"><p>Nothing in the diary right now — but we\'re always cooking something up.<br>Get on the list so you hear first.</p></div>';
+
+        if (past.length) {
+          document.getElementById('past-events-list').innerHTML = past.map(function (e) {
+            return '<a class="past-event-row" href="' + esc(eventHref(e)) + '">'
+              + '<span class="past-event-row__name">' + esc(e.title) + '</span>'
+              + '<span class="past-event-row__date">' + esc(fmtDate(e.event_date, { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })) + '</span>'
+              + '</a>';
+          }).join('');
+          document.getElementById('past-events').hidden = false;
+        }
+      })
+      .catch(function () { /* static fallback stays */ });
+  })();
+  </script>
   <script src="js/site.js" defer></script>
   <script defer src="/_vercel/insights/script.js"></script>
 </body>

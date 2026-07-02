@@ -112,10 +112,77 @@
         <a class="site-footer__nav-link" href="/events">Events</a>
         <a class="site-footer__nav-link" href="/join">Get on the list</a>
       </nav>
+      <nav class="footer-legal" aria-label="Legal">
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
+        <a href="/waiver">Waiver</a>
+      </nav>
       <div class="site-footer__location">Mt Maunganui · Aotearoa New Zealand</div>
       <a class="site-footer__social" href="https://www.instagram.com/familyfrequencies" target="_blank" rel="noopener">@familyfrequencies</a>
     </div>
   </footer>
   <script defer src="/_vercel/insights/script.js"></script>
+  <script>
+  // Keep the homepage "Next up" card in sync with the database; the static
+  // card remains as a fallback when the API is unreachable.
+  (function () {
+    function esc(v) {
+      return String(v == null ? '' : v)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    }
+    function fmtTime(t) {
+      if (!t) return '';
+      var p = String(t).split(':');
+      var h = parseInt(p[0], 10), m = parseInt(p[1], 10);
+      var period = h >= 12 ? 'pm' : 'am';
+      var hour = h > 12 ? h - 12 : (h === 0 ? 12 : h);
+      return hour + (m ? ':' + String(m).padStart(2, '0') : '') + period;
+    }
+    function toDate(str) {
+      var p = String(str).split('-').map(Number);
+      return new Date(p[0], p[1] - 1, p[2]);
+    }
+
+    fetch('/api/events')
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (events) {
+        var today = new Date().toLocaleDateString('en-CA', { timeZone: 'Pacific/Auckland' });
+        var upcoming = events.filter(function (e) { return e.status === 'published' && e.event_date >= today; });
+        var cardEl = document.querySelector('.featured-card');
+        if (!cardEl) return;
+
+        if (!upcoming.length) {
+          cardEl.outerHTML = '<div class="no-events" style="margin-top:24px; padding:28px 24px; border:2px dashed var(--divider); border-radius:16px; text-align:center;">'
+            + '<p style="margin:0; color:var(--muted); font-size:18px; font-weight:600; line-height:1.5;">Nothing in the diary right now — but we\'re always cooking something up.<br>Get on the list so you hear first.</p></div>';
+          return;
+        }
+
+        var e = upcoming[0];
+        var href = e.detail_url ? (e.detail_url.charAt(0) === '/' ? e.detail_url : '/' + e.detail_url) : '/event/' + e.slug;
+        var meta = toDate(e.event_date).toLocaleDateString('en-NZ', { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' }).replace(',', '');
+        if (e.time_start) meta += ' · ' + fmtTime(e.time_start) + (e.time_end ? '–' + fmtTime(e.time_end) : '');
+        if (e.venue) meta += ' · ' + e.venue;
+        var label = e.event_date === today ? 'On today'
+          : ((toDate(e.event_date) - toDate(today)) / 86400000 < 7
+            ? 'This ' + toDate(e.event_date).toLocaleDateString('en-NZ', { weekday: 'short' })
+            : toDate(e.event_date).toLocaleDateString('en-NZ', { day: 'numeric', month: 'short' }));
+        var chips = (e.chips || []).slice();
+        if (e.is_ticketed && e.price_cents) chips.push('$' + (e.price_cents / 100).toFixed(2).replace(/\.00$/, ''));
+
+        cardEl.href = href;
+        cardEl.querySelector('h3').textContent = e.title;
+        cardEl.querySelector('.featured-card__meta').textContent = meta;
+        var tag = cardEl.querySelector('.status-tag');
+        if (tag) tag.textContent = label;
+        var img = cardEl.querySelector('.featured-card__image img');
+        if (img && e.image_url) img.src = e.image_url;
+        var chipRow = cardEl.querySelector('.chip-row');
+        if (chipRow) chipRow.innerHTML = chips.map(function (c) { return '<span class="chip">' + esc(c) + '</span>'; }).join('');
+      })
+      .catch(function () { /* static fallback stays */ });
+  })();
+  </script>
 </body>
+
 </html>
