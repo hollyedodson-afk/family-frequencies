@@ -6,7 +6,7 @@ const FF_VOICE = `You write social captions for Family Frequencies (FF), a paren
 
 export function buildCaptionPrompt(entry: CyclePlanEntry): string {
   const facts = entry.event_facts
-    ? `Event facts: ${entry.event_facts.date}, ${entry.event_facts.venue}, ${entry.event_facts.time ?? ""}, cost ${entry.event_facts.cost ?? "free"}.`
+    ? `Event facts: ${[entry.event_facts.date, entry.event_facts.venue, entry.event_facts.time].filter(Boolean).join(", ")}, cost ${entry.event_facts.cost ?? "free"}.`
     : "No specific event facts.";
   return [
     FF_VOICE,
@@ -37,7 +37,15 @@ export async function writeCopy(entry: CyclePlanEntry, caller: CaptionCaller): P
   const raw = await caller(buildCaptionPrompt(entry));
   const jsonStart = raw.indexOf("{");
   const jsonEnd = raw.lastIndexOf("}");
-  const parsed = JSON.parse(raw.slice(jsonStart, jsonEnd + 1)) as CaptionSet;
+  if (jsonStart === -1 || jsonEnd === -1 || jsonEnd < jsonStart) {
+    throw new Error(`caption response contained no JSON object: "${raw.slice(0, 80)}"`);
+  }
+  let parsed: CaptionSet;
+  try {
+    parsed = JSON.parse(raw.slice(jsonStart, jsonEnd + 1)) as CaptionSet;
+  } catch (e) {
+    throw new Error(`caption response was not valid JSON: ${(e as Error).message}`);
+  }
   return {
     instagram: parsed.instagram ?? "",
     tiktok: parsed.tiktok ?? "",

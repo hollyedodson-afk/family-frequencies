@@ -30,4 +30,19 @@ describe("write-copy", () => {
     expect(set.tiktok).toBe("TT copy");
     expect(set.facebook).toBe("FB copy");
   });
+
+  it("throws a clear error when the caller returns no JSON", async () => {
+    await expect(writeCopy(entry, async () => "sorry, I can't do that")).rejects.toThrow(/no JSON object/);
+  });
+
+  it("throws a clear error when the JSON is malformed", async () => {
+    await expect(writeCopy(entry, async () => "{ not valid json }")).rejects.toThrow(/not valid JSON/);
+  });
+
+  it("omits the time slot cleanly when event_facts has no time", () => {
+    const noTime = { ...entry, event_facts: { date: "SAT 2 AUG", venue: "HIDE", cost: "FREE" } };
+    const p = buildCaptionPrompt(noTime);
+    expect(p).not.toContain(", ,");
+    expect(p).toContain("HIDE, cost FREE");
+  });
 });
