@@ -1,0 +1,13 @@
+[
+  {
+    "recipe_id": "P1",
+    "pillar": "promotion",
+    "frame_or_painting": "painting",
+    "type": "feed",
+    "template": "date-card",
+    "hook": "It's official — the next Daylight Disco has a date",
+    "source": "render",
+    "scheduled_at": "2026-07-20T09:00:00",
+    "event_facts": { "date": "SAT 2 AUG", "venue": "HIDE, MT MAUNGANUI", "time": "12–5PM", "cost": "FREE" }
+  }
+]
