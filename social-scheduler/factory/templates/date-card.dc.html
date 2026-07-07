@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&display=swap');
+  :root{
+    --navy:#1A2B40; --cream:#FAF0E0; --gold:#F0B840; --rose:#E88070;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{width:1080px;height:1350px;background:var(--cream);font-family:'Barlow Condensed',sans-serif;}
+  .stage{width:1080px;height:1350px;display:flex;align-items:center;justify-content:center;}
+  .frame-wrap{position:relative;width:840px;height:1080px;}
+  .frame-shadow{position:absolute;left:16px;top:16px;right:-16px;bottom:-16px;background:var(--gold);border-radius:20px;}
+  .poster{position:relative;z-index:1;width:100%;height:100%;background:var(--navy);border:3px solid var(--navy);border-radius:20px;
+    display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:64px 56px;color:var(--cream);text-align:center;}
+  .eyebrow{font-size:22px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);}
+  .logo{width:88px;height:88px;}
+  .title{font-size:118px;font-weight:900;line-height:0.82;letter-spacing:-0.02em;text-transform:uppercase;}
+  .title .accent{color:var(--rose);}
+  .facts{display:flex;flex-direction:column;gap:14px;font-weight:700;}
+  .facts .date{font-size:64px;font-weight:900;color:var(--gold);letter-spacing:-0.01em;}
+  .facts .venue{font-size:34px;letter-spacing:0.04em;}
+  .facts .time{font-size:30px;color:#B9C2CF;letter-spacing:0.06em;}
+  .badge{display:inline-block;background:var(--rose);color:#5A2B25;font-size:26px;font-weight:800;letter-spacing:0.1em;
+    text-transform:uppercase;padding:14px 34px;border-radius:9999px;}
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="frame-wrap">
+      <div class="frame-shadow"></div>
+      <div class="poster">
+        <svg class="logo" viewBox="0 0 48 48" fill="none">
+          <circle cx="24" cy="13.5" r="6.5" fill="#F0B840"/>
+          <path d="M3 33 C7 25 12 25 16 33 C20 41 28 41 32 33 C36 25 41 25 45 33" stroke="#FAF0E0" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+        <div class="eyebrow">Family Frequencies presents</div>
+        <div class="title">DAYLIGHT<br><span class="accent">DISCO</span></div>
+        <div class="facts">
+          <div class="date" id="f-date">SAT 2 AUG</div>
+          <div class="venue" id="f-venue">HIDE, MT MAUNGANUI</div>
+          <div class="time" id="f-time">12–5PM</div>
+        </div>
+        <div class="badge" id="f-cost">FREE · WALK-IN</div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const q = new URLSearchParams(location.search);
+    const set = (id, key, fallback) => { const v = q.get(key); const el = document.getElementById(id); if (el) el.textContent = (v ?? fallback); };
+    set('f-date','date','SAT 2 AUG');
+    set('f-venue','venue','HIDE, MT MAUNGANUI');
+    set('f-time','time','12–5PM');
+    const cost = q.get('cost'); if (cost) document.getElementById('f-cost').textContent = cost + ' · WALK-IN';
+    document.fonts.ready.then(() => { document.body.setAttribute('data-fonts-ready','1'); });
+  </script>
+</body>
+</html>
