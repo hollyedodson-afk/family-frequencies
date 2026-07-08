@@ -31,9 +31,3 @@ export interface CaptionSet {
   tiktok: string;
   facebook: string;
 }
-
-export interface RenderResult {
-  recipe_id: string;
-  pngPath: string;
-  aspect: string;
-}
