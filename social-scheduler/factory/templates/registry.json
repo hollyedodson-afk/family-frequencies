@@ -1,0 +1,10 @@
+{
+  "date-card": {
+    "file": "date-card.dc.html",
+    "fields": ["date", "venue", "time", "cost"],
+    "type": "feed",
+    "aspect": "4:5",
+    "width": 1080,
+    "height": 1350
+  }
+}
