@@ -882,5 +882,8 @@ git commit -m "docs(factory): README + first-run instructions"
 - **Types consistent:** `CyclePlanEntry`, `CaptionSet`, `TemplateSpec`, `renderStill`, `writeCopy`, `makeAnthropicCaller`, `loadConfig`, `loadRegistry`/`getTemplate` used identically across tasks.
 - **No placeholders:** every code/test/command step is concrete.
 
-## Next: Plan 2 (video + publish)
-Transcribe (whisper.cpp) → Clip (Claude highlights + ffmpeg, 9:16 + burned captions) → Publish-to-queue (Cloudinary upload + write rows to the Google Sheet queue with `status: ready` + Telegram "batch ready") → idempotent `work/<run-id>` staging + run report. Written once Plan 1 renders content you're happy with.
+## Next: Plan 2 (video + publish) — build on ffmpeg
+
+**Build-vs-adopt decision (revised 2026-07-10):** the earlier "adopt OpenCut AI" call is **invalidated** — scouting on 2026-07-10 found OpenCut has **no headless API** (UI-only; can't be driven from a pipeline). Postiz is inspiration-only; OpenStudio was rejected (MuAPI-locked UI shell). So Plan 2 builds the clipper ourselves on proven primitives: whisper.cpp for transcription, Claude for highlight selection, ffmpeg for cutting/reframing (9:16) and burning captions.
+
+Plan 2 pipeline: Transcribe (whisper.cpp) → Clip (Claude picks highlights + ffmpeg cuts, 9:16 + burned captions) → Publish-to-queue (Cloudinary upload + write rows to the Google Sheet queue with `status: ready` + Telegram "batch ready") → idempotent `work/<run-id>` staging + run report. The branded-template renders stay Plan 1's. Written once Plan 1 renders content Holly's happy with.
