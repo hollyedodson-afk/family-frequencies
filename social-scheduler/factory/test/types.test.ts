@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
-import { parseCyclePlan } from "../src/types.ts";
+import { parseCyclePlan, HighlightWindowSchema, parseHighlightWindows } from "../src/types.ts";
 
 describe("parseCyclePlan", () => {
   it("parses a valid plan file", () => {
@@ -14,5 +14,35 @@ describe("parseCyclePlan", () => {
 
   it("rejects an entry with an invalid source", () => {
     expect(() => parseCyclePlan([{ recipe_id: "X", pillar: "p", frame_or_painting: "frame", type: "feed", hook: "h", source: "banana", scheduled_at: "2026-07-20T09:00:00" }])).toThrow();
+  });
+});
+
+describe("footage_file on plan entries", () => {
+  it("accepts an entry with footage_file", () => {
+    const entry = {
+      recipe_id: "C2", pillar: "community", frame_or_painting: "painting",
+      type: "reel", hook: "h", source: "footage",
+      scheduled_at: "2026-07-13T09:00:00", footage_file: "clips/hand-picked.mp4",
+    };
+    expect(parseCyclePlan([entry])[0].footage_file).toBe("clips/hand-picked.mp4");
+  });
+});
+
+describe("parseHighlightWindows", () => {
+  it("parses valid windows", () => {
+    const w = parseHighlightWindows([{ start_ms: 1000, end_ms: 12000, reason: "big laugh" }], 60000);
+    expect(w).toHaveLength(1);
+  });
+
+  it("rejects a window that ends past the video duration", () => {
+    expect(() =>
+      parseHighlightWindows([{ start_ms: 55000, end_ms: 70000, reason: "x" }], 60000),
+    ).toThrow(/duration/);
+  });
+
+  it("rejects a window where start >= end", () => {
+    expect(() =>
+      parseHighlightWindows([{ start_ms: 9000, end_ms: 9000, reason: "x" }], 60000),
+    ).toThrow();
   });
 });
