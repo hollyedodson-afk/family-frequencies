@@ -6,7 +6,8 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
-    "factory": "tsx src/index.ts"
+    "factory": "tsx src/index.ts",
+    "setup:whisper": "mkdir -p models && curl -L -o models/ggml-base.en.bin https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.en.bin"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.65.0",

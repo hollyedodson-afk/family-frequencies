@@ -42,3 +42,30 @@ templates/      registry.json + <key>.dc.html on-brand templates
 test/           vitest specs + fixtures
 BUGS.md         issue register (must be clear before "done")
 ```
+
+## Video pipeline setup (Plan 2)
+
+One-time, on the Mac that runs batches:
+
+    brew install whisper-cpp
+    brew install ffmpeg-full     # IMPORTANT: needs a libass-enabled ffmpeg for burned captions.
+                                 # The default `brew install ffmpeg` on some machines is built
+                                 # WITHOUT libass — the `subtitles` filter is then missing and
+                                 # clip caption burn-in fails. Verify with:
+                                 #   ffmpeg -filters | grep subtitles
+    npm run setup:whisper        # downloads ggml-base.en.bin (~142MB) into models/
+
+Fill the new `.env` keys (values live in the repo root `.env`): `CLOUDINARY_CLOUD_NAME`,
+`CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`.
+
+## Batch day
+
+    npm run factory -- --plan cycle-plan.json --footage ./footage
+
+- `source: "render"` entries → Plan 1 stills; `"clip"` → best highlight cut from the
+  biggest video in `footage/`; `"footage"` → the file named in `footage_file`, captioned whole.
+- Everything stages under `work/<run-id>/` (default run-id = today's date). A failed run
+  publishes NOTHING; fix and re-run with `--run-id <same>` — finished items are skipped.
+- On success every asset uploads to Cloudinary and lands in the scheduler queue as a
+  **draft** via the WF01 webhook — each one pings Telegram; reply APPROVE to schedule.
+- `--no-publish` stages everything but touches nothing live.
