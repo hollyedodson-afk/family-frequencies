@@ -1,0 +1,10 @@
+{
+  "systeminfo": "…",
+  "model": { "type": "base" },
+  "result": { "language": "en" },
+  "transcription": [
+    { "timestamps": { "from": "00:00:00,000", "to": "00:00:04,200" }, "offsets": { "from": 0, "to": 4200 }, "text": " Welcome to Daylight Disco everybody!" },
+    { "timestamps": { "from": "00:00:04,200", "to": "00:00:09,500" }, "offsets": { "from": 4200, "to": 9500 }, "text": " The dance floor is officially open." },
+    { "timestamps": { "from": "00:00:09,500", "to": "00:00:15,000" }, "offsets": { "from": 9500, "to": 15000 }, "text": " Look at these little movers go." }
+  ]
+}
