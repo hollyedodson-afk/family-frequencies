@@ -49,6 +49,7 @@ BUGS.md         issue register (must be clear before "done")
 One-time, on the Mac that runs batches:
 
     brew install whisper-cpp
+    brew tap homebrew-ffmpeg/ffmpeg   # ffmpeg-full lives in this tap, not homebrew-core
     brew install ffmpeg-full     # IMPORTANT: needs a libass-enabled ffmpeg for burned captions.
                                  # The default `brew install ffmpeg` on some machines is built
                                  # WITHOUT libass — the `subtitles` filter is then missing and

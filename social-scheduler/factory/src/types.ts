@@ -8,7 +8,8 @@ export const EventFactsSchema = z.object({
 });
 
 export const CyclePlanEntrySchema = z.object({
-  recipe_id: z.string(),
+  // recipe_id becomes a filename inside an ffmpeg filtergraph — keep it path/filter-safe
+  recipe_id: z.string().regex(/^[A-Za-z0-9._-]+$/, "recipe_id: letters, digits, dot, underscore, hyphen only"),
   pillar: z.string(),
   frame_or_painting: z.enum(["frame", "painting"]),
   type: z.enum(["feed", "story", "carousel", "reel"]),

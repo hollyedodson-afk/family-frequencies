@@ -129,6 +129,11 @@ async function main() {
   assertToolsAvailable(needsVideo ? ["ffmpeg", "whisper-cli"] : []);
 
   const runId = values["run-id"] ?? new Date().toISOString().slice(0, 10);
+  if (!/^[A-Za-z0-9._-]+$/.test(runId)) {
+    // runId becomes a path segment inside the ffmpeg subtitles filtergraph, where
+    // : ' , [ ] break filter parsing — restrict the charset rather than escape.
+    throw new Error(`--run-id may only contain letters, digits, dot, underscore, hyphen (got "${runId}")`);
+  }
   const staging = new Staging("work", runId);
   const caller = makeAnthropicCaller(cfg);
 

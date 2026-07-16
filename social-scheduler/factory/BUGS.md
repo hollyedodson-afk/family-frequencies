@@ -23,3 +23,19 @@ If the process is killed between a successful WF01 webhook POST and writing the
 recipe. Contained: rows land as `status=draft`, so nothing posts to an audience —
 Holly's APPROVE gate is always in the loop. Proper fix needs an idempotency key
 (recipe_id + run_id) honoured by WF01 on the scheduler side; out of scope for this branch.
+
+## Advisory findings from overnight pre-merge review (2026-07-17)
+
+Logged by the PR #2 pre-merge checker; none block correctness under documented usage.
+
+- **run report not written if publish loop throws** (`src/index.ts` publish loop):
+  webhook failure mid-loop exits before `report.json` is written. Done-markers (the
+  real resume state) are intact — informational loss only. Fix candidate: wrap the
+  publish loop so the report always writes in a `finally`.
+- **highlight window duration not schema-enforced** (`src/types.ts` HighlightWindowSchema):
+  prompt asks for 8000–30000ms windows but schema only checks end>start & end<=duration.
+  A degenerate sub-second clip would pass validation; Holly's APPROVE gate catches it.
+  Fix candidate: `.refine(w => w.end - w.start >= MIN_WINDOW_MS)` with a retry prompt.
+- **RESOLVED at merge**: ffmpeg filtergraph path interpolation — `--run-id` and
+  `recipe_id` are now validated to `[A-Za-z0-9._-]+` so the `subtitles=` filter path
+  can no longer contain filtergraph-special characters.
