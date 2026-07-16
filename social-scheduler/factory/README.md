@@ -2,8 +2,9 @@
 
 Turns a `cycle-plan.json` into on-brand, captioned assets for the FF social scheduler.
 
-- **Plan 1 (this milestone):** on-brand still renders + FF-voice captions.
-- **Plan 2 (next):** video clipping + subtitles (adopt [OpenCut AI](https://github.com/Ekaanth/OpenCut-AI), not hand-built) + Cloudinary/Sheet/Telegram publishing.
+- **Plan 1:** on-brand still renders + FF-voice captions.
+- **Plan 2 (shipped):** video clipping + burned subtitles, hand-built on whisper.cpp + ffmpeg
+  (OpenCut AI was evaluated and rejected — no headless API) + Cloudinary/Sheet/Telegram publishing.
 
 ## Setup
 ```bash

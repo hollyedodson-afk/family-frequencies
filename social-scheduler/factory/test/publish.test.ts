@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { buildQueueSubmission, publishAsset, sendTelegramSummary } from "../src/publish.ts";
+import { buildQueueSubmission, publishAsset, sendTelegramSummary, defaultPoster } from "../src/publish.ts";
 import type { CyclePlanEntry, CaptionSet } from "../src/types.ts";
 
 const entry: CyclePlanEntry = {
@@ -80,5 +80,22 @@ describe("sendTelegramSummary", () => {
     );
     expect(sent[0].url).toBe("https://api.telegram.org/botTOK/sendMessage");
     expect(sent[0].body).toEqual({ chat_id: "42", text: "Batch ready: 3 posts to approve" });
+  });
+});
+
+describe("defaultPoster secret redaction", () => {
+  it("does not include the telegram bot token in the error", async () => {
+    const orig = globalThis.fetch;
+    globalThis.fetch = (async () => ({ ok: false, status: 401, text: async () => "no" })) as unknown as typeof fetch;
+    try {
+      await expect(
+        defaultPoster("https://api.telegram.org/botSECRET123/sendMessage", { x: 1 }),
+      ).rejects.toThrow(/bot<redacted>/);
+      await expect(
+        defaultPoster("https://api.telegram.org/botSECRET123/sendMessage", { x: 1 }),
+      ).rejects.not.toThrow(/SECRET123/);
+    } finally {
+      globalThis.fetch = orig;
+    }
   });
 });

@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { readFileSync, mkdtempSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { transcribe, parseWhisperJson, type SubprocessRunner } from "../src/transcribe.ts";
+import { transcribe, parseWhisperJson, probeDurationMs, type SubprocessRunner } from "../src/transcribe.ts";
 
 const fixture = readFileSync(new URL("./fixtures/whisper-output.sample.json", import.meta.url), "utf8");
 
@@ -31,5 +31,16 @@ describe("transcribe", () => {
     expect(calls[1][0]).toBe("whisper-cli");
     expect(segs).toHaveLength(3);
     rmSync(dir, { recursive: true, force: true });
+  });
+});
+
+describe("probeDurationMs", () => {
+  it("parses ffprobe csv duration seconds into ms", () => {
+    const runner = (_bin: string, _args: string[]) => "7.916667\n";
+    expect(probeDurationMs("/x.mp4", runner)).toBe(7917);
+  });
+
+  it("throws when ffprobe returns no usable duration", () => {
+    expect(() => probeDurationMs("/x.mp4", () => "N/A\n")).toThrow(/no usable duration/);
   });
 });

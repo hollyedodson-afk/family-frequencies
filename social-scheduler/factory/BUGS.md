@@ -15,3 +15,11 @@ Every issue found during the build, with severity + resolution. Rule: nothing is
 
 ## Open items
 _None._ All found issues resolved. Toolchain state at last sweep: `npm test` 13/13 pass · `tsc --noEmit` clean · `npm audit` 0 vulnerabilities.
+
+## Accepted risk — duplicate draft row on crash during publish (2026-07-14)
+
+If the process is killed between a successful WF01 webhook POST and writing the
+`published` done-marker, a resume re-POSTs and creates a SECOND draft row for that
+recipe. Contained: rows land as `status=draft`, so nothing posts to an audience —
+Holly's APPROVE gate is always in the loop. Proper fix needs an idempotency key
+(recipe_id + run_id) honoured by WF01 on the scheduler side; out of scope for this branch.

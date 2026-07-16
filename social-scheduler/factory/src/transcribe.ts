@@ -1,4 +1,4 @@
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import type { TranscriptSegment } from "./types.ts";
 
@@ -47,4 +47,20 @@ export async function transcribe(
   await runner("ffmpeg", ["-y", "-i", videoPath, "-ar", "16000", "-ac", "1", "-c:a", "pcm_s16le", wav]);
   await runner("whisper-cli", ["-m", modelPath, "-f", wav, "-oj", "-of", outBase, "-np"]);
   return parseWhisperJson(readFileSync(`${outBase}.json`, "utf8"));
+}
+
+export type StdoutRunner = (bin: string, args: string[]) => string;
+
+export const defaultStdoutRunner: StdoutRunner = (bin, args) => {
+  const r = spawnSync(bin, args, { encoding: "utf8" });
+  if (r.status !== 0) throw new Error(`${bin} exited ${r.status}: ${(r.stderr || "").slice(-400)}`);
+  return r.stdout;
+};
+
+/** Real container duration in ms via ffprobe (not inferred from transcript). */
+export function probeDurationMs(videoPath: string, runner: StdoutRunner = defaultStdoutRunner): number {
+  const out = runner("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", videoPath]);
+  const seconds = parseFloat(out.trim());
+  if (!Number.isFinite(seconds) || seconds <= 0) throw new Error(`ffprobe returned no usable duration for ${videoPath}: "${out.trim()}"`);
+  return Math.round(seconds * 1000);
 }

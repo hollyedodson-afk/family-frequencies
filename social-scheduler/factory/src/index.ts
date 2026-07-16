@@ -9,7 +9,7 @@ import { renderStill } from "./render-stills.ts";
 import { writeCopy, makeAnthropicCaller, type CaptionCaller } from "./write-copy.ts";
 import { assertToolsAvailable } from "./tools.ts";
 import { Staging } from "./staging.ts";
-import { transcribe, parseWhisperJson } from "./transcribe.ts";
+import { transcribe, parseWhisperJson, probeDurationMs } from "./transcribe.ts";
 import { pickHighlights } from "./highlights.ts";
 import { cutClip } from "./clip.ts";
 import { makeCloudinaryUploader, publishAsset, sendTelegramSummary, defaultPoster } from "./publish.ts";
@@ -90,13 +90,15 @@ async function stageEntry(
       const out = staging.path("clips", `${entry.recipe_id}.mp4`);
       if (!staging.isDone(entry.recipe_id, "asset")) {
         const base = staging.path("transcripts", entry.recipe_id);
-        const segments = await transcribe(src, base, undefined, cfg.whisperModelPath);
-        const dur = videoDurationMs(segments);
+        const segments = existsSync(`${base}.json`)
+          ? parseWhisperJson(readFileSync(`${base}.json`, "utf8"))
+          : await transcribe(src, base, undefined, cfg.whisperModelPath);
+        const dur = probeDurationMs(src);
         await cutClip({
           inputPath: src,
           outPath: out,
           srtPath: staging.path("clips", `${entry.recipe_id}.srt`),
-          window: { start_ms: 0, end_ms: Math.max(dur, 1000), reason: "hand-picked" },
+          window: { start_ms: 0, end_ms: dur, reason: "hand-picked" },
           segments,
         });
         staging.markDone(entry.recipe_id, "asset");

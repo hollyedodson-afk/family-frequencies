@@ -25,7 +25,10 @@ export const defaultPoster: JsonPoster = async (url, body) => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
-  if (!res.ok) throw new Error(`POST ${url} failed: ${res.status} ${await res.text()}`);
+  if (!res.ok) {
+    const safeUrl = url.replace(/\/bot[^/]+\//, "/bot<redacted>/");
+    throw new Error(`POST ${safeUrl} failed: ${res.status} ${await res.text()}`);
+  }
   return res.json();
 };
 
