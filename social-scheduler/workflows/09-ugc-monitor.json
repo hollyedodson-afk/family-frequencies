@@ -1,0 +1,111 @@
+{
+  "name": "FF Social - 09 UGC Monitor",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "minutes", "minutesInterval": 30 }]
+        }
+      },
+      "id": "f9a0b1c2-0009-0009-0009-000000000001",
+      "name": "Every 30 Min",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.facebook.com/v21.0/{{ $env.IG_USER_ID }}/tags",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "fields", "value": "id,caption,media_type,media_url,permalink,timestamp,username" },
+            { "name": "access_token", "value": "={{ $env.IG_ACCESS_TOKEN }}" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f9a0b1c2-0009-0009-0009-000000000002",
+      "name": "Fetch Tagged Media",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Dedupe tagged media against previously-seen ids (persisted in workflow static data).\n// Emits a single item summarising only the NEW tagged posts.\nconst staticData = $getWorkflowStaticData('global');\nstaticData.seenUgcIds = staticData.seenUgcIds || [];\nconst seen = new Set(staticData.seenUgcIds);\n\nconst resp = $input.first().json || {};\nconst media = Array.isArray(resp.data) ? resp.data : [];\n\nconst fresh = media.filter((m) => m && m.id && !seen.has(m.id));\nfor (const m of fresh) staticData.seenUgcIds.push(m.id);\n\n// Cap memory so static data doesn't grow forever.\nif (staticData.seenUgcIds.length > 1000) {\n  staticData.seenUgcIds = staticData.seenUgcIds.slice(-1000);\n}\n\nreturn [{ json: { count: fresh.length, new_ugc: fresh } }];"
+      },
+      "id": "f9a0b1c2-0009-0009-0009-000000000003",
+      "name": "Filter New UGC",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "loose" },
+          "conditions": [
+            {
+              "id": "ug1",
+              "leftValue": "={{ $json.count }}",
+              "rightValue": "0",
+              "operator": { "type": "number", "operation": "gt" }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "f9a0b1c2-0009-0009-0009-000000000004",
+      "name": "Any New?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "chatId": "8770824903",
+        "text": "=💛 *New FF UGC — {{ $json.count }} tagged post(s)*\n\n{{ $json.new_ugc.map(u => `• @${u.username || 'someone'} tagged us${u.caption ? '\\n  “' + u.caption.substring(0, 60) + (u.caption.length > 60 ? '…' : '') + '”' : ''}\\n  ${u.permalink}`).join('\\n\\n') }}\n\nTap a link → send your Saved Reply to ask to repost, then save the media to the UGC bank for a Thursday feature.",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "f9a0b1c2-0009-0009-0009-000000000005",
+      "name": "UGC Alert",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1120, 200],
+      "credentials": {
+        "telegramApi": {
+          "id": "TELEGRAM_CREDENTIAL_ID",
+          "name": "Telegram Bot - FF Social"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Every 30 Min": {
+      "main": [[{ "node": "Fetch Tagged Media", "type": "main", "index": 0 }]]
+    },
+    "Fetch Tagged Media": {
+      "main": [[{ "node": "Filter New UGC", "type": "main", "index": 0 }]]
+    },
+    "Filter New UGC": {
+      "main": [[{ "node": "Any New?", "type": "main", "index": 0 }]]
+    },
+    "Any New?": {
+      "main": [
+        [{ "node": "UGC Alert", "type": "main", "index": 0 }],
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "instanceId": ""
+  }
+}
