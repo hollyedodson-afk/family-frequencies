@@ -3,7 +3,7 @@
   "nodes": [
     {
       "parameters": {
-        "updates": ["message"],
+        "updates": ["message", "callback_query"],
         "additionalFields": {}
       },
       "id": "wf08-node-001",
@@ -11,6 +11,118 @@
       "type": "n8n-nodes-base.telegramTrigger",
       "typeVersion": 1.1,
       "position": [240, 300],
+      "credentials": {
+        "telegramApi": { "id": "84902e45-0f92-484d-adf6-7c46787f4f51", "name": "Telegram Bot - FF Social" }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "loose" },
+          "conditions": [
+            {
+              "id": "cb1",
+              "leftValue": "={{ $json.callback_query ? 'yes' : 'no' }}",
+              "rightValue": "yes",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "wf08-node-012",
+      "name": "Is Callback?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            { "id": "cb2", "name": "callback_data", "value": "={{ $json.callback_query.data }}", "type": "string" },
+            { "id": "cb3", "name": "row_id", "value": "={{ $json.callback_query.data.split(':')[1] }}", "type": "string" },
+            { "id": "cb4", "name": "chat_id", "value": "={{ $json.callback_query.message.chat.id.toString() }}", "type": "string" },
+            { "id": "cb5", "name": "message_id", "value": "={{ $json.callback_query.message.message_id.toString() }}", "type": "string" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "wf08-node-013",
+      "name": "Extract Callback",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [680, 60]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "loose" },
+          "conditions": [
+            {
+              "id": "cb6",
+              "leftValue": "={{ $json.callback_data.startsWith('manual_posted:') }}",
+              "rightValue": true,
+              "operator": { "type": "boolean", "operation": "true" }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "wf08-node-014",
+      "name": "Is Manual Posted?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [900, 60]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1FIrB4lsDqJuGvoOpNTfNhM64xfkg6TkUVNTPhGWvR1g",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Sheet1",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.row_id }}",
+            "status": "posted",
+            "posted_at": "={{ $now.toISO() }}"
+          },
+          "matchingColumns": ["id"],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "wf08-node-015",
+      "name": "Mark Manual Posted",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [1120, 60],
+      "credentials": {
+        "googleSheetsOAuth2Api": { "id": "mqPbkP7EiSN6v7BF", "name": "Google Sheets account" }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Extract Callback').item.json.chat_id }}",
+        "text": "=✅ Manual post marked posted. Row `{{ $('Extract Callback').item.json.row_id }}` is done.",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "wf08-node-016",
+      "name": "Confirm Manual Posted",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1340, 60],
       "credentials": {
         "telegramApi": { "id": "84902e45-0f92-484d-adf6-7c46787f4f51", "name": "Telegram Bot - FF Social" }
       }
@@ -240,7 +352,21 @@
     }
   ],
   "connections": {
-    "Telegram Trigger": { "main": [[{ "node": "Is Reply?", "type": "main", "index": 0 }]] },
+    "Telegram Trigger": { "main": [[{ "node": "Is Callback?", "type": "main", "index": 0 }]] },
+    "Is Callback?": {
+      "main": [
+        [{ "node": "Extract Callback", "type": "main", "index": 0 }],
+        [{ "node": "Is Reply?", "type": "main", "index": 0 }]
+      ]
+    },
+    "Extract Callback": { "main": [[{ "node": "Is Manual Posted?", "type": "main", "index": 0 }]] },
+    "Is Manual Posted?": {
+      "main": [
+        [{ "node": "Mark Manual Posted", "type": "main", "index": 0 }],
+        []
+      ]
+    },
+    "Mark Manual Posted": { "main": [[{ "node": "Confirm Manual Posted", "type": "main", "index": 0 }]] },
     "Is Reply?": {
       "main": [
         [{ "node": "Extract Reply", "type": "main", "index": 0 }],

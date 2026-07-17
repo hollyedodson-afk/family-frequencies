@@ -37,6 +37,7 @@
             "caption":      "={{ $('Webhook').item.json.body.caption }}",
             "scheduled_at": "={{ $('Webhook').item.json.body.scheduled_at }}",
             "needs_music":  "={{ $('Webhook').item.json.body.needs_music }}",
+            "manual_post":  "={{ $('Webhook').item.json.body.manual_post }}",
             "status":       "={{ $('Webhook').item.json.body.status }}",
             "notes":        "={{ $('Webhook').item.json.body.notes }}",
             "media_url":    "={{ $('Webhook').item.json.body.media_url }}"

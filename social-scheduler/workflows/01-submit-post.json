@@ -30,7 +30,8 @@
             { "id": "f8",  "name": "container_id",  "value": "",                                  "type": "string" },
             { "id": "f9",  "name": "posted_at",     "value": "",                                  "type": "string" },
             { "id": "f10", "name": "notes",         "value": "={{ $json.body.notes || '' }}",     "type": "string" },
-            { "id": "f11", "name": "telegram_msg_id", "value": "",                               "type": "string" }
+            { "id": "f11", "name": "telegram_msg_id", "value": "",                               "type": "string" },
+            { "id": "f12", "name": "manual_post",  "value": "={{ $json.body.manual_post ? 'true' : 'false' }}", "type": "string" }
           ]
         },
         "options": {}

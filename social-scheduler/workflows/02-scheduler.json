@@ -4,14 +4,22 @@
     {
       "parameters": {
         "rule": {
-          "interval": [{ "field": "minutes", "minutesInterval": 15 }]
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 15
+            }
+          ]
         }
       },
       "id": "b2c3d4e5-0002-0002-0002-000000000001",
       "name": "Every 15 Min",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
-      "position": [240, 300]
+      "position": [
+        240,
+        300
+      ]
     },
     {
       "parameters": {
@@ -32,7 +40,10 @@
       "name": "Read Queue",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
-      "position": [460, 300],
+      "position": [
+        460,
+        300
+      ],
       "credentials": {
         "googleSheetsOAuth2Api": {
           "id": "mqPbkP7EiSN6v7BF",
@@ -43,19 +54,29 @@
     {
       "parameters": {
         "conditions": {
-          "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "loose" },
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
           "conditions": [
             {
               "id": "c1",
               "leftValue": "={{ $json.status }}",
               "rightValue": "scheduled",
-              "operator": { "type": "string", "operation": "equals" }
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
             },
             {
               "id": "c2",
               "leftValue": "={{ DateTime.fromISO($json.scheduled_at.replace(' ', 'T'), {zone: 'Pacific/Auckland'}).toISO() }}",
               "rightValue": "={{ $now.toISO() }}",
-              "operator": { "type": "dateTime", "operation": "before" }
+              "operator": {
+                "type": "dateTime",
+                "operation": "before"
+              }
             }
           ],
           "combinator": "and"
@@ -66,21 +87,40 @@
       "name": "Filter Due Posts",
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
-      "position": [680, 300]
+      "position": [
+        680,
+        300
+      ]
     },
     {
       "parameters": {
         "conditions": {
-          "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "loose" },
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
           "conditions": [
             {
               "id": "cap1",
               "leftValue": "={{ $json.caption }}",
               "rightValue": "",
-              "operator": { "type": "string", "operation": "notEquals" }
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "cap2",
+              "leftValue": "={{ $json.type }}",
+              "rightValue": "story",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
             }
           ],
-          "combinator": "and"
+          "combinator": "or"
         },
         "options": {}
       },
@@ -88,12 +128,112 @@
       "name": "Has Caption?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
-      "position": [860, 300]
+      "position": [
+        860,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "mp1",
+              "leftValue": "={{ String($json.manual_post).toLowerCase() }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b2c3d4e5-0002-0002-0002-000000000018",
+      "name": "Is Manual Post?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1060,
+        300
+      ]
     },
     {
       "parameters": {
         "chatId": "8770824903",
-        "text": "=⚠️ *FF Social - Post skipped, no caption*\n\nRow `{{ $json.id }}` was due but has an empty caption so it wasn't posted.\n\n*Media:* {{ $json.media_url }}\n*Scheduled:* {{ $json.scheduled_at }}\n*Type:* {{ $json.type }}\n\nFix the caption in the sheet and set status back to `scheduled`.",
+        "text": "=Manual post due: Family Frequencies\n\nType: {{ $json.type }}\nScheduled: {{ $json.scheduled_at }}\nPost ID: {{ $json.id }}\n\nMedia:\n{{ $json.media_url }}\n\nCaption:\n{{ $json.caption || '(no caption)' }}\n\nNotes:\n{{ $json.notes || 'None' }}\n\nTap Posted after you publish it manually.",
+        "additionalFields": {
+          "reply_markup": "={{ JSON.stringify({ inline_keyboard: [[{ text: 'Posted', callback_data: 'manual_posted:' + $json.id }]] }) }}"
+        }
+      },
+      "id": "b2c3d4e5-0002-0002-0002-000000000019",
+      "name": "Telegram - Manual Post",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1280,
+        260
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "84902e45-0f92-484d-adf6-7c46787f4f51",
+          "name": "Telegram Bot - FF Social"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1FIrB4lsDqJuGvoOpNTfNhM64xfkg6TkUVNTPhGWvR1g",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Sheet1",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Is Manual Post?').item.json.id }}",
+            "status": "manual_sent",
+            "telegram_msg_id": "={{ $json.message_id.toString() }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "b2c3d4e5-0002-0002-0002-000000000020",
+      "name": "Mark manual_sent",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1500,
+        260
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "mqPbkP7EiSN6v7BF",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "8770824903",
+        "text": "=\u26a0\ufe0f *FF Social - Post skipped, no caption*\n\nRow `{{ $json.id }}` was due but has an empty caption so it wasn't posted.\n\n*Media:* {{ $json.media_url }}\n*Scheduled:* {{ $json.scheduled_at }}\n*Type:* {{ $json.type }}\n\nFix the caption in the sheet and set status back to `scheduled`.",
         "additionalFields": {
           "parse_mode": "Markdown"
         }
@@ -102,7 +242,10 @@
       "name": "Telegram - No Caption",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [1060, 520],
+      "position": [
+        1060,
+        520
+      ],
       "credentials": {
         "telegramApi": {
           "id": "84902e45-0f92-484d-adf6-7c46787f4f51",
@@ -113,13 +256,20 @@
     {
       "parameters": {
         "conditions": {
-          "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "loose" },
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
           "conditions": [
             {
               "id": "nc1",
-              "leftValue": "={{ $json.needs_music }}",
-              "rightValue": "TRUE",
-              "operator": { "type": "string", "operation": "equals" }
+              "leftValue": "={{ String($json.needs_music).toLowerCase() }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
             }
           ],
           "combinator": "and"
@@ -130,12 +280,15 @@
       "name": "Needs Music?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
-      "position": [900, 300]
+      "position": [
+        900,
+        300
+      ]
     },
     {
       "parameters": {
         "chatId": "8770824903",
-        "text": "=🎵 *FF Social - Music needed!*\n\nA post is ready but needs music added before it goes live.\n\n*Caption:* {{ $json.caption }}\n*Scheduled:* {{ $json.scheduled_at }}\n*Post ID:* `{{ $json.id }}`\n\n1. Open Instagram\n2. Post it with music added\n3. Update status to `posted` in the sheet",
+        "text": "=\ud83c\udfb5 *FF Social - Music needed!*\n\nA post is ready but needs music added before it goes live.\n\n*Caption:* {{ $json.caption }}\n*Scheduled:* {{ $json.scheduled_at }}\n*Post ID:* `{{ $json.id }}`\n\n1. Open Instagram\n2. Post it with music added\n3. Update status to `posted` in the sheet",
         "additionalFields": {
           "parse_mode": "Markdown"
         }
@@ -144,7 +297,10 @@
       "name": "Telegram - Needs Music",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [1120, 120],
+      "position": [
+        1120,
+        120
+      ],
       "credentials": {
         "telegramApi": {
           "id": "84902e45-0f92-484d-adf6-7c46787f4f51",
@@ -171,7 +327,9 @@
             "id": "={{ $('Filter Due Posts').item.json.id }}",
             "status": "needs_music"
           },
-          "matchingColumns": ["id"],
+          "matchingColumns": [
+            "id"
+          ],
           "schema": []
         },
         "options": {}
@@ -180,7 +338,10 @@
       "name": "Mark needs_music",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
-      "position": [1340, 120],
+      "position": [
+        1340,
+        120
+      ],
       "credentials": {
         "googleSheetsOAuth2Api": {
           "id": "mqPbkP7EiSN6v7BF",
@@ -191,13 +352,20 @@
     {
       "parameters": {
         "conditions": {
-          "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "loose" },
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
           "conditions": [
             {
               "id": "tc1",
               "leftValue": "={{ $json.type }}",
               "rightValue": "story",
-              "operator": { "type": "string", "operation": "equals" }
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
             }
           ],
           "combinator": "and"
@@ -208,7 +376,104 @@
       "name": "Is Story?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
-      "position": [1120, 420]
+      "position": [
+        1120,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "si1",
+              "leftValue": "={{ /\\/image\\/upload\\/|\\.(png|jpe?g|webp)(\\?|$)/i.test($json.media_url || '') ? 'image' : 'video' }}",
+              "rightValue": "image",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b2c3d4e5-0002-0002-0002-000000000015",
+      "name": "Is Story Image?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1340,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ `https://graph.facebook.com/v21.0/${$env.FF_INSTAGRAM_ACCOUNT_ID}/media` }}",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "image_url",
+              "value": "={{ $json.media_url }}"
+            },
+            {
+              "name": "media_type",
+              "value": "STORIES"
+            },
+            {
+              "name": "access_token",
+              "value": "={{ $env.FF_INSTAGRAM_APP_TOKEN }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b2c3d4e5-0002-0002-0002-000000000016",
+      "name": "Create Story Image Container",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1560,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ `https://graph.facebook.com/v21.0/${$env.FF_INSTAGRAM_ACCOUNT_ID}/media_publish` }}",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "creation_id",
+              "value": "={{ $json.id }}"
+            },
+            {
+              "name": "access_token",
+              "value": "={{ $env.FF_INSTAGRAM_APP_TOKEN }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b2c3d4e5-0002-0002-0002-000000000017",
+      "name": "Publish Story Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1780,
+        220
+      ]
     },
     {
       "parameters": {
@@ -223,7 +488,10 @@
       "name": "Post Story",
       "type": "@mookielianhd/n8n-nodes-instagram.instagram",
       "typeVersion": 1,
-      "position": [1340, 320],
+      "position": [
+        1560,
+        420
+      ],
       "credentials": {
         "instagramApi": {
           "id": "qHcYkzUPFlme1kj9",
@@ -251,7 +519,9 @@
             "status": "posted",
             "posted_at": "={{ $now.toISO() }}"
           },
-          "matchingColumns": ["id"],
+          "matchingColumns": [
+            "id"
+          ],
           "schema": []
         },
         "options": {}
@@ -260,7 +530,10 @@
       "name": "Mark Story Posted",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
-      "position": [1560, 320],
+      "position": [
+        2000,
+        320
+      ],
       "credentials": {
         "googleSheetsOAuth2Api": {
           "id": "mqPbkP7EiSN6v7BF",
@@ -271,13 +544,20 @@
     {
       "parameters": {
         "conditions": {
-          "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "loose" },
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
           "conditions": [
             {
               "id": "rc1",
               "leftValue": "={{ $json.type }}",
               "rightValue": "reel",
-              "operator": { "type": "string", "operation": "equals" }
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
             }
           ],
           "combinator": "and"
@@ -288,7 +568,10 @@
       "name": "Is Reel?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
-      "position": [1340, 520]
+      "position": [
+        1340,
+        520
+      ]
     },
     {
       "parameters": {
@@ -303,7 +586,10 @@
       "name": "Post Reel",
       "type": "@mookielianhd/n8n-nodes-instagram.instagram",
       "typeVersion": 1,
-      "position": [1560, 440],
+      "position": [
+        1560,
+        440
+      ],
       "credentials": {
         "instagramApi": {
           "id": "qHcYkzUPFlme1kj9",
@@ -331,7 +617,9 @@
             "status": "posted",
             "posted_at": "={{ $now.toISO() }}"
           },
-          "matchingColumns": ["id"],
+          "matchingColumns": [
+            "id"
+          ],
           "schema": []
         },
         "options": {}
@@ -340,7 +628,10 @@
       "name": "Mark Reel Posted",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
-      "position": [1780, 440],
+      "position": [
+        1780,
+        440
+      ],
       "credentials": {
         "googleSheetsOAuth2Api": {
           "id": "mqPbkP7EiSN6v7BF",
@@ -361,7 +652,10 @@
       "name": "Post Image",
       "type": "@mookielianhd/n8n-nodes-instagram.instagram",
       "typeVersion": 1,
-      "position": [1560, 620],
+      "position": [
+        1560,
+        620
+      ],
       "credentials": {
         "instagramApi": {
           "id": "qHcYkzUPFlme1kj9",
@@ -389,7 +683,9 @@
             "status": "posted",
             "posted_at": "={{ $now.toISO() }}"
           },
-          "matchingColumns": ["id"],
+          "matchingColumns": [
+            "id"
+          ],
           "schema": []
         },
         "options": {}
@@ -398,7 +694,10 @@
       "name": "Mark Image Posted",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
-      "position": [1780, 620],
+      "position": [
+        1780,
+        620
+      ],
       "credentials": {
         "googleSheetsOAuth2Api": {
           "id": "mqPbkP7EiSN6v7BF",
@@ -409,49 +708,222 @@
   ],
   "connections": {
     "Every 15 Min": {
-      "main": [[{ "node": "Read Queue", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Read Queue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Read Queue": {
-      "main": [[{ "node": "Filter Due Posts", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Filter Due Posts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Filter Due Posts": {
-      "main": [[{ "node": "Has Caption?", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Has Caption?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Has Caption?": {
       "main": [
-        [{ "node": "Needs Music?", "type": "main", "index": 0 }],
-        [{ "node": "Telegram - No Caption", "type": "main", "index": 0 }]
+        [
+          {
+            "node": "Is Manual Post?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram - No Caption",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Manual Post?": {
+      "main": [
+        [
+          {
+            "node": "Telegram - Manual Post",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Needs Music?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram - Manual Post": {
+      "main": [
+        [
+          {
+            "node": "Mark manual_sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Needs Music?": {
       "main": [
-        [{ "node": "Telegram - Needs Music", "type": "main", "index": 0 }],
-        [{ "node": "Is Story?", "type": "main", "index": 0 }]
+        [
+          {
+            "node": "Telegram - Needs Music",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Is Story?",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Telegram - Needs Music": {
-      "main": [[{ "node": "Mark needs_music", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Mark needs_music",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Is Story?": {
       "main": [
-        [{ "node": "Post Story", "type": "main", "index": 0 }],
-        [{ "node": "Is Reel?", "type": "main", "index": 0 }]
+        [
+          {
+            "node": "Is Story Image?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Is Reel?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Story Image?": {
+      "main": [
+        [
+          {
+            "node": "Create Story Image Container",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Post Story",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Story Image Container": {
+      "main": [
+        [
+          {
+            "node": "Publish Story Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publish Story Image": {
+      "main": [
+        [
+          {
+            "node": "Mark Story Posted",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Post Story": {
-      "main": [[{ "node": "Mark Story Posted", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Mark Story Posted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Is Reel?": {
       "main": [
-        [{ "node": "Post Reel", "type": "main", "index": 0 }],
-        [{ "node": "Post Image", "type": "main", "index": 0 }]
+        [
+          {
+            "node": "Post Reel",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Post Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Post Reel": {
-      "main": [[{ "node": "Mark Reel Posted", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Mark Reel Posted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Post Image": {
-      "main": [[{ "node": "Mark Image Posted", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Mark Image Posted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,

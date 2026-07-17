@@ -630,6 +630,7 @@
             <option value="draft">Draft</option>
             <option value="needs_music">Needs music</option>
             <option value="scheduled">Scheduled</option>
+            <option value="manual_sent">Manual sent</option>
             <option value="posted">Posted</option>
             <option value="rejected">Rejected</option>
           </select>
@@ -637,6 +638,10 @@
         <label class="check-row">
           <input id="i-music" type="checkbox" />
           Needs music before posting
+        </label>
+        <label class="check-row">
+          <input id="i-manual" type="checkbox" />
+          Manual post reminder
         </label>
         <label class="field">Notes
           <textarea id="i-notes"></textarea>
@@ -674,6 +679,7 @@
         </select>
       </label>
       <label class="check-row"><input type="checkbox" id="new-music" /> Needs music before posting</label>
+      <label class="check-row"><input type="checkbox" id="new-manual" /> Manual post reminder</label>
       <label class="field">Notes <textarea id="new-notes"></textarea></label>
       <button class="button button--primary" type="button" data-action="submit-new" id="submit-new">Add to queue</button>
     </div>
@@ -697,6 +703,7 @@
     scheduled:   '#2980b9',
     posted:      '#27ae60',
     needs_music: '#8e44ad',
+    manual_sent: '#c0392b',
     failed:      '#e74c3c',
     rejected:    '#95a5a6',
     processing:  '#16a085',
@@ -735,6 +742,7 @@
       caption: raw.caption || '',
       scheduled_at: raw.scheduled_at || '',
       needs_music: raw.needs_music === true || raw.needs_music === 'TRUE' || status === 'needs_music',
+      manual_post: raw.manual_post === true || String(raw.manual_post).toLowerCase() === 'true',
       notes: raw.notes || '',
       status,
       media_url: raw.media_url || '',
@@ -959,7 +967,7 @@
         <img class="queue-thumb" src="${esc(mediaPreview(post))}" alt="">
         <div>
           <div class="queue-title">${esc(post.type)} · ${esc(post.status)}</div>
-          <div class="queue-copy">${esc((post.caption || post.notes || 'No caption yet').slice(0, 130))}</div>
+          <div class="queue-copy">${post.manual_post ? 'Manual reminder · ' : ''}${esc((post.caption || post.notes || 'No caption yet').slice(0, 130))}</div>
         </div>
         <time>${esc(formatDateTime(post.scheduled_at))}</time>
       </article>
@@ -1043,6 +1051,7 @@
     document.getElementById('i-type').value = post.type;
     document.getElementById('i-status').value = post.status;
     document.getElementById('i-music').checked = post.needs_music;
+    document.getElementById('i-manual').checked = post.manual_post;
     document.getElementById('i-notes').value = post.notes;
   }
 
@@ -1180,6 +1189,7 @@
       type: getEl('i-type').value,
       status: getEl('i-status').value,
       needs_music: getEl('i-music').checked ? 'TRUE' : 'FALSE',
+      manual_post: getEl('i-manual').checked ? 'TRUE' : 'FALSE',
       notes: getEl('i-notes').value,
     };
     try {
@@ -1242,6 +1252,7 @@
     document.getElementById('new-scheduled').value = '';
     document.getElementById('new-type').value = 'feed';
     document.getElementById('new-music').checked = false;
+    document.getElementById('new-manual').checked = false;
     document.getElementById('new-notes').value = '';
     setSubmitBusy(false);
     setDrawerStatus('Ready to build a post.');
@@ -1421,6 +1432,7 @@
       media_url: appState.uploadedUrl,
       scheduled_at: scheduled ? scheduled + ':00' : '',
       needs_music: document.getElementById('new-music').checked,
+      manual_post: document.getElementById('new-manual').checked,
       notes: document.getElementById('new-notes').value,
       status: 'draft',
     };
