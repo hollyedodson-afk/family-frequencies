@@ -78,6 +78,8 @@
 
 Voice split per the strategy doc: **IG = warm + CTA · TikTok = plain-English search keywords · FB = community tone + event link.**
 
+**Hashtags (append 3–5 per IG/TikTok post; FB needs none):** `#StrollerStrut #FamilyFrequencies #MountMaunganui` + rotate two of `#ThingsToDoTauranga #BayOfPlentyKids #FamilyDayOutNZ`. Do NOT reuse the `#DaylightDisco`/`#FreeKidsEvent` tag set on Stroller Strut posts — this event is ticketed.
+
 ### 3.1 Announcement
 
 **IG:**
@@ -113,7 +115,7 @@ Voice split per the strategy doc: **IG = warm + CTA · TikTok = plain-English se
 > **CTA:** Tag someone who needs to see this.
 
 **TikTok:**
-> POV: the DJ arrives on a BIKE and the whole street becomes a walking disco 🚲🔊 Free kids event energy, Tauranga style — Stroller Strut, Sat 1 Aug 2026. This is not a drill.
+> POV: the DJ arrives on a BIKE and the whole street becomes a walking disco 🚲🔊 New family event Tauranga — Stroller Strut, Sat 1 Aug 2026, free coffee + bowl included with your ticket at the finish line. This is not a drill.
 
 **FB:**
 > We're not exaggerating — our DJ will be riding a bike down the route, music blasting, while families strut, dance and stroll along behind with their prams. It's called the Stroller Strut and it's happening Saturday 1 August 2026. Tickets at familyfrequencies.com — details dropping soon.
@@ -127,7 +129,7 @@ Voice split per the strategy doc: **IG = warm + CTA · TikTok = plain-English se
 > **CTA:** Tag your coffee-after-a-walk person.
 
 **TikTok:**
-> The Stroller Strut finishes at Soul Bowl and your ticket literally includes a coffee + bowl 🥣☕ Free breakfast energy, family day out Mount Maunganui style. Sat 1 Aug 2026 — worth it for the finish line alone.
+> The Stroller Strut finishes at Soul Bowl and your ticket literally includes a free coffee + bowl 🥣☕ Easily the best finish line of any family day out Mount Maunganui. Sat 1 Aug 2026 — worth it for the finish line alone.
 
 **FB:**
 > Here's a nice touch: the Stroller Strut finishes at Soul Bowl, and every ticket includes a coffee + toast or açaí bowl once you get there. Music on the way, breakfast at the end. Saturday 1 August 2026. Tickets at familyfrequencies.com — details dropping soon.
@@ -158,7 +160,7 @@ Voice split per the strategy doc: **IG = warm + CTA · TikTok = plain-English se
 > Tomorrow: Stroller Strut 🚲🎶 New family day out Mount Maunganui, first one ever. Weather permitting — check our Stories in the morning. And there's more coming soon… Sat 1 Aug 2026.
 
 **FB:**
-> It's on for tomorrow — Stroller Strut, Saturday 1 August 2026! Weather dependent, so we'll confirm first thing via Stories and this event page. Bring the pram, bring the crew. And keep watching this space, because it's not the only thing we've got coming… Tickets at familyfrequencies.com.
+> It's on for tomorrow — Stroller Strut, Saturday 1 August 2026! Weather dependent, so we'll confirm first thing via Stories and this event page. [HOLLY: confirm a Facebook Event exists for Stroller Strut before this line goes out — cut "and this event page" if not] Bring the pram, bring the crew. And keep watching this space, because it's not the only thing we've got coming… Tickets at familyfrequencies.com.
 
 ---
 
@@ -233,7 +235,7 @@ Voice split per the strategy doc: **IG = warm + CTA · TikTok = plain-English se
 
 **Until artwork lands:** use Pacific Dusk placeholder cards only — navy/cream/gold/rose, the flat framed-poster treatment (3px navy border, hard 8px 8px gold offset shadow, no blur), Barlow Condensed type. No Daylight Disco linework, halftone dots, or yellow/blue accents on any Stroller Strut placeholder.
 
-**Suggested deadline: Friday 24 July 2026** (one week ahead of the event, enough runway to reshoot the announcement reel end-card and countdown assets with real artwork instead of placeholders).
+**Suggested deadline: Friday 24 July 2026 [HOLLY: confirm/adjust]** (one week ahead of the event, enough runway to reshoot the announcement reel end-card and countdown assets with real artwork instead of placeholders).
 
 ---
 
