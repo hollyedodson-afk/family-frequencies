@@ -1,10 +1,13 @@
 // FF Scheduler watchdog — checks that n8n can actually reach its database
-// (the /api/v1 endpoint requires a live DB, unlike /healthz) and alerts
-// Holly's Telegram when it goes down or recovers.
+// (the /api/v1 endpoint requires a live DB, unlike /healthz) AND that the
+// WF02 scheduler's latest execution succeeded (a dead Google credential
+// leaves the API healthy while every run errors — 9 days silent, 2026-07-18).
+// Alerts Holly's Telegram when either goes down or recovers.
 const N8N_URL = process.env.N8N_URL;
 const N8N_API_KEY = process.env.N8N_API_KEY;
 const BOT = process.env.TELEGRAM_BOT_TOKEN;
 const CHAT = process.env.TELEGRAM_CHAT_ID;
+const WF02_ID = process.env.WF02_ID || "kvzflHAPKj6y9EJo";
 const CHECK_MS = 60_000;
 const FAILS_BEFORE_ALERT = 3;
 const REALERT_MS = 30 * 60_000;
@@ -39,6 +42,27 @@ async function check() {
     ok = res.status === 200;
   } catch (e) {
     detail = e.name === "AbortError" ? "timeout after 20s" : e.message;
+  }
+
+  // API is up — but is the scheduler actually succeeding? Best-effort check:
+  // never turns a healthy API into a failure on its own errors.
+  if (ok) {
+    try {
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 20_000);
+      const res = await fetch(
+        `${N8N_URL}/api/v1/executions?workflowId=${WF02_ID}&limit=1`,
+        { headers: { "X-N8N-API-KEY": N8N_API_KEY }, signal: ctrl.signal }
+      );
+      clearTimeout(t);
+      if (res.status === 200) {
+        const latest = (await res.json())?.data?.[0];
+        if (latest?.status === "error") {
+          ok = false;
+          detail = `WF02 latest execution ERRORED (${latest.startedAt}) — n8n is up but posts are failing; likely a credential (open n8n → Credentials → reconnect Google)`;
+        }
+      }
+    } catch {}
   }
 
   if (ok) {
