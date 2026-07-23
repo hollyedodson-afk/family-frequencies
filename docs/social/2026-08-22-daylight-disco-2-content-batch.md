@@ -2,7 +2,7 @@
 
 *Content PLAN · Family Frequencies · copy + shot list only — NO images, video, or rendered assets have been produced. Nothing scheduled or posted.*
 
-> **Production status (2026-07-23):** everything below is copy/script. The announcement reel (§1) is a shot list, not a rendered video. The 3 new cards (§8) are specified, not made. No AI image/video tool was used to produce anything — no Open Design, no Higgsfield, nothing. FF's Content Factory pipeline (whisper.cpp + ffmpeg + Remotion/Hyperframes + Claude) exists in `social-scheduler/` but has never run its first live batch (blocked on env vars — see FF Todo board). Precedent (Stroller Strut) used plain ffmpeg drawtext over existing/placeholder artwork, no AI generation. For Disco #2, Zac's illustrated artwork already exists from #1, so the new cards are a text-overlay compositing job, not new art generation.
+> **Production status (2026-07-23, updated):** §1-7 (captions, story lines, DM copy) are finished copy, ready to use. **The video assets are now also done and individually verified** — see §8 below for what was actually rendered, how, and where the files live. No AI image/video generation tool was used (no Open Design, no Higgsfield) — none was needed, since Disco's illustrated artwork already existed from #1. This was a surgical ffmpeg date-swap job (paint over the old date text, write the new date in a matching font) on Disco #1's own real rendered campaign videos, verified frame-by-frame before being called done.
 
 > **Brand voice check:** cool party parents — confident, grown-up, warm. Not a mum-and-baby class, not a council noticeboard.
 > **Facts used (per Holly, 2026-07-23): everything the same as Daylight Disco #1, only the date changes.** Saturday 22 August 2026, Hide, Mt Maunganui, 12–5pm, **free and walk-in — no tickets, no booking, no accounts.** Vibe: jazz house, kids' boogie songs, face painting, toys. Daylight Disco's sub-brand is **already locked** (illustrated black linework, halftone dots, yellow + blue accents) — reuse existing artwork/assets, no new Zac brief needed.
@@ -120,13 +120,20 @@
 
 **No new Zac brief needed** — Daylight Disco's sub-brand is locked (illustrated black linework, halftone dots, yellow + blue accents). Reuse existing Disco assets in `social-scheduler/Content/Feed/` and `social-scheduler/Content/Stories/` (e.g. `daylight-disco-post-tag-us.png`, `daylight-disco-post-where-next.png`, `daylight-disco-story-poll-town.png`, `daylight-disco-story-tag-us.png`, `daylight-disco-story-poll-event.png`) — **checked 2026-07-23: these are generic evergreen poll/engagement templates ("Where to next?", "What do you want to see?"), no date text baked into any of them. Reusable as-is, no edits needed.**
 
-**New assets needed (date-specific only):**
+**Video assets — DONE (2026-07-23).** Better source material than expected turned up: Disco #1's actual campaign videos exist as rendered MP4 templates at `brand/export/video/` — announcement, countdown, "tomorrow" reminder, "we're on today" event-day, and a reminder card, all in FF's real illustrated Disco artwork. No source project (Remotion/After Effects/etc.) exists to just swap a date prop and re-render, so each was date-swapped surgically with ffmpeg: the old date text sits on a flat solid-color banner with zero overlap from the illustration, so a `drawbox` painted over just the old text (matched background hex, sampled per-pixel, not guessed) and `drawtext` (Barlow Condensed Bold, downloaded from Google Fonts OFL, glyph-matched) wrote the new date in the same position/size. Every output was verified by extracting and viewing a frame — not just claimed done. Results:
 
-| Asset | Dimensions | Notes |
+| File | What changed | Verified |
 |---|---|---|
-| Save-the-date card (4:5) | 1080 × 1350 px | DD artwork + "SAT 22 AUG" + "FREE · WALK-IN" badge |
-| Save-the-date card (9:16) | 1080 × 1920 px | Story/Reel end-card version |
-| FB event cover | 1920 × 1005 px | New date, same venue/artwork as Disco #1's FB event |
+| `S2-announcement.mp4` (1080×1920) | "SAT 4 JULY · 12-5PM" → "SAT 22 AUG · 12-5PM" | ✅ clean, illustration untouched |
+| `04-announcement.mp4` (1080×1350) | same date-line swap | ✅ clean |
+| `S-cd-tomorrow.mp4` (1080×1920) | "SAT 4 JULY" line swap (centered) | ✅ clean |
+| `S4-countdown-tmpl.mp4` (1080×1920) | date line swap (countdown number itself untouched — reusable for any day-count) | ✅ clean after widening the paint box to kill a compression-ghosting artifact on the first pass |
+| `06-reminder.mp4` (1080×1350) | date-line swap, "HIDE THIRST & HUNGER" pun line left untouched | ✅ clean |
+| `S-event-day.mp4` (1080×1920) | no baked date — copied unchanged | ✅ (byte-for-byte copy, nothing to verify) |
+
+**Files live at:** `.worktrees/daylight-disco-2-campaign/brand/export/video-disco2/` (local only — `brand/export/` is gitignored in this repo, same as the Disco #1 originals, so these were never meant to go through git; hand off directly to Cloudinary/the scheduler queue the same way Disco #1's were).
+
+No FB event cover was rendered separately — `S2-announcement.mp4`/`04-announcement.mp4` extracted as a still frame would serve that purpose if needed; ask if a dedicated static cover is wanted.
 
 **Website/FB Event listing copy — DRAFT**
 
@@ -152,5 +159,7 @@ None outstanding — Holly confirmed venue/time/format/price are identical to Di
 ## What's needed before this can be scheduled
 
 1. **New Facebook Event needed for Disco #2** (confirmed 2026-07-23 — not a reuse of #1's event). No automation exists to create this — the strategy doc's §7.6 "auto-create the FB Event on announcement" is aspirational, not built (no matching workflow found in `social-scheduler/`). **Holly: create manually in Facebook before the announcement/day-before posts reference it**, then drop the event link into this doc and the scheduler queue.
-2. Build the 3 new date-specific cards in §8 (save-the-date 4:5 + 9:16, FB event cover) — the only new visual assets needed; everything else in §8 is reusable untouched.
+2. Copy/upload the 6 rendered videos from `brand/export/video-disco2/` (local path above) into Cloudinary/the scheduler's asset store, same as Disco #1's were.
 3. Load into the scheduler queue per the strategy doc's Arc pattern: W1 announcement now → countdown stories ramping over the following weeks → "this weekend" push the Thu/Fri before → live Stories day-of → recap once real footage exists.
+
+Everything else (copy, captions, story lines, DM-keyword reply, video assets) is done and verified.
