@@ -1,6 +1,8 @@
 # Daylight Disco #2 — Content Batch (Sat 22 Aug 2026)
 
-*Content build · Family Frequencies · drafts only, nothing scheduled or posted*
+*Content PLAN · Family Frequencies · copy + shot list only — NO images, video, or rendered assets have been produced. Nothing scheduled or posted.*
+
+> **Production status (2026-07-23):** everything below is copy/script. The announcement reel (§1) is a shot list, not a rendered video. The 3 new cards (§8) are specified, not made. No AI image/video tool was used to produce anything — no Open Design, no Higgsfield, nothing. FF's Content Factory pipeline (whisper.cpp + ffmpeg + Remotion/Hyperframes + Claude) exists in `social-scheduler/` but has never run its first live batch (blocked on env vars — see FF Todo board). Precedent (Stroller Strut) used plain ffmpeg drawtext over existing/placeholder artwork, no AI generation. For Disco #2, Zac's illustrated artwork already exists from #1, so the new cards are a text-overlay compositing job, not new art generation.
 
 > **Brand voice check:** cool party parents — confident, grown-up, warm. Not a mum-and-baby class, not a council noticeboard.
 > **Facts used (per Holly, 2026-07-23): everything the same as Daylight Disco #1, only the date changes.** Saturday 22 August 2026, Hide, Mt Maunganui, 12–5pm, **free and walk-in — no tickets, no booking, no accounts.** Vibe: jazz house, kids' boogie songs, face painting, toys. Daylight Disco's sub-brand is **already locked** (illustrated black linework, halftone dots, yellow + blue accents) — reuse existing artwork/assets, no new Zac brief needed.
@@ -116,7 +118,7 @@
 
 ## 8. Artwork & assets
 
-**No new Zac brief needed** — Daylight Disco's sub-brand is locked (illustrated black linework, halftone dots, yellow + blue accents). Reuse existing Disco assets in `social-scheduler/Content/Feed/` and `social-scheduler/Content/Stories/` (e.g. `daylight-disco-post-tag-us.png`, `daylight-disco-post-where-next.png`, `daylight-disco-story-poll-town.png`, `daylight-disco-story-tag-us.png`, `daylight-disco-story-poll-event.png`) — just need the date swapped from 4 July / TBC to **22 August 2026** wherever a date appears on the asset.
+**No new Zac brief needed** — Daylight Disco's sub-brand is locked (illustrated black linework, halftone dots, yellow + blue accents). Reuse existing Disco assets in `social-scheduler/Content/Feed/` and `social-scheduler/Content/Stories/` (e.g. `daylight-disco-post-tag-us.png`, `daylight-disco-post-where-next.png`, `daylight-disco-story-poll-town.png`, `daylight-disco-story-tag-us.png`, `daylight-disco-story-poll-event.png`) — **checked 2026-07-23: these are generic evergreen poll/engagement templates ("Where to next?", "What do you want to see?"), no date text baked into any of them. Reusable as-is, no edits needed.**
 
 **New assets needed (date-specific only):**
 
@@ -150,6 +152,5 @@ None outstanding — Holly confirmed venue/time/format/price are identical to Di
 ## What's needed before this can be scheduled
 
 1. **New Facebook Event needed for Disco #2** (confirmed 2026-07-23 — not a reuse of #1's event). No automation exists to create this — the strategy doc's §7.6 "auto-create the FB Event on announcement" is aspirational, not built (no matching workflow found in `social-scheduler/`). **Holly: create manually in Facebook before the announcement/day-before posts reference it**, then drop the event link into this doc and the scheduler queue.
-2. Swap the date on the reused evergreen assets listed in §8 (image edit, not a new design brief).
-3. Build the 3 new date-specific cards in §8.
-4. Load into the scheduler queue per the strategy doc's Arc pattern: W1 announcement now → countdown stories ramping over the following weeks → "this weekend" push the Thu/Fri before → live Stories day-of → recap once real footage exists.
+2. Build the 3 new date-specific cards in §8 (save-the-date 4:5 + 9:16, FB event cover) — the only new visual assets needed; everything else in §8 is reusable untouched.
+3. Load into the scheduler queue per the strategy doc's Arc pattern: W1 announcement now → countdown stories ramping over the following weeks → "this weekend" push the Thu/Fri before → live Stories day-of → recap once real footage exists.
