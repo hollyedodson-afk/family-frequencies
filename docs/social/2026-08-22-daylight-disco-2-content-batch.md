@@ -149,7 +149,7 @@ None outstanding — Holly confirmed venue/time/format/price are identical to Di
 
 ## What's needed before this can be scheduled
 
-1. Confirm this reuses the same FB Event as before or needs a fresh one for #2 — `[HOLLY: confirm]`.
+1. **New Facebook Event needed for Disco #2** (confirmed 2026-07-23 — not a reuse of #1's event). No automation exists to create this — the strategy doc's §7.6 "auto-create the FB Event on announcement" is aspirational, not built (no matching workflow found in `social-scheduler/`). **Holly: create manually in Facebook before the announcement/day-before posts reference it**, then drop the event link into this doc and the scheduler queue.
 2. Swap the date on the reused evergreen assets listed in §8 (image edit, not a new design brief).
 3. Build the 3 new date-specific cards in §8.
 4. Load into the scheduler queue per the strategy doc's Arc pattern: W1 announcement now → countdown stories ramping over the following weeks → "this weekend" push the Thu/Fri before → live Stories day-of → recap once real footage exists.
